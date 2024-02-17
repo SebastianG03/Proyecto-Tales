@@ -12,7 +12,20 @@
           "package_name": "com.example.proyecto_pasantia"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "650300046203-d6siiehvbvot0ug01gr9k6v84k00mvhq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.proyecto_pasantia",
+            "certificate_hash": "5b8833b15b01101c1b439ea33e1c14a6be24c058"
+          }
+        },
+        {
+          "client_id": "650300046203-49fm7autb1kajtidum49q92ahl7j4vaq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBk-i-aSL3L3smEFKN4mQVd-go2z4xObaU"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650300046203-49fm7autb1kajtidum49q92ahl7j4vaq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "650300046203-5ider7o6a3p72g1l0fh97obsr8kp4nb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.proyectoPasantia"
+              }
+            }
+          ]
         }
       }
     }

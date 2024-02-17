@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '650300046203',
     projectId: 'proyectopasantiatales',
     storageBucket: 'proyectopasantiatales.appspot.com',
+    androidClientId: '650300046203-d6siiehvbvot0ug01gr9k6v84k00mvhq.apps.googleusercontent.com',
+    iosClientId: '650300046203-5ider7o6a3p72g1l0fh97obsr8kp4nb6.apps.googleusercontent.com',
     iosBundleId: 'com.example.proyectoPasantia',
   );
 }

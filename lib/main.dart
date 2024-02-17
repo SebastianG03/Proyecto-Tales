@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:proyecto_pasantia/config/preferences/app_theme.dart';
+import 'package:proyecto_pasantia/config/router/app_routes.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -11,7 +13,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  await dotenv.load();
+  // await dotenv.load();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -27,10 +29,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Tales Project',
-      home: Placeholder(),
+      routerConfig: AppRoutes.router,
+      theme: AppTheme.lightTheme,
     );
   }
 }
