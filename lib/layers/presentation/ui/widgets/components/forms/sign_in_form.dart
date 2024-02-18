@@ -35,7 +35,7 @@ class SignInFormState extends ConsumerState<SignInForm> {
         ),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
-          label: "Password",
+          label: "Contraseña",
           onChanged: (value) {
             widget.data["password"] = value;
           },

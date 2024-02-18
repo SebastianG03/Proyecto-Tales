@@ -50,7 +50,7 @@ class _PasswordFormsModelState extends State<PasswordFormsModel> {
             onTap: widget.tap,
             child: Icon(
               widget.obscureText ? LineIcons.eye : LineIcons.eyeSlash,
-              size: 15.0,
+              size: 25.0,
               color: Colors.black,
             ),
           ),

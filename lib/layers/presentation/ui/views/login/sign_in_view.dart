@@ -10,6 +10,7 @@ class SignInView extends ConsumerStatefulWidget {
 }
 
 class SignInViewState extends ConsumerState<SignInView> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final Map<String, dynamic> data = {
     "email": "",
     "password": "",
@@ -24,38 +25,36 @@ class SignInViewState extends ConsumerState<SignInView> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Form(
+            key: formKey,
             child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(
-              height: 15,
-            ),
-            SignInForm(data: data),
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(
-                onPressed: () {
-                  print("Sign In");
-                },
-                child: const Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-                  child: Text(
-                    "Sign In",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SignInForm(data: data),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      print("Sign In");
+                    },
+                    child: const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        )),
+              ],
+            )),
       ),
     );
   }

@@ -23,8 +23,8 @@ class AppRoutes {
   static const String settingsView = 'settings';
 
   //Settings Sub Routes paths
-  static const String _signInRoute = '/sign_in';
-  static const String _registerRoute = '/register';
+  static const String _signInRoute = 'sign_in';
+  static const String _registerRoute = 'register';
 
   //Settings Sub Routes names
   static const String signInView = 'sign_in';

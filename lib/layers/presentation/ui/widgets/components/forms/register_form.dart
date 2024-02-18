@@ -21,7 +21,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
       children: <Widget>[
         TextFormsModel(
           textInputType: TextInputType.name,
-          labelText: "Username",
+          labelText: "Nombre de usuario",
           icon: LineIcons.user,
           validator: (value) {
             return null;
@@ -49,7 +49,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
         ),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
-          label: "Password",
+          label: "Contraseña",
           onChanged: (value) {
             widget.data["password"] = value;
           },

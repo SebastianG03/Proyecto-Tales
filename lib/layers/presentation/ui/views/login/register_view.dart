@@ -10,6 +10,8 @@ class RegisterView extends ConsumerStatefulWidget {
 }
 
 class RegisterViewState extends ConsumerState<RegisterView> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> data = {
@@ -17,8 +19,6 @@ class RegisterViewState extends ConsumerState<RegisterView> {
       "email": "",
       "password": "",
     };
-
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     return ConstrainedBox(
       constraints: BoxConstraints(
