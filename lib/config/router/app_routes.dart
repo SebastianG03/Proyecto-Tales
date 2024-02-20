@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/screens/home/details_screen.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/screens/home/home_screen.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/views/home/home_views.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/views/tales/tales_details_view.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/views/tales/tales_grid_view.dart';
 
 import '../../layers/presentation/ui/views/login/login_views.dart';
 
@@ -22,6 +24,14 @@ class AppRoutes {
   static const String libraryView = 'library';
   static const String settingsView = 'settings';
 
+  //Tales Sub Routes paths
+  static const String _talesGridViewRoute = 'tales_grid_view/:tag';
+  static const String _detailsTaleViewRoute = 'detail/:taleId';
+
+  //Tales Sub Routes names
+  static const String talesGridView = 'all_tales_by_tag';
+  static const String taleDetails = 'tale_details';
+
   //Settings Sub Routes paths
   static const String _signInRoute = 'sign_in';
   static const String _registerRoute = 'register';
@@ -30,12 +40,10 @@ class AppRoutes {
   static const String signInView = 'sign_in';
   static const String registerView = 'register';
 
-  //Principal Sub Routes names
-
   // Navigator keys
   static final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
-  static final GlobalKey<NavigatorState> _rootHome =
-      GlobalKey<NavigatorState>(debugLabel: 'shellHome');
+  static final GlobalKey<NavigatorState> _rootTales =
+      GlobalKey<NavigatorState>(debugLabel: 'shellTales');
   static final GlobalKey<NavigatorState> _rootLibrary =
       GlobalKey<NavigatorState>(debugLabel: 'shellLibrary');
   static final GlobalKey<NavigatorState> _rootSettings =
@@ -52,13 +60,34 @@ class AppRoutes {
               ),
           branches: <StatefulShellBranch>[
             //Vistas del la pantalla principal que contienen el bottom navbar
-            //Branch tale
-            StatefulShellBranch(navigatorKey: _rootHome, routes: [
+            //Branch tales
+            StatefulShellBranch(navigatorKey: _rootTales, routes: [
               GoRoute(
+                parentNavigatorKey: _rootTales,
                 path: _talesRoute,
                 name: talesView,
                 builder: (context, state) => const TalesView(),
-                routes: const [],
+                routes: [
+                  GoRoute(
+                    parentNavigatorKey: _rootKey,
+                    path: _talesGridViewRoute,
+                    name: talesGridView,
+                    builder: (context, state) => DetailsScreen(
+                      widget: TalesGridView(
+                        tag: state.pathParameters['tag']!,
+                      ),
+                    ),
+                  ),
+                  GoRoute(
+                    parentNavigatorKey: _rootKey,
+                    path: _detailsTaleViewRoute,
+                    name: taleDetails,
+                    builder: (context, state) => DetailsScreen(
+                      widget: TaleDetailsView(
+                          taleId: state.pathParameters['taleId']!),
+                    ),
+                  )
+                ],
               )
             ]),
 

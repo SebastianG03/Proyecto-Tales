@@ -11,26 +11,47 @@ class TalesView extends StatelessWidget {
     final urls = getUrls();
     final titles = getTitles();
     final premium = [true, false, true, false, true, false];
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Column(
-          children: <Widget>[
-            const CustomAppBar(leading: false),
-            TalesSlideshow(
-              imageUrl: urls,
-              title: titles,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            HorizontalTalesListView(
-                imageUrl: urls, tag: 'Nuevos', titles: titles, premium: premium)
-          ],
+    return CustomScrollView(
+      slivers: [
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppBar(),
+          ),
         ),
-      ),
+        SliverList(
+            delegate: SliverChildBuilderDelegate(
+          (context, index) {
+            return Column(
+              children: <Widget>[
+                TalesSlideshow(
+                  imageUrl: urls,
+                  title: titles,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                HorizontalTalesListView(
+                    imageUrl: urls,
+                    tag: 'Nuevos',
+                    titles: titles,
+                    premium: premium),
+                HorizontalTalesListView(
+                    imageUrl: urls,
+                    tag: 'Tendencias',
+                    titles: titles,
+                    premium: premium),
+                HorizontalTalesListView(
+                    imageUrl: urls,
+                    tag: 'Acción',
+                    titles: titles,
+                    premium: premium)
+              ],
+            );
+          },
+          childCount: 1,
+        ))
+      ],
     );
   }
 

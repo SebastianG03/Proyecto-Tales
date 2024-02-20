@@ -16,7 +16,7 @@ class SettingsView extends ConsumerWidget {
           SliverToBoxAdapter(
             child: UserCard(),
           ),
-          SettingsItems(logged: true)
+          SettingsItems(logged: false)
         ],
       ),
     );

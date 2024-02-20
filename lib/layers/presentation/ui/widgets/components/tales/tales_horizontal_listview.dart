@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:proyecto_pasantia/config/router/app_routes.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
 class HorizontalTalesListView extends StatelessWidget {
@@ -18,7 +20,7 @@ class HorizontalTalesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 350,
+      height: 320,
       child: Column(
         children: [
           _Titles(tag: tag),
@@ -26,15 +28,20 @@ class HorizontalTalesListView extends StatelessWidget {
             height: 5,
           ),
           Expanded(
-              child: ListView.builder(
-            itemCount: imageUrl.length,
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) => TaleHorizontalSlide(
-                imageUrl: imageUrl[index],
-                title: titles[index],
-                premium: premium[index]),
-          ))
+            child: ListView.builder(
+              itemCount: imageUrl.length,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () => context.goNamed(AppRoutes.talesGridView,
+                    pathParameters: {'tag': tag}),
+                child: TaleHorizontalSlide(
+                    imageUrl: imageUrl[index],
+                    title: titles[index],
+                    premium: premium[index]),
+              ),
+            ),
+          )
         ],
       ),
     );

@@ -24,16 +24,7 @@ class _DetailsScreenSign extends StatelessWidget {
           child: CustomAppBar(leading: true),
         ),
         resizeToAvoidBottomInset: false,
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              widget,
-            ],
-          ),
-        ),
+        body: widget,
       ),
     );
   }

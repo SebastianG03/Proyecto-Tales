@@ -55,7 +55,6 @@ class _CustomAppBarWithoutLeading extends StatelessWidget {
       title: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(width: 45),
           Icon(Icons.auto_stories, color: Colors.black),
           SizedBox(width: 5),
           Text(
