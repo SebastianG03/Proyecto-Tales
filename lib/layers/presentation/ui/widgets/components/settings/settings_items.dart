@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:proyecto_pasantia/config/router/app_routes.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
 
 class SettingsItems extends StatelessWidget {
   final bool logged;
-  const SettingsItems({super.key, required this.logged});
+  final UserModel? user;
+  const SettingsItems({super.key, required this.logged, this.user});
 
   @override
   Widget build(BuildContext context) {

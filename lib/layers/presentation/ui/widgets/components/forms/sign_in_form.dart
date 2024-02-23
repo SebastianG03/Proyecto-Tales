@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/inputs/inputs.dart';
 
 class SignInForm extends ConsumerStatefulWidget {
-  final Map<String, dynamic> data;
-  const SignInForm({super.key, required this.data});
+  const SignInForm({super.key});
 
   @override
   SignInFormState createState() => SignInFormState();
@@ -27,7 +27,7 @@ class SignInFormState extends ConsumerState<SignInForm> {
             return null;
           },
           onChanged: (value) {
-            widget.data["email"] = value;
+            ref.read(emailProvider.notifier).update((state) => value.trim());
           },
         ),
         const SizedBox(
@@ -37,7 +37,7 @@ class SignInFormState extends ConsumerState<SignInForm> {
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
           onChanged: (value) {
-            widget.data["password"] = value;
+            ref.read(passwordProvider.notifier).update((state) => value.trim());
           },
           validator: (value) {
             return null;

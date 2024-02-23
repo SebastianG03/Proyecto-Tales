@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class CustomAppBar extends StatelessWidget {
   final bool leading;
@@ -20,9 +22,10 @@ class _CustomAppBarWithLeading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: IconButton(
+      leading: PlatformIconButton(
         onPressed: () => context.pop(),
-        icon: const Icon(Icons.arrow_back),
+        cupertinoIcon: const Icon(CupertinoIcons.back),
+        materialIcon: const Icon(Icons.arrow_back),
       ),
       title: const Row(
         children: <Widget>[

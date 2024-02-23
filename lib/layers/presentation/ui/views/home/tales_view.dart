@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
+import '../../../../aplication/providers/providers.dart';
+import '../../../../domain/entities/user/users.dart';
 import '../../widgets/shared/custom_appbar.dart';
 
-class TalesView extends StatelessWidget {
+class TalesView extends ConsumerWidget {
   const TalesView({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
     final urls = getUrls();
     final titles = getTitles();
     final premium = [true, false, true, false, true, false];

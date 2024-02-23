@@ -4,6 +4,7 @@ import 'package:proyecto_pasantia/layers/domain/entities/tales/section.dart';
 ///Su id será el número del capítulo iniciando desde el 1.
 ///La lista de secciones es una variable privada la cuál se puede ir actualizando de
 ///manera dinámica.
+
 class Chapter {
   int id;
   String _chapterTitle = "";
@@ -15,6 +16,23 @@ class Chapter {
       required List<Section> sections}) {
     _chapterTitle = chapterTitle;
     _sections = sections;
+  }
+  Chapter.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        _chapterTitle = json['chapterTitle'] {
+    if (json['sections'] != null) {
+      _sections = <Section>[];
+      json['sections'].forEach((v) {
+        _sections.add(Section.fromJson(v));
+      });
+    }
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'chapterTitle': _chapterTitle,
+      'sections': _sections.map((e) => e.toJson()).toList(),
+    };
   }
 
 // GETTERS Y SETTERS

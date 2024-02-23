@@ -7,6 +7,7 @@ import 'package:proyecto_pasantia/layers/domain/entities/tales/options.dart';
 /// El parámetro publicId es un identificador único que el usuario puede asignar a la sección, su función es
 /// permitir al usuario referenciar la sección en el árbol de decisiones. Tal que una opción pueda apuntar a un mismo final
 /// o dos opciones concidir posteriormente en el mismo nodo.
+
 class Section {
   String publicId = "";
   String text;
@@ -14,14 +15,40 @@ class Section {
 
   File? _imageFile;
   String? _imageUrl;
-  String? _audioUrl;
+
   File? _audioFile;
+  String? _audioUrl;
 
   Section({
     this.publicId = "",
     required this.text,
     required this.options,
   });
+
+  Section.fromJson(Map<String, dynamic> json)
+      : options = [],
+        text = json['text'] {
+    publicId = json['publicId'];
+    _imageUrl = json['imageUrl'];
+    _audioUrl = json['audioUrl'];
+
+    if (json['options'] != null) {
+      options = <Options>[];
+      json['options'].forEach((v) {
+        options.add(Options.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'publicId': publicId,
+      'text': text,
+      'imageUrl': _imageUrl,
+      'audioUrl': _audioUrl,
+      'options': options.map((e) => e.toJson()).toList(),
+    };
+  }
 
   /// GETTERS Y SETTERS
   File? get getImageFile => _imageFile;

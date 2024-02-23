@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
+import '../../../../aplication/providers/providers.dart';
 import '../../widgets/components/settings/settings_components.dart';
 
 class SettingsView extends ConsumerWidget {
-  final int id;
-  const SettingsView({super.key, required this.id});
+  const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const SafeArea(
+    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
+    bool logged = (user != null);
+
+    return SafeArea(
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: UserCard(),
+            child: UserCard(
+              user: user,
+            ),
           ),
-          SettingsItems(logged: false)
+          SettingsItems(logged: logged, user: user),
         ],
       ),
     );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/inputs/inputs.dart';
 
 class UserRegisterForm extends ConsumerStatefulWidget {
-  final Map<String, dynamic> data;
-  const UserRegisterForm({super.key, required this.data});
+  const UserRegisterForm({super.key});
 
   @override
   UserRegisterFormState createState() => UserRegisterFormState();
@@ -27,7 +27,23 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
             return null;
           },
           onChanged: (value) {
-            widget.data["username"] = value;
+            ref.read(usernameProvider.notifier).update((state) => value.trim());
+          },
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        TextFormsModel(
+          textInputType: TextInputType.number,
+          labelText: "Edad",
+          icon: LineIcons.calendar,
+          validator: (value) {
+            return null;
+          },
+          onChanged: (value) {
+            ref
+                .read(ageProvider.notifier)
+                .update((state) => int.tryParse(value.trim()) ?? 0);
           },
         ),
         const SizedBox(
@@ -41,7 +57,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
             return null;
           },
           onChanged: (value) {
-            widget.data["email"] = value;
+            ref.read(emailProvider.notifier).update((state) => value.trim());
           },
         ),
         const SizedBox(
@@ -51,7 +67,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
           onChanged: (value) {
-            widget.data["password"] = value;
+            ref.read(passwordProvider.notifier).update((state) => value.trim());
           },
           validator: (value) {
             return null;

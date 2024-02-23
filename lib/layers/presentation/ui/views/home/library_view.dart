@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:line_icons/line_icon.dart';
-import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/library/library_tales.dart';
 
 class LibraryView extends ConsumerWidget {
-  final int id;
-  const LibraryView({super.key, required this.id});
+  const LibraryView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const LoggedLibrary();
-    // return (id == 0) ? const LogOutLibrary() : const Text("Library View");
+    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
+
+    return (user == null)
+        ? const LogOutLibrary()
+        : LoggedLibrary(
+            user: user,
+          );
   }
 }
 
@@ -70,7 +74,8 @@ class LogOutLibrary extends StatelessWidget {
 }
 
 class LoggedLibrary extends StatelessWidget {
-  const LoggedLibrary({super.key});
+  final UserModel user;
+  const LoggedLibrary({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
 class TalesGridView extends ConsumerWidget {
   final String tag;

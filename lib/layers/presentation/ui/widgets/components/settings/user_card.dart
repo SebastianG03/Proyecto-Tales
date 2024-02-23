@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard({super.key});
+  final UserModel? user;
+  const UserCard({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.only(bottom: 20),
+    String name = (user != null) ? user!.name : 'Guest';
+    String suscriptionStatus =
+        (user != null && user!.suscription) ? 'Premium' : 'Gratis';
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
       child: Card(
-        margin: EdgeInsets.all(12),
+        margin: const EdgeInsets.all(12),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.green,
-                child: Text('G', style: TextStyle(fontSize: 25)),
-              ),
-              SizedBox(
+              const SizedBox(
                 width: 30,
               ),
-              Text('Guest', style: TextStyle(fontSize: 18)),
+              Text(name, style: const TextStyle(fontSize: 18)),
+              const Spacer(),
+              GestureDetector(
+                onTap: () {},
+                child: Text(
+                  suscriptionStatus,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              )
             ],
           ),
         ),

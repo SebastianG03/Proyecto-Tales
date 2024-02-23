@@ -49,7 +49,7 @@ class AppRoutes {
   static final GlobalKey<NavigatorState> _rootSettings =
       GlobalKey<NavigatorState>(debugLabel: 'shellSettings');
 
-  static final GoRouter router = GoRouter(
+  final GoRouter router = GoRouter(
     initialLocation: _talesRoute,
     navigatorKey: _rootKey,
     routes: <RouteBase>[
@@ -96,7 +96,7 @@ class AppRoutes {
               GoRoute(
                 path: _libraryRoute,
                 name: libraryView,
-                builder: (context, state) => const LibraryView(id: 0),
+                builder: (context, state) => const LibraryView(),
                 routes: const [],
               )
             ]),
@@ -106,7 +106,7 @@ class AppRoutes {
               GoRoute(
                 path: _settingsRoute,
                 name: settingsView,
-                builder: (context, state) => const SettingsView(id: 0),
+                builder: (context, state) => const SettingsView(),
                 routes: [
                   GoRoute(
                     path: _signInRoute,
