@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:proyecto_pasantia/config/router/app_routes.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
 
-class SettingsItems extends StatelessWidget {
+class SettingsItems extends ConsumerWidget {
   final bool logged;
   final UserModel? user;
   const SettingsItems({super.key, required this.logged, this.user});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     List<String> items;
     List<IconData> icons;
     List<Function> functions;
@@ -21,7 +23,9 @@ class SettingsItems extends StatelessWidget {
       functions = [
         (BuildContext context) {},
         (BuildContext context) {},
-        (BuildContext context) {}
+        (BuildContext context) {
+          ref.watch(userDatasourceProvider).signOut(false);
+        }
       ];
     } else {
       items = ['Iniciar Sesión', 'Crear Cuenta', 'Ajustes'];

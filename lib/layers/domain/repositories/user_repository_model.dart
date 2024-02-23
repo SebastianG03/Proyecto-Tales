@@ -14,4 +14,7 @@ abstract class UserRepositoryModel {
   // Future<UserTales> getUserTalesByUserId(String userId);
   // Future<void> updateUserTales(UserTales userTales, String userId);
   Future<void> signOut(bool isGoogleSignIn);
+  Future<void> sendPasswordResetEmail(String email);
+  Future<void> changePassword(String password);
+  Future<void> changeEmail(String email);
 }

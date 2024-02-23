@@ -17,61 +17,63 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final registerForm = ref.watch(registerFormProvider);
+
     return Column(
       children: <Widget>[
         TextFormsModel(
           textInputType: TextInputType.name,
           labelText: "Nombre de usuario",
           icon: LineIcons.user,
-          validator: (value) {
-            return null;
-          },
+          validator: (value) => registerForm.username.errorMessage,
           onChanged: (value) {
             ref.read(usernameProvider.notifier).update((state) => value.trim());
+            ref
+                .read(registerFormProvider.notifier)
+                .usernameChanged(value.trim());
           },
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         TextFormsModel(
           textInputType: TextInputType.number,
           labelText: "Edad",
           icon: LineIcons.calendar,
-          validator: (value) {
-            return null;
-          },
+          validator: (value) => registerForm.age.errorMassage,
           onChanged: (value) {
             ref
                 .read(ageProvider.notifier)
                 .update((state) => int.tryParse(value.trim()) ?? 0);
+            ref.read(registerFormProvider.notifier).ageChanged(value.trim());
           },
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         TextFormsModel(
           textInputType: TextInputType.emailAddress,
           labelText: "Email",
           icon: LineIcons.at,
-          validator: (value) {
-            return null;
-          },
+          validator: (value) => registerForm.email.errorMessage,
           onChanged: (value) {
             ref.read(emailProvider.notifier).update((state) => value.trim());
+            ref.read(registerFormProvider.notifier).emailChanged(value.trim());
           },
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
           onChanged: (value) {
             ref.read(passwordProvider.notifier).update((state) => value.trim());
+            ref
+                .read(registerFormProvider.notifier)
+                .passwordChanged(value.trim());
           },
-          validator: (value) {
-            return null;
-          },
+          validator: (value) => registerForm.password.errorMessage,
           obscureText: obscurePassword,
           tap: _obscurePassword,
         ),

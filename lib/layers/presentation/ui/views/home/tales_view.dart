@@ -11,7 +11,7 @@ class TalesView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
+    UserModel? user = ref.watch(preferencesProvider.notifier).getUserData();
     final urls = getUrls();
     final titles = getTitles();
     final premium = [true, false, true, false, true, false];

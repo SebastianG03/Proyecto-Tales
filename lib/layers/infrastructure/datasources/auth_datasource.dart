@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:proyecto_pasantia/layers/domain/datasources/auth_datasource_model.dart';
-import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
 class AuthDatasource implements AuthDatasourceModel {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,7 +18,7 @@ class AuthDatasource implements AuthDatasourceModel {
   }
 
   @override
-  Future<String> signInWithGoogle() async {
+  Future<User> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) throw ('No se pudo iniciar sesión con Google.');
@@ -29,8 +29,21 @@ class AuthDatasource implements AuthDatasourceModel {
         idToken: googleAuth.idToken,
       );
       final userCredentials = await _auth.signInWithCredential(credentials);
-      return userCredentials.user!.uid;
+      return userCredentials.user!;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      final UserCredential credentials = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+      return credentials.user!.uid;
+    } catch (e) {
+      debugPrint(e.toString());
       rethrow;
     }
   }

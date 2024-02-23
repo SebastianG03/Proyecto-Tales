@@ -9,7 +9,7 @@ class LibraryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
+    UserModel? user = ref.watch(preferencesProvider.notifier).getUserData();
 
     return (user == null)
         ? const LogOutLibrary()

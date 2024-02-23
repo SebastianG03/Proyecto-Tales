@@ -1,40 +1,52 @@
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/domain/repositories/user_repository_model.dart';
-import 'package:proyecto_pasantia/layers/infrastructure/datasources/user_datasource.dart';
+import 'package:proyecto_pasantia/layers/infrastructure/datasources/datasources.dart';
 
 class UserRepository extends UserRepositoryModel {
-  final UserDatasource datasource;
+  final UserDatasource userDatasource;
+  final AuthDatasource authDatasource;
 
-  UserRepository() : datasource = UserDatasource();
+  UserRepository()
+      : userDatasource = UserDatasource(),
+        authDatasource = AuthDatasource();
 
   @override
   Future<bool> createUserWithEmailAndPassword(
       {required String name,
       required int age,
       required String email,
-      required String password}) {
-    return datasource.createUserWithEmailAndPassword(
-        name, age, email, password);
+      required String password}) async {
+    final id =
+        await authDatasource.createUserWithEmailAndPassword(email, password);
+    userDatasource
+        .uploadUserInfo(UserModel(id: id, name: name, email: email, age: age));
+    return true;
   }
 
   @override
   Future<UserModel> getUserById(String id) {
-    return datasource.getUserById(id);
+    return userDatasource.getUserById(id);
   }
 
   @override
-  Future<UserModel> googleSignIn() {
+  Future<UserModel> googleSignIn() async {
     try {
-      return datasource.signInWithGoogle();
+      final user = await authDatasource.signInWithGoogle();
+      UserModel userModel =
+          UserModel(id: user.uid, name: user.displayName!, email: user.email!);
+      userDatasource.uploadUserInfo(userModel);
+      return userModel;
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<UserModel> signInWithEmailAndPassword(String email, String password) {
+  Future<UserModel> signInWithEmailAndPassword(
+      String email, String password) async {
     try {
-      return datasource.signWithEmailAndPassword(email, password);
+      final id = await authDatasource.signIn(email, password);
+      return userDatasource.getUserById(id);
     } catch (e) {
       rethrow;
     }
@@ -42,11 +54,28 @@ class UserRepository extends UserRepositoryModel {
 
   @override
   Future<void> signOut(bool isGoogleSignIn) {
-    return datasource.signOut(isGoogleSignIn);
+    return authDatasource.signOut(isGoogleSignIn);
   }
 
   @override
   Future<bool> updateUser(UserModel user) {
-    return datasource.updateUser(user);
+    return userDatasource.updateUser(user);
+  }
+
+  @override
+  Future<void> changeEmail(String email) {
+    // TODO: implement changeEmail
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> changePassword(String password) {
+    // TODO: implement changePassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> sendPasswordResetEmail(String email) async {
+    await authDatasource.sendPasswordResetEmail(email);
   }
 }

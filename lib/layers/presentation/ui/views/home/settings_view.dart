@@ -10,7 +10,7 @@ class SettingsView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    UserModel? user = ref.read(preferencesProvider.notifier).getUserData();
+    UserModel? user = ref.watch(preferencesProvider.notifier).getUserData();
     bool logged = (user != null);
 
     return SafeArea(

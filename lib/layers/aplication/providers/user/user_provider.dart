@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
-import 'package:proyecto_pasantia/layers/infrastructure/datasources/user_datasource.dart';
+import 'package:proyecto_pasantia/layers/infrastructure/repositories/user_repository.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/alert_dialog.dart';
 
-final userDatasourceProvider = Provider<UserDatasource>((ref) {
-  return UserDatasource();
+final userDatasourceProvider = Provider<UserRepository>((ref) {
+  return UserRepository();
 });
 
 final userSignInProvider =
-    StateNotifierProvider<SignInNotifier, UserDatasource>(
+    StateNotifierProvider<SignInNotifier, UserRepository>(
         (ref) => SignInNotifier());
 
-class SignInNotifier extends StateNotifier<UserDatasource> {
-  SignInNotifier() : super(UserDatasource());
+class SignInNotifier extends StateNotifier<UserRepository> {
+  SignInNotifier() : super(UserRepository());
 
   Future<UserModel> getUserById(
       {required BuildContext context, required String userId}) async {
@@ -31,7 +31,7 @@ class SignInNotifier extends StateNotifier<UserDatasource> {
       required String email,
       required String password}) async {
     try {
-      return state.signWithEmailAndPassword(email, password);
+      return state.signInWithEmailAndPassword(email, password);
     } catch (e) {
       CustomAlertDialog.showAlertDialog(
           context, 'Error al iniciar sesión', 'No se pudo iniciar sesión');
@@ -41,7 +41,7 @@ class SignInNotifier extends StateNotifier<UserDatasource> {
 
   Future<UserModel> signInWithGoogle({required BuildContext context}) async {
     try {
-      return state.signInWithGoogle();
+      return state.googleSignIn();
     } catch (e) {
       CustomAlertDialog.showAlertDialog(
           context, 'Error al iniciar sesión', 'No se pudo iniciar sesión');

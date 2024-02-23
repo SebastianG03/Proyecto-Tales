@@ -6,6 +6,7 @@ class PasswordFormsModel extends StatefulWidget {
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
   final String? label;
+  final String? erroMessage;
   final bool obscureText;
   final Function()? tap;
   final TextEditingController? controller;
@@ -18,7 +19,8 @@ class PasswordFormsModel extends StatefulWidget {
       this.obscureText = true,
       required this.tap,
       this.validator,
-      this.controller});
+      this.controller,
+      this.erroMessage});
 
   @override
   State<PasswordFormsModel> createState() => _PasswordFormsModelState();
@@ -45,6 +47,7 @@ class _PasswordFormsModelState extends State<PasswordFormsModel> {
         decoration: InputDecoration(
           labelText: widget.label,
           errorMaxLines: 2,
+          errorText: widget.erroMessage,
           icon: const Icon(LineIcons.lock),
           suffix: GestureDetector(
             onTap: widget.tap,

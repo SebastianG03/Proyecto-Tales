@@ -17,36 +17,34 @@ class SignInFormState extends ConsumerState<SignInForm> {
 
   @override
   Widget build(BuildContext context) {
+    final loginForm = ref.watch(loginFormProvider);
     return Column(
       children: <Widget>[
         TextFormsModel(
           textInputType: TextInputType.emailAddress,
           labelText: "Email",
           icon: LineIcons.at,
-          validator: (value) {
-            return null;
-          },
+          errorMessage:
+              (loginForm.isFormPosted) ? loginForm.email.errorMessage : null,
           onChanged: (value) {
             ref.read(emailProvider.notifier).update((state) => value.trim());
+            ref.read(loginFormProvider.notifier).emailChanged(value.trim());
           },
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
           onChanged: (value) {
             ref.read(passwordProvider.notifier).update((state) => value.trim());
+            ref.read(loginFormProvider.notifier).passwordChanged(value.trim());
           },
-          validator: (value) {
-            return null;
-          },
+          erroMessage:
+              (loginForm.isFormPosted) ? loginForm.password.errorMessage : null,
           obscureText: obscurePassword,
           tap: _obscurePassword,
-        ),
-        const SizedBox(
-          height: 10,
         ),
       ],
     );

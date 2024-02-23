@@ -18,15 +18,12 @@ class RegisterViewState extends ConsumerState<RegisterView> {
   @override
   void dispose() {
     super.dispose();
-    ref.read(usernameProvider.notifier).dispose();
-    ref.read(ageProvider.notifier).dispose();
-    ref.read(emailProvider.notifier).dispose();
-    ref.read(passwordProvider.notifier).dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final register = ref.read(userDatasourceProvider);
+    final registerForm = ref.watch(registerFormProvider);
     final signInNotifier = ref.read(userSignInProvider.notifier);
     final router = ref.read(routerProvider);
 
@@ -49,33 +46,26 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: ElevatedButton(
                     onPressed: () async {
-                      if (formKey.currentState!.validate()) {
-                        final name = ref.read(usernameProvider.notifier).state;
-                        final age = ref.read(ageProvider.notifier).state;
-                        final email = ref.read(emailProvider.notifier).state;
-                        final password =
-                            ref.read(passwordProvider.notifier).state;
-                        debugPrint('''
-                          Username: $name
-                          Age: $age
-                          Email: $email
-                          Password: $password        
-                          ''');
+                      ref.read(registerFormProvider.notifier).onSubmit();
+                      if (registerForm.isValid) {
+                        registerForm.toString();
                         register.createUserWithEmailAndPassword(
-                          ref.read(usernameProvider.notifier).state,
-                          ref.read(ageProvider.notifier).state,
-                          ref.read(emailProvider.notifier).state,
-                          ref.read(passwordProvider.notifier).state,
+                          name: ref.read(usernameProvider.notifier).state,
+                          age: ref.read(ageProvider.notifier).state,
+                          email: ref.read(emailProvider.notifier).state,
+                          password: ref.read(passwordProvider.notifier).state,
                         );
-                        // final user =
-                        //     await signInNotifier.signInWithEmailAndPassword(
-                        //         context: context,
-                        //         email: data['email'],
-                        //         password: data['password']);
-                        // ref
-                        //     .read(preferencesProvider.notifier)
-                        //     .setUserData(user.toJson());
-                        // router.router.pop();
+                        final user =
+                            await signInNotifier.signInWithEmailAndPassword(
+                                context: context,
+                                email:
+                                    ref.read(usernameProvider.notifier).state,
+                                password:
+                                    ref.read(passwordProvider.notifier).state);
+                        ref
+                            .read(preferencesProvider.notifier)
+                            .setUserData(user.toJson());
+                        router.router.pop();
                       }
                     },
                     child: const Padding(
