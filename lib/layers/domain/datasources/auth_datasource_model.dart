@@ -8,4 +8,5 @@ abstract class AuthDatasourceModel {
   Future<void> sendPasswordResetEmail(String email);
   Future<void> changePassword(String password);
   Future<void> changeEmail(String email);
+  Future<bool> isGoogleSigned();
 }

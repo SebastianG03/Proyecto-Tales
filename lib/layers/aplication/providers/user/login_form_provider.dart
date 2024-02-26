@@ -1,10 +1,18 @@
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/inputs/inputs.dart';
 
 final loginFormProvider =
     StateNotifierProvider<LoginFormNotifier, LoginFormState>(
-  (ref) => LoginFormNotifier(),
+  (ref) {
+    final loginCallback =
+        ref.read(userSignInProvider.notifier).signInWithEmailAndPassword;
+    final prefs = ref.watch(preferencesProvider.notifier).setUserData;
+    return LoginFormNotifier(loginCallback, prefs);
+  },
 );
 
 class LoginFormState {
@@ -50,7 +58,15 @@ class LoginFormState {
 }
 
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
-  LoginFormNotifier() : super(LoginFormState());
+  final Future<UserModel> Function(
+      {required BuildContext context,
+      required String email,
+      required String password}) loginCallback;
+  void Function(Map<String, dynamic> json) prefs;
+  LoginFormNotifier(
+    this.loginCallback,
+    this.prefs,
+  ) : super(LoginFormState());
 
   void emailChanged(String value) {
     final newEmail = Email.dirty(value);
@@ -68,13 +84,17 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     );
   }
 
-  void onSubmit() {
+  void onSubmit(BuildContext context) async {
     _validateAll();
     if (!state.isValid) return;
-  }
 
-  void _posting() async {
     state = state.copyWith(isPosting: true);
+    UserModel user = await loginCallback(
+        context: context,
+        email: state.email.value,
+        password: state.password.value);
+    prefs(user.toJson());
+    state = state.copyWith(isPosting: false);
   }
 
   void _validateAll() {

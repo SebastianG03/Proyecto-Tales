@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 
+import '../../../../../../domain/entities/user/users.dart';
+
 class GoogleSignInComponent extends ConsumerWidget {
   const GoogleSignInComponent({super.key});
 
@@ -18,10 +20,13 @@ class GoogleSignInComponent extends ConsumerWidget {
             height: 2.0,
           ),
           GestureDetector(
-            onTap: () {
-              ref
+            onTap: () async {
+              final UserModel user = await ref
                   .read(userSignInProvider.notifier)
                   .signInWithGoogle(context: context);
+              ref.read(preferencesProvider.notifier).setUserData(user.toJson());
+              ref.read(routerProvider).router.pop();
+              ref.read(routerProvider).router.refresh();
             },
             child: Image.asset(
               'assets/app_icons/google_logo.png',

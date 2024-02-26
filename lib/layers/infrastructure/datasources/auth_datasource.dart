@@ -76,4 +76,18 @@ class AuthDatasource implements AuthDatasourceModel {
   Future<void> sendPasswordResetEmail(String email) async {
     await _auth.sendPasswordResetEmail(email: email);
   }
+
+  @override
+  @override
+  Future<bool> isGoogleSigned() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw StateError('No user is currently signed in');
+      }
+      return user.providerData.first.providerId == 'google.com';
+    } catch (e) {
+      return false;
+    }
+  }
 }

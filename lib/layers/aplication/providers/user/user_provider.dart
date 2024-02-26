@@ -48,4 +48,8 @@ class SignInNotifier extends StateNotifier<UserRepository> {
       rethrow;
     }
   }
+
+  void signOut(bool isGoogleSigned) {
+    state.signOut(isGoogleSigned);
+  }
 }

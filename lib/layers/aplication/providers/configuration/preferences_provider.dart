@@ -25,6 +25,10 @@ class PreferencesNotifier extends StateNotifier<Preferences> {
     user = await state.getUserData();
   }
 
+  void clearUserData() async {
+    state.clearUserData();
+  }
+
   void setAllowNotifications(bool value) {
     state.setAllowNotifications(value);
     if (value != allowNotification) allowNotification = value;

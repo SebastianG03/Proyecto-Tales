@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/inputs/inputs.dart';
+import 'package:proyecto_pasantia/layers/infrastructure/repositories/user_repository.dart';
 
 final registerFormProvider =
-    StateNotifierProvider<RegisterFormNotifier, RegisterFormState>(
-  (ref) => RegisterFormNotifier(),
-);
+    StateNotifierProvider<RegisterFormNotifier, RegisterFormState>((ref) {
+  final register = ref.read(userDatasourceProvider);
+  return RegisterFormNotifier(register);
+});
 
 class RegisterFormState {
   final bool isPosting;
@@ -58,7 +62,8 @@ class RegisterFormState {
 }
 
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
-  RegisterFormNotifier() : super(RegisterFormState());
+  final UserRepository register;
+  RegisterFormNotifier(this.register) : super(RegisterFormState());
 
   void emailChanged(String value) {
     final newEmail = Email.dirty(value);
@@ -96,13 +101,16 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  void onSubmit() {
+  void onSubmit() async {
     _validateAll();
     if (!state.isValid) return;
-  }
-
-  void _posting() async {
     state = state.copyWith(isPosting: true);
+    register.createUserWithEmailAndPassword(
+        name: state.username.value,
+        age: int.parse(state.age.value),
+        email: state.email.value,
+        password: state.password.value);
+    state = state.copyWith(isPosting: false);
   }
 
   void _validateAll() {

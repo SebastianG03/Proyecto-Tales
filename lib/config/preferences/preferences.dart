@@ -32,4 +32,9 @@ class Preferences {
     String userData = jsonEncode(json);
     return instance.setString(_userData, userData);
   }
+
+  Future<void> clearUserData() async {
+    final instance = await SharedPreferences.getInstance();
+    instance.remove(_userData);
+  }
 }

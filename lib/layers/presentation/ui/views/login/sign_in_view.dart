@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/forms/sign_in_form.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/settings/settings_components.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/custom_snackbar.dart';
 
 import '../../../../aplication/providers/providers.dart';
 
@@ -24,8 +23,7 @@ class SignInViewState extends ConsumerState<SignInView> {
   @override
   Widget build(BuildContext context) {
     final router = ref.read(routerProvider);
-    final signNotifier = ref.read(userSignInProvider.notifier);
-    final loginForm = ref.watch(loginFormProvider);
+    final registerForm = ref.watch(registerFormProvider);
 
     return SingleChildScrollView(
       child: ConstrainedBox(
@@ -41,49 +39,21 @@ class SignInViewState extends ConsumerState<SignInView> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 const SignInForm(),
-                TextButton(
-                  child: Text(
-                    'Me olvidé la contraseña',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.blue.shade300,
-                      fontStyle: FontStyle.italic,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                  onPressed: () {
-                    ForgotPasswordAlert.showAlertDialog(
-                        context, 'Reestablezca su contraseña', (email) {
-                      ref
-                          .read(userDatasourceProvider)
-                          .sendPasswordResetEmail(email);
-                      ref.read(routerProvider).router.pop();
-                    });
-                    CustomSnackbar.showSnackBar(context,
-                        "Se ha enviado un correo para reestablecer su contraseña.");
-                  },
-                ),
                 const SizedBox(
                   height: 20,
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      ref.read(loginFormProvider.notifier).onSubmit();
-                      if (loginForm.isValid) {
-                        final user =
-                            await signNotifier.signInWithEmailAndPassword(
-                                context: context,
-                                email: ref.read(emailProvider.notifier).state,
-                                password:
-                                    ref.read(passwordProvider.notifier).state);
-                        ref
-                            .read(preferencesProvider.notifier)
-                            .setUserData(user.toJson());
-                        router.router.pop;
-                      }
-                    },
+                    onPressed: registerForm.isPosting
+                        ? null
+                        : () async {
+                            ref
+                                .read(loginFormProvider.notifier)
+                                .onSubmit(context);
+                            router.router.pop();
+                            ref.read(routerProvider).router.refresh();
+                          },
                     child: const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),

@@ -1,15 +1,18 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:proyecto_pasantia/config/configurations.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
-class TalesSlideshow extends StatelessWidget {
+class TalesSlideshow extends ConsumerWidget {
   final List<String> imageUrl;
   final List<String> title;
   const TalesSlideshow(
       {super.key, required this.imageUrl, required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
@@ -28,10 +31,13 @@ class TalesSlideshow extends StatelessWidget {
                 activeColor: Colors.blue,
               ),
             ),
-            itemBuilder: (context, index) => SwiperSlide(
-                  imageUrl: imageUrl[index],
-                  title: title[index],
-                )),
+            itemBuilder: (context, index) => GestureDetector(
+              onTap: () => ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails, pathParameters: {'taleId': '1'}),
+              child: SwiperSlide(
+                    imageUrl: imageUrl[index],
+                    title: title[index],
+                  ),
+            )),
       ),
     );
   }

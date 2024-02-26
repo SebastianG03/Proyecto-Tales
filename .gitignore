@@ -43,4 +43,4 @@ app.*.map.json
 /android/app/release
 
 .env
- 
+ lib/layers/infrastructure/datasources/tales_datasource.dart

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/screens/home/details_screen.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/screens/home/home_screen.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/views/home/home_views.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/views/tales/tales_details_view.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/views/tales/tales_grid_view.dart';
 
+import '../../layers/presentation/ui/screens/home/screens.dart';
 import '../../layers/presentation/ui/views/login/login_views.dart';
+import '../../layers/presentation/ui/views/tales/tales_views.dart';
 
 class AppRoutes {
   AppRoutes();
@@ -72,7 +70,7 @@ class AppRoutes {
                     parentNavigatorKey: _rootKey,
                     path: _talesGridViewRoute,
                     name: talesGridView,
-                    builder: (context, state) => DetailsScreen(
+                    builder: (context, state) => ChildScreen(
                       widget: TalesGridView(
                         tag: state.pathParameters['tag']!,
                       ),
@@ -82,7 +80,7 @@ class AppRoutes {
                     parentNavigatorKey: _rootKey,
                     path: _detailsTaleViewRoute,
                     name: taleDetails,
-                    builder: (context, state) => DetailsScreen(
+                    builder: (context, state) => TaleDetailsScreen(
                       widget: TaleDetailsView(
                           taleId: state.pathParameters['taleId']!),
                     ),
@@ -113,7 +111,7 @@ class AppRoutes {
                     name: signInView,
                     parentNavigatorKey: _rootKey,
                     builder: (context, state) =>
-                        const DetailsScreen(widget: SignInView()),
+                        const ChildScreen(widget: SignInView()),
                     routes: const [],
                   ),
                   GoRoute(
@@ -121,7 +119,7 @@ class AppRoutes {
                     name: registerView,
                     parentNavigatorKey: _rootKey,
                     builder: (context, state) =>
-                        const DetailsScreen(widget: RegisterView()),
+                        const ChildScreen(widget: RegisterView()),
                     routes: const [],
                   ),
                 ],

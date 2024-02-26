@@ -27,48 +27,36 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
           icon: LineIcons.user,
           validator: (value) => registerForm.username.errorMessage,
           onChanged: (value) {
-            ref.read(usernameProvider.notifier).update((state) => value.trim());
             ref
                 .read(registerFormProvider.notifier)
                 .usernameChanged(value.trim());
           },
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const Spacer(),
         TextFormsModel(
           textInputType: TextInputType.number,
           labelText: "Edad",
           icon: LineIcons.calendar,
           validator: (value) => registerForm.age.errorMassage,
           onChanged: (value) {
-            ref
-                .read(ageProvider.notifier)
-                .update((state) => int.tryParse(value.trim()) ?? 0);
             ref.read(registerFormProvider.notifier).ageChanged(value.trim());
           },
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const Spacer(),
         TextFormsModel(
           textInputType: TextInputType.emailAddress,
           labelText: "Email",
           icon: LineIcons.at,
           validator: (value) => registerForm.email.errorMessage,
           onChanged: (value) {
-            ref.read(emailProvider.notifier).update((state) => value.trim());
             ref.read(registerFormProvider.notifier).emailChanged(value.trim());
           },
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const Spacer(),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
           onChanged: (value) {
-            ref.read(passwordProvider.notifier).update((state) => value.trim());
             ref
                 .read(registerFormProvider.notifier)
                 .passwordChanged(value.trim());
@@ -77,9 +65,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
           obscureText: obscurePassword,
           tap: _obscurePassword,
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const Spacer(),
       ],
     );
   }

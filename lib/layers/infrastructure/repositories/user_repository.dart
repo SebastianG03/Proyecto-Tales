@@ -78,4 +78,9 @@ class UserRepository extends UserRepositoryModel {
   Future<void> sendPasswordResetEmail(String email) async {
     await authDatasource.sendPasswordResetEmail(email);
   }
+
+  @override
+  Future<bool> isGoogleSigned() {
+    return authDatasource.isGoogleSigned();
+  }
 }

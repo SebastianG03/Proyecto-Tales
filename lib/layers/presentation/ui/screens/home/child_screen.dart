@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/shared/custom_appbar.dart';
 
-class DetailsScreen extends StatelessWidget {
+class ChildScreen extends StatelessWidget {
   final Widget widget;
-  const DetailsScreen({super.key, required this.widget});
-
-  @override
-  Widget build(BuildContext context) {
-    return _DetailsScreenSign(widget: widget);
-  }
-}
-
-class _DetailsScreenSign extends StatelessWidget {
-  final Widget widget;
-  const _DetailsScreenSign({required this.widget});
+  const ChildScreen({super.key, required this.widget});
 
   @override
   Widget build(BuildContext context) {

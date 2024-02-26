@@ -17,8 +17,6 @@ class UserDatasource implements UserDatasourceModel {
       _usersCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .set(user.toJson());
-    } else {
-      throw ('El usuario ya existe.');
     }
   }
 

@@ -22,9 +22,8 @@ class RegisterViewState extends ConsumerState<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    final register = ref.read(userDatasourceProvider);
-    final registerForm = ref.watch(registerFormProvider);
     final signInNotifier = ref.read(userSignInProvider.notifier);
+    final loginForm = ref.watch(loginFormProvider);
     final router = ref.read(routerProvider);
 
     return SingleChildScrollView(
@@ -45,29 +44,21 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      ref.read(registerFormProvider.notifier).onSubmit();
-                      if (registerForm.isValid) {
-                        registerForm.toString();
-                        register.createUserWithEmailAndPassword(
-                          name: ref.read(usernameProvider.notifier).state,
-                          age: ref.read(ageProvider.notifier).state,
-                          email: ref.read(emailProvider.notifier).state,
-                          password: ref.read(passwordProvider.notifier).state,
-                        );
-                        final user =
-                            await signInNotifier.signInWithEmailAndPassword(
-                                context: context,
-                                email:
-                                    ref.read(usernameProvider.notifier).state,
-                                password:
-                                    ref.read(passwordProvider.notifier).state);
-                        ref
-                            .read(preferencesProvider.notifier)
-                            .setUserData(user.toJson());
-                        router.router.pop();
-                      }
-                    },
+                    onPressed: (loginForm.isPosting)
+                        ? null
+                        : () async {
+                            ref.read(registerFormProvider.notifier).onSubmit();
+                            final user =
+                                await signInNotifier.signInWithEmailAndPassword(
+                                    context: context,
+                                    email: loginForm.email.value,
+                                    password: loginForm.password.value);
+                            ref
+                                .read(preferencesProvider.notifier)
+                                .setUserData(user.toJson());
+                            router.router.pop();
+                            ref.read(routerProvider).router.refresh();
+                          },
                     child: const Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
