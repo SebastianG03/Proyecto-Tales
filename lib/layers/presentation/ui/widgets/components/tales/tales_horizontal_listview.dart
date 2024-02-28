@@ -4,43 +4,45 @@ import 'package:proyecto_pasantia/config/router/app_routes.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
-class HorizontalTalesListView extends ConsumerWidget {
-  final List<String> imageUrl;
+import '../../../../../domain/entities/tales/tales_exports.dart';
+
+class HorizontalTalesListView extends ConsumerStatefulWidget {
+  final List<Tales> tales;
   final String tag;
-  final List<String> titles;
-  final List<bool> premium;
   final VoidCallbackAction? loadNextPage;
   const HorizontalTalesListView(
-      {super.key,
-      required this.imageUrl,
-      required this.tag,
-      required this.titles,
-      required this.premium,
-      this.loadNextPage});
+      {super.key, required this.tales, required this.tag, this.loadNextPage});
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<HorizontalTalesListView> createState() =>
+      _HorizontalTalesListViewState();
+}
+
+class _HorizontalTalesListViewState
+    extends ConsumerState<HorizontalTalesListView> {
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 320,
       child: Column(
         children: [
-          _Titles(tag: tag),
+          _Titles(tag: widget.tag),
           const SizedBox(
             height: 5,
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: imageUrl.length,
+              itemCount: widget.tales.length,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () => ref.read(routerProvider).router.goNamed(
                     AppRoutes.taleDetails,
-                    pathParameters: {'taleId': '1'}),
+                    pathParameters: {'taleId': widget.tales[index].id}),
                 child: TaleHorizontalSlide(
-                    imageUrl: imageUrl[index],
-                    title: titles[index],
-                    premium: premium[index]),
+                    imageUrl: widget.tales[index].getCoverUrl,
+                    title: widget.tales[index].title,
+                    premium: false),
               ),
             ),
           )

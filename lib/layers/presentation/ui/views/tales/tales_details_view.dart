@@ -55,7 +55,7 @@ class _TaleDescription extends StatelessWidget {
       children: [
         const Text("Resumen",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        _ExpandedText(text: abstract),
+        // _ExpandedText(text: abstract),
         const SizedBox(
           height: 10,
         ),

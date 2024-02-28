@@ -7,6 +7,8 @@ import '../entities/tales/tales_exports.dart';
 abstract class TaleDatasourceModel {
   Future<Tales> getTale(String id);
   Future<List<Tales>> getTaleByTitle(String title);
+  Future<List<DocumentSnapshot>> fetchSliderTales(
+      List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
       Gender gender, List<DocumentSnapshot> documentList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(

@@ -41,12 +41,6 @@ class Tales {
     json['genders'].forEach((element) {
       genders.add(GenderTalesHelper.getGenderByName(element));
     });
-    if (json['chapters'] != null) {
-      _chapters = <Chapter>[];
-      json['chapters'].forEach((v) {
-        _chapters.add(Chapter.fromJson(v));
-      });
-    }
   }
 
   Map<String, dynamic> toJson() {

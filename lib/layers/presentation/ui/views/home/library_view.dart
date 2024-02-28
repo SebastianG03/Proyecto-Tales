@@ -82,50 +82,51 @@ class LoggedLibrary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 25),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(20)),
-            child: const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'Mis cuentos',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w600),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 25),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(20)),
+              child: const Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  'Mis cuentos',
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 25,
-          ),
-          SegmentedButton(
-            segments: const [
-              ButtonSegment(value: 'Reading', icon: Text('Leyendo')),
-              ButtonSegment(value: 'Completed', icon: Text('Completado'))
-            ],
-            selected: const {'Reading'},
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Expanded(
-            child: ListView.builder(
-              // physics: const NeverScrollableScrollPhysics(),
-              itemCount: getItems().length,
-              itemBuilder: (context, index) => getItems()[index],
+            const SizedBox(
+              height: 25,
             ),
-          )
-        ],
+            SegmentedButton(
+              segments: const [
+                ButtonSegment(value: 'Reading', icon: Text('Leyendo')),
+                ButtonSegment(value: 'Completed', icon: Text('Completado'))
+              ],
+              selected: const {'Reading'},
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Expanded(
+              child: ListView.builder(
+                // physics: const NeverScrollableScrollPhysics(),
+                itemCount: getItems().length,
+                itemBuilder: (context, index) => getItems()[index],
+              ),
+            )
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   List<Widget> getItems() {

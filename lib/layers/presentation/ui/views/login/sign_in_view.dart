@@ -26,6 +26,7 @@ class SignInViewState extends ConsumerState<SignInView> {
     final registerForm = ref.watch(registerFormProvider);
 
     return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minHeight: MediaQuery.of(context).size.height - 30,
@@ -58,7 +59,7 @@ class SignInViewState extends ConsumerState<SignInView> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                       child: Text(
-                        "Sign In",
+                        "Iniciar sesión",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,

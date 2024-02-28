@@ -5,21 +5,26 @@ import 'package:proyecto_pasantia/config/configurations.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
 
-class TalesSlideshow extends ConsumerWidget {
-  final List<String> imageUrl;
-  final List<String> title;
-  const TalesSlideshow(
-      {super.key, required this.imageUrl, required this.title});
+import '../../../../../domain/entities/tales/tales_exports.dart';
+
+class TalesSlideshow extends ConsumerStatefulWidget {
+  final List<Tales> tales;
+  const TalesSlideshow({super.key, required this.tales});
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<TalesSlideshow> createState() => _TalesSlideshowState();
+}
+
+class _TalesSlideshowState extends ConsumerState<TalesSlideshow> {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: SizedBox(
         height: 220,
         width: double.infinity,
         child: Swiper(
-            itemCount: title.length,
+            itemCount: widget.tales.length,
             itemWidth: 300,
             duration: 1000,
             scale: 0.9,
@@ -32,12 +37,14 @@ class TalesSlideshow extends ConsumerWidget {
               ),
             ),
             itemBuilder: (context, index) => GestureDetector(
-              onTap: () => ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails, pathParameters: {'taleId': '1'}),
-              child: SwiperSlide(
-                    imageUrl: imageUrl[index],
-                    title: title[index],
+                  onTap: () => ref.read(routerProvider).router.goNamed(
+                      AppRoutes.taleDetails,
+                      pathParameters: {'taleId': widget.tales[index].id}),
+                  child: SwiperSlide(
+                    imageUrl: widget.tales[index].getCoverUrl,
+                    title: widget.tales[index].title,
                   ),
-            )),
+                )),
       ),
     );
   }

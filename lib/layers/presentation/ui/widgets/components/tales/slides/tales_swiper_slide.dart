@@ -24,12 +24,17 @@ class SwiperSlide extends StatelessWidget {
         decoration: decoration,
         child: Stack(fit: StackFit.expand, children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              imageUrl,
-              fit: BoxFit.fill,
-            ),
-          ),
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              )),
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(

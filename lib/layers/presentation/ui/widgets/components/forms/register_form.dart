@@ -18,7 +18,6 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
   @override
   Widget build(BuildContext context) {
     final registerForm = ref.watch(registerFormProvider);
-
     return Column(
       children: <Widget>[
         TextFormsModel(
@@ -32,7 +31,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
                 .usernameChanged(value.trim());
           },
         ),
-        const Spacer(),
+        const SizedBox(height: 10.0),
         TextFormsModel(
           textInputType: TextInputType.number,
           labelText: "Edad",
@@ -42,7 +41,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
             ref.read(registerFormProvider.notifier).ageChanged(value.trim());
           },
         ),
-        const Spacer(),
+        const SizedBox(height: 10.0),
         TextFormsModel(
           textInputType: TextInputType.emailAddress,
           labelText: "Email",
@@ -52,7 +51,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
             ref.read(registerFormProvider.notifier).emailChanged(value.trim());
           },
         ),
-        const Spacer(),
+        const SizedBox(height: 10.0),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
@@ -65,7 +64,7 @@ class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
           obscureText: obscurePassword,
           tap: _obscurePassword,
         ),
-        const Spacer(),
+        const SizedBox(height: 10.0),
       ],
     );
   }

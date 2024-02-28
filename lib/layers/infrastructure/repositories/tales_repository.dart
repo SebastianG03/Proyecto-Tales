@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/chapter.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/gender_tales.dart';
@@ -45,24 +43,31 @@ class TalesRepository extends TaleRepositoryModel {
   }
 
   @override
-  Future<List<Tales>> fetchMoreTalesByAgeLimit(
+  Future<List<DocumentSnapshot>> fetchSliderTales(
+      List<DocumentSnapshot> docsList) {
+    return datasource.fetchSliderTales(docsList);
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
       int ageLimit, List<DocumentSnapshot> docsList) async {
-    final results =
-        await datasource.fetchMoreTalesByAgeLimit(ageLimit, docsList);
-    return datasource.convertToTales(results);
+    return await datasource.fetchMoreTalesByAgeLimit(ageLimit, docsList);
   }
 
   @override
-  Future<List<Tales>> fetchMoreTalesByCreationTime(
+  Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> docsList) async {
-    final results = await datasource.fetchMoreTalesByCreationTime(docsList);
-    return datasource.convertToTales(results);
+    return await datasource.fetchMoreTalesByCreationTime(docsList);
   }
 
   @override
-  Future<List<Tales>> fetchMoreTalesByGender(
+  Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
       Gender gender, List<DocumentSnapshot> docsList) async {
-    final results = await datasource.fetchMoreTalesByGender(gender, docsList);
-    return datasource.convertToTales(results);
+    return await datasource.fetchMoreTalesByGender(gender, docsList);
+  }
+
+  @override
+  List<Tales> convertToTales(List<DocumentSnapshot<Object?>> docList) {
+    return datasource.convertToTales(docList);
   }
 }

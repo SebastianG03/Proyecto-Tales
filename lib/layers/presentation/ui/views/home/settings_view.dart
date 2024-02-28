@@ -22,7 +22,9 @@ class SettingsView extends ConsumerWidget {
               user: user,
             ),
           ),
-          (logged) ? LoggedSettingsItems(user: user) : GuestSettingsItems(),
+          (logged)
+              ? LoggedSettingsItems(user: user)
+              : const GuestSettingsItems(),
         ],
       ),
     );

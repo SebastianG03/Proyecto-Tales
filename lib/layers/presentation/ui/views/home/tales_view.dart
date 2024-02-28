@@ -6,15 +6,25 @@ import '../../../../aplication/providers/providers.dart';
 import '../../../../domain/entities/user/users.dart';
 import '../../widgets/shared/custom_appbar.dart';
 
-class TalesView extends ConsumerWidget {
+class TalesView extends ConsumerStatefulWidget {
   const TalesView({super.key});
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<TalesView> createState() => _TalesViewState();
+}
+
+class _TalesViewState extends ConsumerState<TalesView> {
+  @override
+  @override
+  void initState() {
+    super.initState();
+    ref.read(talesNotifierProvider.notifier).initTales();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     UserModel? user = ref.watch(preferencesProvider.notifier).getUserData();
-    final urls = getUrls();
-    final titles = getTitles();
-    final premium = [true, false, true, false, true, false];
+
     return CustomScrollView(
       slivers: [
         const SliverAppBar(
@@ -29,27 +39,35 @@ class TalesView extends ConsumerWidget {
             return Column(
               children: <Widget>[
                 TalesSlideshow(
-                  imageUrl: urls,
-                  title: titles,
+                  tales: ref.watch(talesNotifierProvider).sliderTales,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 HorizontalTalesListView(
-                    imageUrl: urls,
-                    tag: 'Nuevos',
-                    titles: titles,
-                    premium: premium),
+                  tales: ref
+                      .watch(talesNotifierProvider)
+                      .recentTales
+                      .take(8)
+                      .toList(),
+                  tag: 'Nuevos',
+                ),
                 HorizontalTalesListView(
-                    imageUrl: urls,
-                    tag: 'Tendencias',
-                    titles: titles,
-                    premium: premium),
+                  tales: ref
+                      .watch(talesNotifierProvider)
+                      .ageLimitTales
+                      .take(8)
+                      .toList(),
+                  tag: 'Para menores de 15',
+                ),
                 HorizontalTalesListView(
-                    imageUrl: urls,
-                    tag: 'Acción',
-                    titles: titles,
-                    premium: premium)
+                  tales: ref
+                      .watch(talesNotifierProvider)
+                      .recentTales
+                      .take(8)
+                      .toList(),
+                  tag: 'Varios',
+                )
               ],
             );
           },
@@ -57,27 +75,5 @@ class TalesView extends ConsumerWidget {
         ))
       ],
     );
-  }
-
-  List<String> getUrls() {
-    return [
-      'assets/tales_sample/portada1.jpg',
-      'assets/tales_sample/portada2.jpg',
-      'assets/tales_sample/portada3.jpg',
-      'assets/tales_sample/portada4.jpg',
-      'assets/tales_sample/portada2.jpg',
-      'assets/tales_sample/portada1.jpg',
-    ];
-  }
-
-  List<String> getTitles() {
-    return [
-      'Tale 1',
-      'Tale 2',
-      'Tale 3',
-      'Tale 4',
-      'Tale 5',
-      'Tale 6',
-    ];
   }
 }

@@ -9,13 +9,12 @@ class ChildScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: const PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: CustomAppBar(leading: true),
-        ),
-        resizeToAvoidBottomInset: false,
-        body: widget,
-      ),
+          appBar: const PreferredSize(
+            preferredSize: Size.fromHeight(100),
+            child: CustomAppBar(leading: true),
+          ),
+          resizeToAvoidBottomInset: false,
+          body: widget),
     );
   }
 }

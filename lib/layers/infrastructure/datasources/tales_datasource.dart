@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/datasources/tale_datasource_model.dart';
@@ -12,11 +13,23 @@ class TalesDataSource extends TaleDatasourceModel {
       FirebaseFirestore.instance.collection('tales');
   final FireStorage.FirebaseStorage _storage =
       FireStorage.FirebaseStorage.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   final String _rootPath = 'tales';
+
+  TalesDataSource();
+
+  void init() async {
+    await _auth.signInAnonymously();
+  }
+
+  void dispose() async {
+    await _auth.signOut();
+  }
 
   @override
   void uploadTale(Tales tale) async {
-    final cover = File(tale.coverImage!.path);
+    final cover = await File(tale.coverImage!.path).create();
     final coverUrl = await uploadTaleCover(cover, tale.id, false);
     tale.setCoverUrl = coverUrl;
     tale = _recursiveUploadSectionFiles(tale.id, tale, false);
@@ -75,8 +88,10 @@ class TalesDataSource extends TaleDatasourceModel {
         final oldCoverUrl = oldCover.getCoverUrl;
         await _storage.refFromURL(oldCoverUrl).delete();
       }
+      debugPrint(
+          'Path: ${file.path}, Absolute: ${file.absolute}, Uri: ${file.uri}');
       final upload =
-          await _storage.ref().child('$_rootPath/$taleId/cover').putFile(file);
+          await _storage.ref('$_rootPath/$taleId').child('cover').putFile(file);
       final String url = await upload.ref.getDownloadURL();
       return url;
     } catch (e) {
@@ -184,16 +199,37 @@ class TalesDataSource extends TaleDatasourceModel {
   }
 
   @override
+  Future<List<DocumentSnapshot>> fetchSliderTales(
+      List<DocumentSnapshot> docsList) async {
+    try {
+      final query = await _talesCollection
+          .orderBy('title', descending: true)
+          .limit(6)
+          .get();
+      return query.docs;
+    } on SocketException {
+      throw const SocketException('No hay conexión a internet');
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
       int ageLimit, List<DocumentSnapshot> documentList) async {
     try {
-      final query = await _talesCollection
-          .where('ageLimit', isLessThanOrEqualTo: ageLimit)
-          .startAfterDocument(documentList[documentList.length - 1])
-          .limit(16)
-          .get();
-      documentList.addAll(query.docs);
-      return documentList;
+      final query = (documentList.isEmpty)
+          ? await _talesCollection
+              .where('ageLimit', isLessThanOrEqualTo: ageLimit)
+              .limit(16)
+              .get()
+          : await _talesCollection
+              .where('ageLimit', isLessThanOrEqualTo: ageLimit)
+              .startAfterDocument(documentList[documentList.length - 1])
+              .limit(16)
+              .get();
+      return List.from(documentList)..addAll(query.docs);
     } on SocketException {
       throw const SocketException('No hay conexión a internet');
     } catch (e) {
@@ -206,13 +242,17 @@ class TalesDataSource extends TaleDatasourceModel {
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> documentList) async {
     try {
-      final query = await _talesCollection
-          .orderBy('creationTime', descending: true)
-          .startAfterDocument(documentList[documentList.length - 1])
-          .limit(16)
-          .get();
-      documentList.addAll(query.docs);
-      return documentList;
+      final query = (documentList.isEmpty)
+          ? await _talesCollection
+              .orderBy('creationTime', descending: true)
+              .limit(16)
+              .get()
+          : await _talesCollection
+              .orderBy('creationTime', descending: true)
+              .startAfterDocument(documentList[documentList.length - 1])
+              .limit(16)
+              .get();
+      return List.from(documentList)..addAll(query.docs);
     } on SocketException {
       throw const SocketException('No hay conexión a internet');
     } catch (e) {
@@ -225,13 +265,17 @@ class TalesDataSource extends TaleDatasourceModel {
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
       Gender gender, List<DocumentSnapshot> documentList) async {
     try {
-      final query = await _talesCollection
-          .where('genders', arrayContains: gender.name)
-          .startAfterDocument(documentList[documentList.length - 1])
-          .limit(16)
-          .get();
-      documentList.addAll(query.docs);
-      return documentList;
+      final query = (documentList.isEmpty)
+          ? await _talesCollection
+              .where('genders', arrayContains: gender.name)
+              .limit(16)
+              .get()
+          : await _talesCollection
+              .where('genders', arrayContains: gender.name)
+              .startAfterDocument(documentList[documentList.length - 1])
+              .limit(16)
+              .get();
+      return List.from(documentList)..addAll(query.docs);
     } on SocketException {
       throw const SocketException('No hay conexión a internet');
     } catch (e) {

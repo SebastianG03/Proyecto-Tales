@@ -27,6 +27,7 @@ class RegisterViewState extends ConsumerState<RegisterView> {
     final router = ref.read(routerProvider);
 
     return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minHeight: MediaQuery.of(context).size.height - 50,
@@ -36,6 +37,8 @@ class RegisterViewState extends ConsumerState<RegisterView> {
           child: Form(
             key: formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 const UserRegisterForm(),
                 const SizedBox(

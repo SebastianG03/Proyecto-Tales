@@ -35,8 +35,7 @@ class _PasswordFormsModelState extends State<PasswordFormsModel> {
   Widget _passwordFormFieldModel(BuildContext context) {
     //, String Function(String?) validation,
     return Padding(
-      padding: const EdgeInsets.only(
-          top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: TextFormField(
         keyboardType: widget.textInputType,
         obscureText: widget.obscureText,

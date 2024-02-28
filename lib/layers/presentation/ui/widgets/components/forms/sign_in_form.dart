@@ -31,7 +31,7 @@ class SignInFormState extends ConsumerState<SignInForm> {
             ref.read(loginFormProvider.notifier).emailChanged(value.trim());
           },
         ),
-        const Spacer(),
+        const SizedBox(height: 10),
         PasswordFormsModel(
           textInputType: TextInputType.visiblePassword,
           label: "Contraseña",
@@ -55,10 +55,13 @@ class SignInFormState extends ConsumerState<SignInForm> {
           ),
           onPressed: () {
             ForgotPasswordAlert.showAlertDialog(
-                context, 'Reestablezca su contraseña', (email) {
-              ref.read(userDatasourceProvider).sendPasswordResetEmail(email);
-              ref.read(routerProvider).router.pop();
-            });
+              context,
+              'Reestablezca su contraseña',
+              (email) {
+                ref.read(userDatasourceProvider).sendPasswordResetEmail(email);
+                ref.read(routerProvider).router.pop();
+              },
+            );
           },
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class TaleHorizontalSlide extends StatelessWidget {
   final String imageUrl;
@@ -13,15 +14,38 @@ class TaleHorizontalSlide extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String accesibility = (premium) ? "Premium" : "Gratis";
+    final decoration = BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: const [
+        BoxShadow(
+          color: Colors.black45,
+          blurRadius: 10,
+          offset: Offset(0, 10),
+        )
+      ],
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        SizedBox(
-          height: 200,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image(fit: BoxFit.cover, image: AssetImage(imageUrl)),
+        DecoratedBox(
+          decoration: decoration,
+          child: SizedBox(
+            height: 200,
+            width: 200,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
           ),
         ),
         const SizedBox(
