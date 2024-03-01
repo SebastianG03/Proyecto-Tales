@@ -119,11 +119,7 @@ class TalesDataSource extends TaleDatasourceModel {
   Future<Tales> getTale(String id) async {
     try {
       final snapshot = await _talesCollection.doc(id).get();
-      if (snapshot.exists) {
-        return Tales.fromJson(snapshot.data() as Map<String, dynamic>);
-      } else {
-        throw Exception("No se encontró el cuento");
-      }
+      return Tales.fromJson(snapshot.data() as Map<String, dynamic>);
     } catch (e) {
       debugPrint(e.toString());
       rethrow;

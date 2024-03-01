@@ -8,6 +8,8 @@ class Preferences {
   final String _notificationPreferences = "allowNotifications";
   final String _userData = "userData";
 
+  Preferences();
+
   Future<bool> getAllowNotifications() async {
     final instance = await SharedPreferences.getInstance();
     return instance.getBool(_notificationPreferences) ?? true;

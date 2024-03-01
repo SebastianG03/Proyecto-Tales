@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/forms/sign_in_form.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/settings/settings_components.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/home/settings/settings_components.dart';
 
 import '../../../../aplication/providers/providers.dart';
 
@@ -53,7 +53,6 @@ class SignInViewState extends ConsumerState<SignInView> {
                                 .read(loginFormProvider.notifier)
                                 .onSubmit(context);
                             router.router.pop();
-                            ref.read(routerProvider).router.refresh();
                           },
                     child: const Padding(
                       padding:

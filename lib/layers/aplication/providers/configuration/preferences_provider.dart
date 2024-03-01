@@ -1,45 +1,47 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/config/preferences/preferences.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
 final preferencesProvider =
-    StateNotifierProvider<PreferencesNotifier, Preferences>(
+    StateNotifierProvider<PreferencesNotifier, PreferencesState>(
         (ref) => PreferencesNotifier());
 
-class PreferencesNotifier extends StateNotifier<Preferences> {
-  PreferencesNotifier() : super(Preferences());
+class PreferencesState extends ChangeNotifier {
+  final UserModel? user;
 
-  UserModel? user;
-  bool allowNotification = true;
+  final bool allowNotification;
+
+  PreferencesState({this.user, this.allowNotification = true});
+
+  PreferencesState copyWith({UserModel? user, bool? allowNotification}) {
+    return PreferencesState(
+        user: user ?? this.user,
+        allowNotification: allowNotification ?? this.allowNotification);
+  }
+
+  void notify() => notifyListeners();
+}
+
+class PreferencesNotifier extends StateNotifier<PreferencesState> {
+  final Preferences prefs = Preferences();
+  PreferencesNotifier() : super(PreferencesState());
 
   void setUserData(Map<String, dynamic> json) {
-    state.setUserData(json);
-  }
-
-  UserModel? getUserData() {
-    _getUserId();
-    return user;
-  }
-
-  void _getUserId() async {
-    user = await state.getUserData();
+    prefs.setUserData(json);
+    state = state.copyWith(user: UserModel.fromJson(json));
+    state.notify();
   }
 
   void clearUserData() async {
-    state.clearUserData();
+    prefs.clearUserData();
+    state = state.copyWith(user: null);
+    state.notify();
   }
 
   void setAllowNotifications(bool value) {
-    state.setAllowNotifications(value);
-    if (value != allowNotification) allowNotification = value;
-  }
-
-  bool getAllowNotifications() {
-    _getAllowNotification();
-    return allowNotification;
-  }
-
-  void _getAllowNotification() async {
-    allowNotification = await state.getAllowNotifications();
+    prefs.setAllowNotifications(value);
+    state = state.copyWith(allowNotification: value);
+    state.notify();
   }
 }

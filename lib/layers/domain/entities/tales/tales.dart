@@ -32,7 +32,7 @@ class Tales {
   Tales.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         title = json['title'],
-        abstract = json['abstract'],
+        abstract = json["abstract"],
         coverImage = null,
         ageLimit = json['ageLimit'],
         creationTime = DateTime.parse(json['creationTime']),

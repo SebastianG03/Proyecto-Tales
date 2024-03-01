@@ -116,8 +116,4 @@ class TalesNotifier extends StateNotifier<TalesState> {
         ageLimitTalesDocList: ageLimitTales,
         isLoading: false);
   }
-
-  Future<Tales> getTale(String id) async {
-    return await repository.getTale(id);
-  }
 }

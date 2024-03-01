@@ -21,17 +21,15 @@ class _CustomAppBarWithLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return PlatformAppBar(
       leading: PlatformIconButton(
         onPressed: () => context.pop(),
         cupertinoIcon: const Icon(CupertinoIcons.back),
         materialIcon: const Icon(Icons.arrow_back),
       ),
       title: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(width: 30),
-          Icon(Icons.auto_stories, color: Colors.black),
-          SizedBox(width: 5),
           Text(
             "App de Cuentos",
             style: TextStyle(
@@ -42,7 +40,6 @@ class _CustomAppBarWithLeading extends StatelessWidget {
           ),
         ],
       ),
-      centerTitle: true,
     );
   }
 }
@@ -54,12 +51,10 @@ class _CustomAppBarWithoutLeading extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
-    return AppBar(
+    return PlatformAppBar(
       title: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.auto_stories, color: Colors.black),
-          SizedBox(width: 5),
           Text(
             "App de Cuentos",
             style: TextStyle(
@@ -70,14 +65,13 @@ class _CustomAppBarWithoutLeading extends StatelessWidget {
           ),
         ],
       ),
-      actions: [
+      trailingActions: [
         IconButton(
           onPressed: () {},
           //showSearch(context: context, delegate: SearchStoryDelegate()),
           icon: Icon(Icons.search, color: colors.primary),
         ),
       ],
-      centerTitle: true,
     );
   }
 }

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/config/configurations.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/home/tales/tales_components.dart';
 
-import '../../../../../domain/entities/tales/tales_exports.dart';
+import '../../../../../../domain/entities/tales/tales_exports.dart';
 
 class TalesSlideshow extends ConsumerStatefulWidget {
   final List<Tales> tales;

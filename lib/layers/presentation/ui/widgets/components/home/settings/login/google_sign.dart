@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 
-import '../../../../../../domain/entities/user/users.dart';
+import '../../../../../../../domain/entities/user/users.dart';
 
 class GoogleSignInComponent extends ConsumerWidget {
   const GoogleSignInComponent({super.key});

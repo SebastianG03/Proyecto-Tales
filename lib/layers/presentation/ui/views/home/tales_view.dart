@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/tales/tales_components.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/home/tales/tales_components.dart';
 
 import '../../../../aplication/providers/providers.dart';
 import '../../../../domain/entities/user/users.dart';
@@ -23,7 +23,7 @@ class _TalesViewState extends ConsumerState<TalesView> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? user = ref.watch(preferencesProvider.notifier).getUserData();
+    UserModel? user = ref.watch(preferencesProvider).user;
 
     return CustomScrollView(
       slivers: [

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/settings/settings_components.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/home/settings/settings_components.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/inputs/inputs.dart';
 
 class SignInForm extends ConsumerStatefulWidget {

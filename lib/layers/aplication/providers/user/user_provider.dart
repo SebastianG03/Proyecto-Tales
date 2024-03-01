@@ -20,8 +20,8 @@ class SignInNotifier extends StateNotifier<UserRepository> {
     try {
       return await state.getUserById(userId);
     } catch (e) {
-      CustomAlertDialog.showAlertDialog(
-          context, 'Error', 'No se pudo obtener la información del usuario.');
+      CustomAlertDialog.showAlertDialog(context, 'Error',
+          'No se pudo obtener la información del usuario.', null, null);
       rethrow;
     }
   }
@@ -33,8 +33,8 @@ class SignInNotifier extends StateNotifier<UserRepository> {
     try {
       return state.signInWithEmailAndPassword(email, password);
     } catch (e) {
-      CustomAlertDialog.showAlertDialog(
-          context, 'Error al iniciar sesión', 'No se pudo iniciar sesión');
+      CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',
+          'No se pudo iniciar sesión', null, null);
       rethrow;
     }
   }
@@ -43,8 +43,8 @@ class SignInNotifier extends StateNotifier<UserRepository> {
     try {
       return state.googleSignIn();
     } catch (e) {
-      CustomAlertDialog.showAlertDialog(
-          context, 'Error al iniciar sesión', 'No se pudo iniciar sesión');
+      CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',
+          'No se pudo iniciar sesión', null, null);
       rethrow;
     }
   }

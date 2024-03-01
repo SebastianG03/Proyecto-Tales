@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:proyecto_pasantia/layers/domain/entities/tales/section.dart';
 
 /// Clase Options, representa las opciones que el usuario puede seleccionar dentro de cada
@@ -9,8 +11,8 @@ class Options {
   String id;
   String text;
   String _userSelection = "";
-  Section? _nextSection;
-  Section? _previousSection;
+  String _nextSectionId = "";
+  String _previousSectionId = "";
 
   Options({
     required this.id,
@@ -22,13 +24,8 @@ class Options {
         text = json['text'] {
     _userSelection = json['userSelection'];
 
-    if (json['nextSection'] != null) {
-      _nextSection = Section.fromJson(json['nextSection']);
-    }
-
-    if (json['previousSection'] != null) {
-      _previousSection = Section.fromJson(json['previousSection']);
-    }
+    _nextSectionId = json['nextSection'];
+    _previousSectionId = json['previousSection'];
   }
 
   Map<String, dynamic> toJson() {
@@ -36,9 +33,8 @@ class Options {
       'id': id,
       'text': text,
       'userSelection': _userSelection,
-      'nextSection': (_nextSection != null) ? _nextSection!.toJson() : null,
-      'previousSection':
-          (_previousSection != null) ? _previousSection!.toJson() : null,
+      'nextSection': _nextSectionId,
+      'previousSection': _previousSectionId,
     };
   }
 
@@ -48,10 +44,10 @@ class Options {
   set setUserSelection(String userSelection) => _userSelection = userSelection;
 
   ///Siguiente nodo al que apunta el árbol. Dos o más nodos pueden apuntar al mismo nodo.
-  Section get getNext => _nextSection!;
-  set setNext(Section next) => _nextSection = next;
+  String get getNext => _nextSectionId;
+  set setNext(String next) => _nextSectionId = next;
 
   ///Nodo anterior al que apunta el árbol. Dos o más nodos pueden apuntar al mismo nodo.
-  Section get getPrevious => _previousSection!;
-  set setPrevious(Section previous) => _previousSection = previous;
+  String get getPrevious => _previousSectionId;
+  set setPrevious(String previous) => _previousSectionId = previous;
 }

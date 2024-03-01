@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/forms/register_form.dart';
 
 import '../../../../aplication/providers/providers.dart';
-import '../../widgets/components/settings/settings_components.dart';
+import '../../widgets/components/home/settings/settings_components.dart';
 
 class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
@@ -60,7 +60,6 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                                 .read(preferencesProvider.notifier)
                                 .setUserData(user.toJson());
                             router.router.pop();
-                            ref.read(routerProvider).router.refresh();
                           },
                     child: const Padding(
                       padding:

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/user/user_tales_status.dart';
 
-enum UserTalesStatus { inProgress, completed, following }
 
 /// La clase UserTales permitirá realizar un seguimiento de la lectura del cuento
 /// de parte del usuario y almacenar el progreso del mismo. Además, de facilitar la creación

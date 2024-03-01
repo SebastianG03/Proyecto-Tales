@@ -19,8 +19,8 @@ class TaleHorizontalSlide extends StatelessWidget {
       boxShadow: const [
         BoxShadow(
           color: Colors.black45,
-          blurRadius: 10,
-          offset: Offset(0, 10),
+          blurRadius: 5,
+          offset: Offset(0, 0),
         )
       ],
     );

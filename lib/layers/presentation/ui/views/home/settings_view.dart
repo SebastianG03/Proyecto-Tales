@@ -3,15 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
 import '../../../../aplication/providers/providers.dart';
-import '../../widgets/components/settings/settings_components.dart';
+import '../../widgets/components/home/settings/settings_components.dart';
 
-class SettingsView extends ConsumerWidget {
+class SettingsView extends ConsumerStatefulWidget {
   const SettingsView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final prefs = ref.watch(preferencesProvider.notifier);
-    UserModel? user = prefs.getUserData();
+  ConsumerState<SettingsView> createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends ConsumerState<SettingsView> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    UserModel? user = ref.watch(preferencesProvider).user;
     bool logged = (user != null);
 
     return SafeArea(

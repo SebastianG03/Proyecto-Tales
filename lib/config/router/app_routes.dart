@@ -81,8 +81,7 @@ class AppRoutes {
                     path: _detailsTaleViewRoute,
                     name: taleDetails,
                     builder: (context, state) => TaleDetailsScreen(
-                      widget: TaleDetailsView(
-                          taleId: state.pathParameters['taleId']!),
+                      taleId: state.pathParameters['taleId']!,
                     ),
                   )
                 ],
