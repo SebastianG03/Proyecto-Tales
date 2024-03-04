@@ -51,14 +51,14 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                         ? null
                         : () async {
                             ref.read(registerFormProvider.notifier).onSubmit();
-                            final user =
-                                await signInNotifier.signInWithEmailAndPassword(
-                                    context: context,
-                                    email: loginForm.email.value,
-                                    password: loginForm.password.value);
+                            signInNotifier.signInWithEmailAndPassword(
+                                context: context,
+                                email: loginForm.email.value,
+                                password: loginForm.password.value);
+                            final user = ref.read(preferencesProvider).user;
                             ref
                                 .read(preferencesProvider.notifier)
-                                .setUserData(user.toJson());
+                                .setUserData(user!.toJson());
                             router.router.pop();
                           },
                     child: const Padding(

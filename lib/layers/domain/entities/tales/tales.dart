@@ -17,6 +17,7 @@ class Tales {
   final String abstract;
   final File? coverImage;
   final DateTime creationTime;
+  final bool premium;
   String _coverUrl = "";
   List<Chapter> _chapters = [];
 
@@ -26,6 +27,7 @@ class Tales {
     required this.coverImage,
     required this.ageLimit,
     required this.genders,
+    required this.premium,
   })  : id = const Uuid().v4(),
         creationTime = DateTime.now();
 
@@ -35,6 +37,7 @@ class Tales {
         abstract = json["abstract"],
         coverImage = null,
         ageLimit = json['ageLimit'],
+        premium = json['premium'],
         creationTime = DateTime.parse(json['creationTime']),
         genders = [] {
     _coverUrl = json['coverUrl'];
@@ -51,6 +54,7 @@ class Tales {
       'abstract': abstract,
       'coverUrl': _coverUrl,
       'ageLimit': ageLimit,
+      'premium': premium,
       'creationTime': dateFormat.format(creationTime),
       'genders': genders.map((e) => e.name).toList(),
       'chapters': _chapters.map((e) => e.toJson()).toList(),

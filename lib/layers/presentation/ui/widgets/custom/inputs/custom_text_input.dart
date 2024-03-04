@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class TextFormsModel extends StatelessWidget {
   final TextInputType textInputType;
@@ -22,18 +23,24 @@ class TextFormsModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: TextFormField(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: PlatformTextFormField(
         keyboardType: textInputType,
         controller: controller,
         onChanged: onChanged,
         validator: validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: labelText,
-          errorMaxLines: 2,
-          errorText: errorMessage,
-          icon: Icon(icon),
+        cupertino: (context, platform) => CupertinoTextFormFieldData(
+          placeholder: labelText,
+          prefix: Icon(icon),
+        ),
+        material: (context, platform) => MaterialTextFormFieldData(
+          decoration: InputDecoration(
+            labelText: labelText,
+            errorMaxLines: 2,
+            errorText: errorMessage,
+            icon: Icon(icon),
+          ),
         ),
         style: _textStyle(),
       ),

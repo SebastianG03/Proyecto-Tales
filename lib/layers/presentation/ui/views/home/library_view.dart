@@ -9,15 +9,22 @@ class LibraryView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    UserModel? user = ref.watch(preferencesProvider).user;
+    final userStream = ref.watch(authUserProvider);
 
-    return (user == null)
-        ? LogOutLibrary(
-            key: key,
-          )
-        : LoggedLibrary(
-            user: user,
-          );
+    return userStream.when(data: (user) {
+      if (user != null) {
+      final userModel = ref.watch(preferencesProvider).user;
+        return LoggedLibrary(user: userModel!);
+      } else {
+        return const LogOutLibrary();
+      }
+    }, error: (error, stack) {
+      return const Text('Error al cargar el usuario');
+    }, loading: () {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    });
   }
 }
 

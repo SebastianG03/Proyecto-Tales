@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/views/tales/tales_details_view.dart';
 
 import '../../../../aplication/providers/providers.dart';
-import '../../../../domain/entities/tales/tales_exports.dart';
 
 class TaleDetailsScreen extends ConsumerWidget {
   final String taleId;

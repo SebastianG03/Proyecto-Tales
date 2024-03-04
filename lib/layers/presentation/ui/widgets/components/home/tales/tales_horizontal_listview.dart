@@ -64,10 +64,8 @@ class _Titles extends ConsumerWidget {
         Text(tag, style: const TextStyle(fontSize: 16)),
         const Spacer(),
         IconButton(
-          onPressed: () => ref
-              .read(routerProvider)
-              .router
-              .goNamed(AppRoutes.talesGridView, pathParameters: {'tag': tag}),
+          onPressed: () =>
+              ref.read(routerProvider).router.goNamed(AppRoutes.talesGridView),
           icon: const Icon(Icons.arrow_forward_ios),
           iconSize: 20,
         )

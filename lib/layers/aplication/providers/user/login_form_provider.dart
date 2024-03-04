@@ -1,71 +1,33 @@
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/inputs/inputs.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/states/states.dart';
 
 final loginFormProvider =
     StateNotifierProvider<LoginFormNotifier, LoginFormState>(
   (ref) {
     final loginCallback =
         ref.read(userSignInProvider.notifier).signInWithEmailAndPassword;
+    final notifier = ref.watch(userSignInProvider);
     final prefs = ref.watch(preferencesProvider.notifier).setUserData;
-    return LoginFormNotifier(loginCallback, prefs);
+    return LoginFormNotifier(loginCallback, prefs, notifier);
   },
 );
 
-class LoginFormState {
-  final bool isPosting;
-  final bool isFormPosted;
-  final bool isValid;
-  final Email email;
-  final Password password;
-
-  LoginFormState({
-    this.isPosting = false,
-    this.isFormPosted = false,
-    this.isValid = false,
-    this.email = const Email.pure(),
-    this.password = const Password.pure(),
-  });
-
-  LoginFormState copyWith({
-    bool? isPosting,
-    bool? isFormPosted,
-    bool? isValid,
-    Email? email,
-    Password? password,
-  }) {
-    return LoginFormState(
-      isPosting: isPosting ?? this.isPosting,
-      isFormPosted: isFormPosted ?? this.isFormPosted,
-      isValid: isValid ?? this.isValid,
-      email: email ?? this.email,
-      password: password ?? this.password,
-    );
-  }
-
-  @override
-  String toString() {
-    return '''LoginFormState{
-      isPosting: $isPosting,
-      isFormPosted: $isFormPosted,
-      isValid: $isValid,
-      email: $email,
-       password: $password}''';
-  }
-}
-
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
-  final Future<UserModel> Function(
+  final void Function(
       {required BuildContext context,
       required String email,
       required String password}) loginCallback;
   void Function(Map<String, dynamic> json) prefs;
+  final UserState notifier;
   LoginFormNotifier(
     this.loginCallback,
     this.prefs,
+    this.notifier,
   ) : super(LoginFormState());
 
   void emailChanged(String value) {
@@ -89,11 +51,12 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     if (!state.isValid) return;
 
     state = state.copyWith(isPosting: true);
-    UserModel user = await loginCallback(
+    loginCallback(
         context: context,
         email: state.email.value,
         password: state.password.value);
-    prefs(user.toJson());
+    final user = notifier.user;
+    prefs(user!.toJson());
     state = state.copyWith(isPosting: false);
   }
 

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/alert_dialog.dart';
+
+import '../../../custom/custom_components.dart';
 
 class LoggedSettingsItems extends ConsumerWidget {
   final UserModel? user;
@@ -11,39 +12,36 @@ class LoggedSettingsItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    List<String> items;
-    List<IconData> icons;
-    List<Function> functions;
-
-    items = ['Modificar Cuenta', 'Ajustes', 'Cerrar Sesión'];
-    icons = [LineIcons.userEdit, LineIcons.cog, LineIcons.alternateSignOut];
-    functions = [modificarCuenta, ajustesAplicacion, cerrarSesion];
-
-    return SliverFixedExtentList(
-      itemExtent: 50,
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          return ListTile(
-            leading: Icon(icons[index]),
-            title: Text(items[index]),
-            onTap: () => functions[index](ref, context),
-          );
-        },
-        childCount: items.length,
-      ),
+    return CustomScrollView(
+      slivers: [
+        SliverList.list(
+          children: [
+            CustomTile(
+              title: 'Información del Perfil',
+              icon: LineIcons.userCircle,
+              action: () {},
+            ),
+            const Divider(
+              thickness: 1,
+              indent: 0,
+            ),
+            CustomTile(
+              title: 'Cerrar Sesión',
+              icon: Icons.logout_outlined,
+              fontWeight: FontWeight.w500,
+              action: () => cerrarSesion(ref, context),
+            ),
+          ],
+        )
+      ],
     );
   }
 
-  void modificarCuenta(WidgetRef ref, BuildContext context) {}
-  void ajustesAplicacion(WidgetRef ref, BuildContext context) {}
   void cerrarSesion(WidgetRef ref, BuildContext context) async {
     final bool isGoogleSigned =
         await ref.read(userDatasourceProvider).isGoogleSigned();
-    ref.watch(userSignInProvider.notifier).signOut(isGoogleSigned);
+    ref.read(userSignInProvider.notifier).signOut(isGoogleSigned);
     ref.read(preferencesProvider.notifier).clearUserData();
-    CustomAlertDialog.showAlertDialog(
-        context, 'Cerrar Sesión', '¿Seguro desea cerrar sesión?', () {
-      ref.read(preferencesProvider.notifier).clearUserData();
-    }, null);
+    CustomSnackbar.showSnackBar(context, 'Su sesión ha finalizado.');
   }
 }

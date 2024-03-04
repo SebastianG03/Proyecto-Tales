@@ -14,7 +14,8 @@ class ChildScreen extends StatelessWidget {
             child: CustomAppBar(leading: true),
           ),
           resizeToAvoidBottomInset: false,
-          body: widget),
+          body: widget,
+          ),
     );
   }
 }

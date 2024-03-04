@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:proyecto_pasantia/layers/presentation/ui/views/home/home_views.dart';
-
-import '../../layers/presentation/ui/screens/home/screens.dart';
-import '../../layers/presentation/ui/views/login/login_views.dart';
-import '../../layers/presentation/ui/views/tales/tales_views.dart';
+import 'package:proyecto_pasantia/layers/presentation/ui/views/views.dart';
+import '../../layers/presentation/ui/screens/screens.dart';
 
 class AppRoutes {
   AppRoutes();
@@ -23,18 +20,26 @@ class AppRoutes {
   static const String settingsView = 'settings';
 
   //Tales Sub Routes paths
-  static const String _talesGridViewRoute = 'tales_grid_view/:tag';
+  static const String _talesGridViewRoute = 'view_tales';
   static const String _detailsTaleViewRoute = 'detail/:taleId';
+  static const String _seachTaleViewRoute = 'search';
 
   //Tales Sub Routes names
   static const String talesGridView = 'all_tales_by_tag';
   static const String taleDetails = 'tale_details';
+  static const String searchTaleView = 'search_tale';
 
   //Settings Sub Routes paths
+  static const String _accountRoute = 'account';
+
+  //Settings Sub Routes names
+  static const String accountView = 'account';
+
+  //Account Sub Routes paths
   static const String _signInRoute = 'sign_in';
   static const String _registerRoute = 'register';
 
-  //Settings Sub Routes names
+  //Account Sub Routes names
   static const String signInView = 'sign_in';
   static const String registerView = 'register';
 
@@ -52,7 +57,7 @@ class AppRoutes {
     navigatorKey: _rootKey,
     routes: <RouteBase>[
       StatefulShellRoute.indexedStack(
-          //Main wrapper
+          //Main wrapper,
           builder: (context, state, navigationShell) => HomeScreen(
                 navigationShell: navigationShell,
               ),
@@ -70,10 +75,16 @@ class AppRoutes {
                     parentNavigatorKey: _rootKey,
                     path: _talesGridViewRoute,
                     name: talesGridView,
-                    builder: (context, state) => ChildScreen(
-                      widget: TalesGridView(
-                        tag: state.pathParameters['tag']!,
-                      ),
+                    builder: (context, state) => const TalesGridScreen(
+                      isSearching: false,
+                    ),
+                  ),
+                  GoRoute(
+                    parentNavigatorKey: _rootKey,
+                    path: _seachTaleViewRoute,
+                    name: searchTaleView,
+                    builder: (context, state) => const TalesGridScreen(
+                      isSearching: true,
                     ),
                   ),
                   GoRoute(
@@ -106,21 +117,30 @@ class AppRoutes {
                 builder: (context, state) => const SettingsView(),
                 routes: [
                   GoRoute(
-                    path: _signInRoute,
-                    name: signInView,
-                    parentNavigatorKey: _rootKey,
-                    builder: (context, state) =>
-                        const ChildScreen(widget: SignInView()),
-                    routes: const [],
-                  ),
-                  GoRoute(
-                    path: _registerRoute,
-                    name: registerView,
-                    parentNavigatorKey: _rootKey,
-                    builder: (context, state) =>
-                        const ChildScreen(widget: RegisterView()),
-                    routes: const [],
-                  ),
+                      path: _accountRoute,
+                      name: accountView,
+                      parentNavigatorKey: _rootKey,
+                      builder: (context, state) => const ChildScreen(
+                            widget: AccountView(),
+                          ),
+                      routes: [
+                        GoRoute(
+                          path: _signInRoute,
+                          name: signInView,
+                          parentNavigatorKey: _rootKey,
+                          builder: (context, state) =>
+                              const ChildScreen(widget: SignInView()),
+                          routes: const [],
+                        ),
+                        GoRoute(
+                          path: _registerRoute,
+                          name: registerView,
+                          parentNavigatorKey: _rootKey,
+                          builder: (context, state) =>
+                              const ChildScreen(widget: RegisterView()),
+                          routes: const [],
+                        ),
+                      ]),
                 ],
               )
             ])

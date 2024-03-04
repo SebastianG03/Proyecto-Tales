@@ -18,7 +18,7 @@ class DetailsGenders extends StatelessWidget {
           (gender) => Container(
             margin: const EdgeInsets.only(right: 10),
             child: Chip(
-              label: Text(GenderTalesHelper.getGenderName(gender)),
+              label: Text(gender.name),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),

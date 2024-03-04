@@ -1,11 +1,12 @@
 // ignore_for_file: unnecessary_null_comparison
 
-import 'package:proyecto_pasantia/layers/domain/entities/tales/section.dart';
 
 /// Clase Options, representa las opciones que el usuario puede seleccionar dentro de cada
 /// sección del cuento. Además sirve de unión entre los nodos del árbol.
 /// La id será un número algabético que representará la opción. Si es la primera opción será "A",
 /// la segunda "B" y así sucesivamente.
+library;
+
 
 class Options {
   String id;

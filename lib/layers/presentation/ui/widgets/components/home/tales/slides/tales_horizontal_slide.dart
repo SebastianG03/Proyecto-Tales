@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TaleHorizontalSlide extends StatelessWidget {
   final String imageUrl;
@@ -19,7 +18,7 @@ class TaleHorizontalSlide extends StatelessWidget {
       boxShadow: const [
         BoxShadow(
           color: Colors.black45,
-          blurRadius: 5,
+          blurRadius: 3,
           offset: Offset(0, 0),
         )
       ],

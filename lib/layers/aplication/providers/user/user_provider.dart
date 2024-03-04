@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
@@ -9,16 +10,35 @@ final userDatasourceProvider = Provider<UserRepository>((ref) {
 });
 
 final userSignInProvider =
-    StateNotifierProvider<SignInNotifier, UserRepository>(
-        (ref) => SignInNotifier());
+    StateNotifierProvider<SignInNotifier, UserState>((ref) => SignInNotifier());
 
-class SignInNotifier extends StateNotifier<UserRepository> {
-  SignInNotifier() : super(UserRepository());
+final authUserProvider = StreamProvider<User?>((ref) =>
+    ref.watch(userSignInProvider.notifier).repository.userAuthChanges());
 
-  Future<UserModel> getUserById(
+class UserState extends ChangeNotifier {
+  final UserModel? user;
+  final bool isGoogleSigned;
+  UserState({this.user, this.isGoogleSigned = false});
+
+  copyWith({UserModel? user, bool? isGoogleSigned}) {
+    return UserState(
+      user: user ?? this.user,
+      isGoogleSigned: isGoogleSigned ?? this.isGoogleSigned,
+    );
+  }
+}
+
+class SignInNotifier extends StateNotifier<UserState> {
+  final UserRepository repository;
+  SignInNotifier()
+      : repository = UserRepository(),
+        super(UserState());
+
+  void getUserById(
       {required BuildContext context, required String userId}) async {
     try {
-      return await state.getUserById(userId);
+      final user = await repository.getUserById(userId);
+      state = state.copyWith(user: user);
     } catch (e) {
       CustomAlertDialog.showAlertDialog(context, 'Error',
           'No se pudo obtener la información del usuario.', null, null);
@@ -26,12 +46,13 @@ class SignInNotifier extends StateNotifier<UserRepository> {
     }
   }
 
-  Future<UserModel> signInWithEmailAndPassword(
+  void signInWithEmailAndPassword(
       {required BuildContext context,
       required String email,
       required String password}) async {
     try {
-      return state.signInWithEmailAndPassword(email, password);
+      final user = await repository.signInWithEmailAndPassword(email, password);
+      state = state.copyWith(user: user);
     } catch (e) {
       CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',
           'No se pudo iniciar sesión', null, null);
@@ -39,9 +60,10 @@ class SignInNotifier extends StateNotifier<UserRepository> {
     }
   }
 
-  Future<UserModel> signInWithGoogle({required BuildContext context}) async {
+  void signInWithGoogle({required BuildContext context}) async {
     try {
-      return state.googleSignIn();
+      final user = await repository.googleSignIn();
+      state = state.copyWith(user: user, isGoogleSigned: true);
     } catch (e) {
       CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',
           'No se pudo iniciar sesión', null, null);
@@ -50,6 +72,7 @@ class SignInNotifier extends StateNotifier<UserRepository> {
   }
 
   void signOut(bool isGoogleSigned) {
-    state.signOut(isGoogleSigned);
+    repository.signOut(isGoogleSigned);
+    state = state.copyWith(user: null, isGoogleSigned: false);
   }
 }

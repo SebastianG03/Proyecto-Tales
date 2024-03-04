@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:line_icons/line_icons.dart';
 
 class PasswordFormsModel extends StatefulWidget {
@@ -35,29 +36,40 @@ class _PasswordFormsModelState extends State<PasswordFormsModel> {
   Widget _passwordFormFieldModel(BuildContext context) {
     //, String Function(String?) validation,
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: TextFormField(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: PlatformTextFormField(
         keyboardType: widget.textInputType,
         obscureText: widget.obscureText,
         onChanged: widget.onChanged,
         validator: widget.validator,
         controller: widget.controller,
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          errorMaxLines: 2,
-          errorText: widget.erroMessage,
-          icon: const Icon(LineIcons.lock),
-          suffix: GestureDetector(
-            onTap: widget.tap,
-            child: Icon(
-              widget.obscureText ? LineIcons.eye : LineIcons.eyeSlash,
-              size: 25.0,
-              color: Colors.black,
+        cupertino: (context, platform) => CupertinoTextFormFieldData(
+          placeholder: widget.label,
+          prefix: const Icon(LineIcons.lock),
+          expands: false,
+          textCapitalization: TextCapitalization.none,
+        ),
+        material: (context, platform) => MaterialTextFormFieldData(
+          expands: false,
+          textInputAction: TextInputAction.done,
+          textCapitalization: TextCapitalization.none,
+          decoration: InputDecoration(
+            labelText: widget.label,
+            errorMaxLines: 2,
+            errorText: widget.erroMessage,
+            icon: const Icon(LineIcons.lock),
+            suffix: GestureDetector(
+              onTap: widget.tap,
+              child: Icon(
+                widget.obscureText ? LineIcons.eye : LineIcons.eyeSlash,
+                size: 25.0,
+                color: Colors.black,
+              ),
             ),
           ),
+          style: _textStyle(),
         ),
-        style: _textStyle(),
       ),
     );
   }

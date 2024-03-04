@@ -3,6 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/config/preferences/preferences.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 
+///Administra las preferencias utilizando un [StateNotifier] y un [StateProvider].
+///El [StateNotifier] es el encargado de manejar el estado y el [StateProvider] es
+///el encargado de proveer el estado y de modificarlo.
+///Ademas, el [StateNotifier] aplica un [ChangeNotifier] para notificar a la aplicación
+///cuando su estado cambia.
 final preferencesProvider =
     StateNotifierProvider<PreferencesNotifier, PreferencesState>(
         (ref) => PreferencesNotifier());
@@ -33,6 +38,12 @@ class PreferencesNotifier extends StateNotifier<PreferencesState> {
     state.notify();
   }
 
+  void getUserData() async {
+    final user = await prefs.getUserData();
+    state = state.copyWith(user: user);
+    state.notify();
+  }
+
   void clearUserData() async {
     prefs.clearUserData();
     state = state.copyWith(user: null);
@@ -42,6 +53,12 @@ class PreferencesNotifier extends StateNotifier<PreferencesState> {
   void setAllowNotifications(bool value) {
     prefs.setAllowNotifications(value);
     state = state.copyWith(allowNotification: value);
+    state.notify();
+  }
+
+  void getAllowNotifications() async {
+    final allow = await prefs.getAllowNotifications();
+    state = state.copyWith(allowNotification: allow);
     state.notify();
   }
 }

@@ -90,4 +90,9 @@ class AuthDatasource implements AuthDatasourceModel {
       return false;
     }
   }
+
+  @override
+  Stream<User?> userAuthChanges() {
+    return _auth.userChanges();
+  }
 }

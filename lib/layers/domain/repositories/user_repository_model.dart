@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 // import 'package:proyecto_pasantia/layers/domain/entities/user/user_tales.dart';
 
@@ -18,4 +19,5 @@ abstract class UserRepositoryModel {
   Future<void> changePassword(String password);
   Future<void> changeEmail(String email);
   Future<bool> isGoogleSigned();
+  Stream<User?> userAuthChanges();
 }

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
-import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/states/states.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/inputs/inputs.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/repositories/user_repository.dart';
 
@@ -10,56 +10,6 @@ final registerFormProvider =
   final register = ref.read(userDatasourceProvider);
   return RegisterFormNotifier(register);
 });
-
-class RegisterFormState {
-  final bool isPosting;
-  final bool isFormPosted;
-  final bool isValid;
-  final Email email;
-  final Password password;
-  final Username username;
-  final Age age;
-
-  RegisterFormState({
-    this.isPosting = false,
-    this.isFormPosted = false,
-    this.isValid = false,
-    this.email = const Email.pure(),
-    this.password = const Password.pure(),
-    this.username = const Username.pure(),
-    this.age = const Age.pure(),
-  });
-
-  RegisterFormState copyWith({
-    bool? isPosting,
-    bool? isFormPosted,
-    bool? isValid,
-    Email? email,
-    Password? password,
-    Username? username,
-    Age? age,
-  }) {
-    return RegisterFormState(
-      isPosting: isPosting ?? this.isPosting,
-      isFormPosted: isFormPosted ?? this.isFormPosted,
-      isValid: isValid ?? this.isValid,
-      email: email ?? this.email,
-      password: password ?? this.password,
-      username: username ?? this.username,
-      age: age ?? this.age,
-    );
-  }
-
-  @override
-  String toString() {
-    return '''RegisterFormState{
-      isPosting: $isPosting,
-      isFormPosted: $isFormPosted,
-      isValid: $isValid,
-      email: $email,
-       password: $password}''';
-  }
-}
 
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
   final UserRepository register;

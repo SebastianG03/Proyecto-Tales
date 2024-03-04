@@ -21,10 +21,13 @@ class GoogleSignInComponent extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () async {
-              final UserModel user = await ref
+              ref
                   .read(userSignInProvider.notifier)
                   .signInWithGoogle(context: context);
-              ref.read(preferencesProvider.notifier).setUserData(user.toJson());
+              final user = ref.read(preferencesProvider).user;
+              ref
+                  .read(preferencesProvider.notifier)
+                  .setUserData(user!.toJson());
               ref.read(routerProvider).router.pop();
               ref.read(routerProvider).router.refresh();
             },

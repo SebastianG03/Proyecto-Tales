@@ -6,6 +6,11 @@ import '../../../domain/entities/tales/tales_exports.dart';
 
 final talesRepositoryProvider = Provider((ref) => TalesRepository());
 
+/// **talesNotifierProvider** es un [StateNotifierProvider] que se encarga de
+///  manejar el estado de la lista de cuentos.
+/// Este estado se utilizará en la pantalla de inicio para mostrar y desplegar
+/// los cuentos correspondientes a cada categoría. El [TalesNotifier] cuenta con los
+/// métodos respectivos para cargar los cuentos iniciales e inicializar las consultas.
 final talesNotifierProvider = StateNotifierProvider<TalesNotifier, TalesState>(
   (ref) => TalesNotifier(ref.watch(talesRepositoryProvider)),
 );

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/domain/repositories/user_repository_model.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/datasources/datasources.dart';
@@ -82,5 +83,10 @@ class UserRepository extends UserRepositoryModel {
   @override
   Future<bool> isGoogleSigned() {
     return authDatasource.isGoogleSigned();
+  }
+
+  @override
+  Stream<User?> userAuthChanges() {
+    return authDatasource.userAuthChanges();
   }
 }
