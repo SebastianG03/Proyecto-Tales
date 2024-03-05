@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/config/configurations.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/user/users.dart';
 
@@ -19,7 +20,10 @@ class LoggedSettingsItems extends ConsumerWidget {
             CustomTile(
               title: 'Información del Perfil',
               icon: LineIcons.userCircle,
-              action: () {},
+              action: () => ref
+                  .read(routerProvider)
+                  .router
+                  .pushNamed(AppRoutes.updateAccountView),
             ),
             const Divider(
               thickness: 1,
@@ -42,6 +46,8 @@ class LoggedSettingsItems extends ConsumerWidget {
         await ref.read(userDatasourceProvider).isGoogleSigned();
     ref.read(userSignInProvider.notifier).signOut(isGoogleSigned);
     ref.read(preferencesProvider.notifier).clearUserData();
-    CustomSnackbar.showSnackBar(context, 'Su sesión ha finalizado.');
+    if (context.mounted) {
+      CustomSnackbar.showSnackBar(context, 'Su sesión ha finalizado.');
+    }
   }
 }

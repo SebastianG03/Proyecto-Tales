@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:proyecto_pasantia/config/configurations.dart';
 
-class DetailsActions extends StatelessWidget {
-  const DetailsActions({super.key});
+import '../../../../../../aplication/providers/providers.dart';
+
+class DetailsActions extends ConsumerWidget {
+  final String taleId;
+  const DetailsActions({super.key, required this.taleId});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final buttonStyle = ButtonStyle(
       backgroundColor: MaterialStateProperty.all(Colors.blue.shade100),
       foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
@@ -13,7 +18,9 @@ class DetailsActions extends StatelessWidget {
     return Row(
       children: [
         TextButton.icon(
-          onPressed: () {},
+          onPressed: () => ref.read(routerProvider).router.pushNamed(
+              AppRoutes.readerView,
+              pathParameters: {'taleId': taleId}),
           icon: const Icon(LineIcons.play),
           style: buttonStyle,
           label: const Text('Iniciar'),

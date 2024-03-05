@@ -7,13 +7,14 @@ import 'package:proyecto_pasantia/layers/presentation/ui/widgets/custom/custom_c
 
 class GridAppBar extends ConsumerWidget {
   final bool isSearching;
-  const GridAppBar({super.key, required this.isSearching});
+  final bool isPinned;
+  const GridAppBar({super.key, required this.isSearching, this.isPinned = true});
 
   @override
   Widget build(BuildContext context, ref) {
     return SliverAppBar(
       elevation: 0,
-      pinned: true,
+      pinned: isPinned,
       stretch: true,
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(10),
@@ -24,9 +25,12 @@ class GridAppBar extends ConsumerWidget {
         materialIcon: const Icon(Icons.arrow_back),
         onPressed: () => context.pop(),
       ),
-      flexibleSpace: const Padding(
-          padding: EdgeInsets.only(left: 50, right: 10, bottom: 17, top: 10),
-          child: CustomSearchBar()),
+      flexibleSpace: Visibility(
+        visible: isSearching,
+        child: const Padding(
+            padding: EdgeInsets.only(left: 50, right: 10, bottom: 17, top: 10),
+            child: CustomSearchBar()),
+      ),
     );
   }
 }

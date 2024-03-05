@@ -42,7 +42,7 @@ class _HorizontalTalesListViewState
                 child: TaleHorizontalSlide(
                     imageUrl: widget.tales[index].getCoverUrl,
                     title: widget.tales[index].title,
-                    premium: false),
+                    premium: widget.tales[index].premium),
               ),
             ),
           )

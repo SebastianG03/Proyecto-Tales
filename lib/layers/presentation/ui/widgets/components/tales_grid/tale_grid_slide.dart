@@ -18,11 +18,13 @@ class TaleGridSlide extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 50,
-          child: Image.network(imageUrl, fit: BoxFit.cover),
-        ),
-        const SizedBox(
-          height: 5,
+          height: 120,
+          width: double.infinity,
+          child: Image.network(
+            imageUrl,
+            fit: BoxFit.scaleDown,
+            scale: 1.0,
+          ),
         ),
         Text(title,
             style: const TextStyle(

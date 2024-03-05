@@ -9,3 +9,4 @@ export 'settings/account_view.dart';
 export 'tales/tales_details_view.dart';
 export 'tales/tales_grid_view.dart';
 export 'tales/tales_views.dart';
+export 'settings/update_user.dart';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/search/enums/accesibility_enum.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/search/enums/age_limit_enum.dart';
 import 'package:proyecto_pasantia/layers/presentation/ui/widgets/components/home/tales/tales_components.dart';
 
 import '../../../../aplication/providers/providers.dart';
@@ -18,12 +20,28 @@ class _TalesViewState extends ConsumerState<TalesView> {
   @override
   void initState() {
     super.initState();
-    ref.read(talesNotifierProvider.notifier).initTales();
+    ref.read(sliderTalesProvider.notifier).loadTalesSliderTales();
+    ref
+        .read(premiumTalesProvider.notifier)
+        .loadTalesByAccesibility(Accesibility.premium);
+    ref
+        .read(freeTalesProvider.notifier)
+        .loadTalesByAccesibility(Accesibility.free);
+    ref.read(kidsTalesProvider.notifier).loadTalesByAgeLimit(AgeLimit.forKids);
+    ref
+        .read(teensTalesProvider.notifier)
+        .loadTalesByAgeLimit(AgeLimit.forTeens);
   }
 
   @override
   Widget build(BuildContext context) {
     UserModel? user = ref.watch(preferencesProvider).user;
+
+    final slideTales = ref.watch(sliderTalesProvider);
+    final premiumTales = ref.watch(premiumTalesProvider);
+    final freeTales = ref.watch(freeTalesProvider);
+    final kidsTales = ref.watch(kidsTalesProvider);
+    final teensTales = ref.watch(teensTalesProvider);
 
     return CustomScrollView(
       slivers: [
@@ -39,34 +57,26 @@ class _TalesViewState extends ConsumerState<TalesView> {
             return Column(
               children: <Widget>[
                 TalesSlideshow(
-                  tales: ref.watch(talesNotifierProvider).sliderTales,
+                  tales: slideTales,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 HorizontalTalesListView(
-                  tales: ref
-                      .watch(talesNotifierProvider)
-                      .recentTales
-                      .take(8)
-                      .toList(),
-                  tag: 'Nuevos',
+                  tales: kidsTales.take(10).toList(),
+                  tag: AgeLimit.forKids.name,
                 ),
                 HorizontalTalesListView(
-                  tales: ref
-                      .watch(talesNotifierProvider)
-                      .ageLimitTales
-                      .take(8)
-                      .toList(),
-                  tag: 'Para menores de 15',
+                  tales: teensTales.take(10).toList(),
+                  tag: AgeLimit.forTeens.name,
                 ),
                 HorizontalTalesListView(
-                  tales: ref
-                      .watch(talesNotifierProvider)
-                      .recentTales
-                      .take(8)
-                      .toList(),
-                  tag: 'Varios',
+                  tales: premiumTales.take(10).toList(),
+                  tag: Accesibility.premium.name,
+                ),
+                HorizontalTalesListView(
+                  tales: freeTales.take(10).toList(),
+                  tag: Accesibility.free.name,
                 )
               ],
             );

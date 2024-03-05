@@ -9,12 +9,15 @@ class TaleDetailsView extends ConsumerStatefulWidget {
   final String title;
   final String abstract;
   final List<Gender> tags;
-  const TaleDetailsView(
-      {super.key,
-      required this.imageUrl,
-      required this.title,
-      required this.abstract,
-      required this.tags});
+  final String taleId;
+  const TaleDetailsView({
+    super.key,
+    required this.imageUrl,
+    required this.title,
+    required this.abstract,
+    required this.tags,
+    required this.taleId,
+  });
 
   @override
   ConsumerState<TaleDetailsView> createState() => _TaleDetailsViewState();
@@ -31,7 +34,7 @@ class _TaleDetailsViewState extends ConsumerState<TaleDetailsView> {
             delegate: SliverChildBuilderDelegate(
           childCount: 1,
           (context, index) => TaleDescription(
-              abstract: widget.abstract, taleGenders: widget.tags),
+              abstract: widget.abstract, taleGenders: widget.tags, taleId: widget.taleId,),
         ))
       ],
     );

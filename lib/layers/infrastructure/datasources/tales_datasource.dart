@@ -5,14 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../domain/datasources/tale_datasource_model.dart';
+import '../../domain/entities/app/search/enums/enums.dart';
 import '../../domain/entities/tales/tales_exports.dart';
-import 'package:firebase_storage/firebase_storage.dart' as FireStorage;
+import 'package:firebase_storage/firebase_storage.dart' as fire_storage;
 
 class TalesDataSource extends TaleDatasourceModel {
   final CollectionReference _talesCollection =
       FirebaseFirestore.instance.collection('tales');
-  final FireStorage.FirebaseStorage _storage =
-      FireStorage.FirebaseStorage.instance;
+  final fire_storage.FirebaseStorage _storage =
+      fire_storage.FirebaseStorage.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final String _rootPath = 'tales';
@@ -29,10 +30,10 @@ class TalesDataSource extends TaleDatasourceModel {
 
   @override
   void uploadTale(Tales tale) async {
-    final cover = await File(tale.coverImage!.path).create();
-    final coverUrl = await uploadTaleCover(cover, tale.id, false);
-    tale.setCoverUrl = coverUrl;
-    tale = _recursiveUploadSectionFiles(tale.id, tale, false);
+    // final cover = await tale.coverImage!.create();
+    // final coverUrl = await uploadTaleCover(cover, tale.id, false);
+    // tale.setCoverUrl = coverUrl;
+    // tale = _recursiveUploadSectionFiles(tale.id, tale, false);
     await _talesCollection.doc(tale.id).set(tale.toJson());
   }
 
@@ -130,8 +131,51 @@ class TalesDataSource extends TaleDatasourceModel {
   Future<List<Tales>> getTaleByTitle(String title) async {
     try {
       final query =
-          await _talesCollection.where('title', isEqualTo: title).get();
+          await _talesCollection.where('title', isEqualTo: title).limit(16).get();
       return convertToTales(query.docs);
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> fetchMoreTalesByAccesibility(
+      Accesibility accesibility, List<DocumentSnapshot> documentList) async {
+    try {
+      final query = (accesibility != Accesibility.all)
+          ? _talesCollection.where('premium',
+              isEqualTo: (accesibility == Accesibility.premium))
+          : _talesCollection;
+      final QuerySnapshot<Object?> fetch;
+      if (documentList.isEmpty) {
+        fetch = await query.limit(16).get();
+      } else {
+        fetch =
+            await query.limit(16).startAfterDocument(documentList.last).get();
+      }
+      return List.from(documentList)..addAll(fetch.docs);
+    } on SocketException {
+      throw const SocketException('No hay conexión a internet');
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> multiFetchTales(
+    List<DocumentSnapshot> documentList,
+    String taleTitle,
+    List<Gender> genders,
+    AgeLimit ageLimit,
+    Accesibility accesibility,
+    TimeLapse timeLapse,
+  ) async {
+    try {
+      return throw UnimplementedError();
+    } on SocketException {
+      throw const SocketException('No hay conexión a internet');
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -195,6 +239,25 @@ class TalesDataSource extends TaleDatasourceModel {
   }
 
   @override
+  Future<List<DocumentSnapshot>> fetchMoreTales(
+      List<DocumentSnapshot> documentList) async {
+    try {
+      final query = (documentList.isNotEmpty)
+          ? await _talesCollection
+              .limit(16)
+              .startAfterDocument(documentList.last)
+              .get()
+          : await _talesCollection.limit(10).get();
+      return List.from(documentList)..addAll(query.docs);
+    } on SocketException {
+      throw const SocketException('No hay conexión a internet');
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  @override
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList) async {
     try {
@@ -213,16 +276,29 @@ class TalesDataSource extends TaleDatasourceModel {
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
-      int ageLimit, List<DocumentSnapshot> documentList) async {
+      AgeLimit ageLimit, List<DocumentSnapshot> documentList) async {
     try {
+      int ageMinorLimit = 0;
+      int ageMaxLimit = 18;
+      if (ageLimit == AgeLimit.forKids) {
+        ageMinorLimit = 8;
+        ageMaxLimit = 12;
+      } else if (ageLimit == AgeLimit.forTeens) {
+        ageMinorLimit = 12;
+        ageMaxLimit = 16;
+      } else {
+        ageMinorLimit = 0;
+        ageMaxLimit = 15;
+      }
       final query = (documentList.isEmpty)
           ? await _talesCollection
-              .where('ageLimit', isLessThanOrEqualTo: ageLimit)
+              .where('ageLimit', isLessThanOrEqualTo: ageMaxLimit)
+              .where('ageLimit', isGreaterThanOrEqualTo: ageMinorLimit)
               .limit(16)
               .get()
           : await _talesCollection
               .where('ageLimit', isLessThanOrEqualTo: ageLimit)
-              .startAfterDocument(documentList[documentList.length - 1])
+              .startAfterDocument(documentList.last)
               .limit(16)
               .get();
       return List.from(documentList)..addAll(query.docs);
@@ -245,7 +321,7 @@ class TalesDataSource extends TaleDatasourceModel {
               .get()
           : await _talesCollection
               .orderBy('creationTime', descending: true)
-              .startAfterDocument(documentList[documentList.length - 1])
+              .startAfterDocument(documentList.last)
               .limit(16)
               .get();
       return List.from(documentList)..addAll(query.docs);
@@ -259,16 +335,18 @@ class TalesDataSource extends TaleDatasourceModel {
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
-      Gender gender, List<DocumentSnapshot> documentList) async {
+      List<Gender> genders, List<DocumentSnapshot> documentList) async {
     try {
       final query = (documentList.isEmpty)
           ? await _talesCollection
-              .where('genders', arrayContains: gender.name)
+              .where('genders',
+                  arrayContains: genders.map((e) => e.name).toList())
               .limit(16)
               .get()
           : await _talesCollection
-              .where('genders', arrayContains: gender.name)
-              .startAfterDocument(documentList[documentList.length - 1])
+              .where('genders',
+                  arrayContains: genders.map((e) => e.name).toList())
+              .startAfterDocument(documentList.last)
               .limit(16)
               .get();
       return List.from(documentList)..addAll(query.docs);

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/repositories/tales_repository.dart';
 
+import '../../../domain/entities/app/search/enums/enums.dart';
 import '../../../domain/entities/tales/tales_exports.dart';
 
 final talesRepositoryProvider = Provider((ref) => TalesRepository());
@@ -11,114 +12,64 @@ final talesRepositoryProvider = Provider((ref) => TalesRepository());
 /// Este estado se utilizará en la pantalla de inicio para mostrar y desplegar
 /// los cuentos correspondientes a cada categoría. El [TalesNotifier] cuenta con los
 /// métodos respectivos para cargar los cuentos iniciales e inicializar las consultas.
-final talesNotifierProvider = StateNotifierProvider<TalesNotifier, TalesState>(
-  (ref) => TalesNotifier(ref.watch(talesRepositoryProvider)),
-);
+final sliderTalesProvider =
+    StateNotifierProvider<TalesNotifier, List<Tales>>((ref) {
+  List<DocumentSnapshot> docList = [];
+  final repository = ref.watch(talesRepositoryProvider);
+  return TalesNotifier(repository, docList);
+});
 
-class TalesState {
-  final List<Tales> sliderTales;
-  final List<Tales> recentTales;
-  final List<Tales> ageLimitTales;
-  final List<DocumentSnapshot> sliderTalesDocList;
-  final List<DocumentSnapshot> recentTalesDocList;
-  final List<DocumentSnapshot> ageLimitTalesDocList;
-  bool isLoading;
+final premiumTalesProvider =
+    StateNotifierProvider<TalesNotifier, List<Tales>>((ref) {
+  List<DocumentSnapshot> docList = [];
+  final repository = ref.watch(talesRepositoryProvider);
+  return TalesNotifier(repository, docList);
+});
 
-  TalesState({
-    this.sliderTales = const [],
-    this.recentTales = const [],
-    this.ageLimitTales = const [],
-    this.sliderTalesDocList = const [],
-    this.recentTalesDocList = const [],
-    this.ageLimitTalesDocList = const [],
-    this.isLoading = false,
-  });
+final freeTalesProvider =
+    StateNotifierProvider<TalesNotifier, List<Tales>>((ref) {
+  List<DocumentSnapshot> docList = [];
+  final repository = ref.watch(talesRepositoryProvider);
+  return TalesNotifier(repository, docList);
+});
 
-  TalesState copyWith({
-    List<Tales>? sliderTales,
-    List<Tales>? recentTales,
-    List<Tales>? ageLimitTales,
-    List<DocumentSnapshot>? sliderTalesDocList,
-    List<DocumentSnapshot>? recentTalesDocList,
-    List<DocumentSnapshot>? ageLimitTalesDocList,
-    bool? isLoading,
-  }) {
-    return TalesState(
-      sliderTales: sliderTales ?? this.sliderTales,
-      recentTales: recentTales ?? this.recentTales,
-      ageLimitTales: ageLimitTales ?? this.ageLimitTales,
-      sliderTalesDocList: sliderTalesDocList ?? this.sliderTalesDocList,
-      recentTalesDocList: recentTalesDocList ?? this.recentTalesDocList,
-      ageLimitTalesDocList: ageLimitTalesDocList ?? this.ageLimitTalesDocList,
-      isLoading: isLoading ?? this.isLoading,
-    );
-  }
+final kidsTalesProvider =
+    StateNotifierProvider<TalesNotifier, List<Tales>>((ref) {
+  List<DocumentSnapshot> docList = [];
+  final repository = ref.watch(talesRepositoryProvider);
+  return TalesNotifier(repository, docList);
+});
 
-  @override
-  String toString() {
-    return '''
-              TalesState{ 
-                sliderTales: ${sliderTales.length},
-                recentTales: ${recentTales.length},
-                ageLimitTales: ${ageLimitTales.length},
-                sliderTalesDocList: ${sliderTalesDocList.length},
-                recentTalesDocList: ${recentTalesDocList.length},
-                ageLimitTalesDocList: ${ageLimitTalesDocList.length},
-                isLoading: $isLoading
-              }
-          ''';
-  }
-}
+final teensTalesProvider =
+    StateNotifierProvider<TalesNotifier, List<Tales>>((ref) {
+  List<DocumentSnapshot> docList = [];
+  final repository = ref.watch(talesRepositoryProvider);
+  return TalesNotifier(repository, docList);
+});
 
-class TalesNotifier extends StateNotifier<TalesState> {
+class TalesNotifier extends StateNotifier<List<Tales>> {
   final TalesRepository repository;
-  TalesNotifier(this.repository) : super(TalesState());
+  List<DocumentSnapshot> docList;
 
-  void initTales() async {
-    state.copyWith(isLoading: true);
-    state.toString();
+  TalesNotifier(this.repository, this.docList) : super([]);
 
-    final sliderTales =
-        await repository.fetchSliderTales(state.sliderTalesDocList);
-    final recentTales =
-        await repository.fetchMoreTalesByCreationTime(state.recentTalesDocList);
-    final ageLimitTales = await repository.fetchMoreTalesByAgeLimit(
-        15, state.ageLimitTalesDocList);
-
-    state = state.copyWith(
-      sliderTales: repository.convertToTales(sliderTales),
-      recentTales: repository.convertToTales(recentTales),
-      ageLimitTales: repository.convertToTales(ageLimitTales),
-      sliderTalesDocList: sliderTales,
-      recentTalesDocList: recentTales,
-      ageLimitTalesDocList: ageLimitTales,
-      isLoading: false,
-    );
-
-    state.toString();
+  void loadTalesSliderTales() async {
+    docList = await repository.datasource.fetchSliderTales(docList);
+    final List<Tales> tales = repository.convertToTales(docList);
+    state = tales;
   }
 
-  void fetchMoreRecentTales() async {
-    final recentTales =
-        await repository.fetchMoreTalesByCreationTime(state.recentTalesDocList);
-    final tales = repository.convertToTales(recentTales);
-
-    state.copyWith(isLoading: true);
-
-    state = state.copyWith(
-        recentTales: tales, recentTalesDocList: recentTales, isLoading: false);
+  void loadTalesByAgeLimit(AgeLimit ageLimit) async {
+    docList =
+        await repository.datasource.fetchMoreTalesByAgeLimit(ageLimit, docList);
+    final List<Tales> tales = repository.convertToTales(docList);
+    state = tales;
   }
 
-  void fetchMoreAgeLimitTales() async {
-    final ageLimitTales = await repository.fetchMoreTalesByAgeLimit(
-        15, state.ageLimitTalesDocList);
-    final tales = repository.convertToTales(ageLimitTales);
-
-    state.copyWith(isLoading: true);
-
-    state = state.copyWith(
-        ageLimitTales: tales,
-        ageLimitTalesDocList: ageLimitTales,
-        isLoading: false);
+  void loadTalesByAccesibility(Accesibility accesibility) async {
+    docList = await repository.datasource
+        .fetchMoreTalesByAccesibility(accesibility, docList);
+    final List<Tales> tales = repository.convertToTales(docList);
+    state = tales;
   }
 }

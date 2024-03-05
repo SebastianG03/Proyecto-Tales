@@ -21,7 +21,9 @@ class TaleDetailsScreen extends ConsumerWidget {
                 imageUrl: tale.getCoverUrl,
                 title: '${tale.title} (${tale.ageLimit}+)',
                 abstract: tale.abstract,
-                tags: tale.genders);
+                tags: tale.genders,
+                taleId: tale.id,
+                );
           },
           error: (_, __) {
             return const Center(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
-import 'package:proyecto_pasantia/layers/domain/entities/user/user.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/inputs/inputs.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/app/states/states.dart';
 

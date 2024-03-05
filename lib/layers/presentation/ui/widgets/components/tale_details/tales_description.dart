@@ -6,8 +6,12 @@ import '../../../../../domain/entities/tales/tales_exports.dart';
 class TaleDescription extends StatelessWidget {
   final List<Gender> taleGenders;
   final String abstract;
+  final String taleId;
   const TaleDescription(
-      {super.key, required this.abstract, required this.taleGenders});
+      {super.key,
+      required this.abstract,
+      required this.taleGenders,
+      required this.taleId});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,7 @@ class TaleDescription extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DetailsActions(),
+            DetailsActions(taleId: taleId),
             const SizedBox(
               height: 20,
             ),

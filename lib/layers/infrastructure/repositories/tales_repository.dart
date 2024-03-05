@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/search/enums/age_limit_enum.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/chapter.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/gender_tales.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/section.dart';
 import 'package:proyecto_pasantia/layers/domain/entities/tales/tales.dart';
 import 'package:proyecto_pasantia/layers/domain/repositories/tales_repository_model.dart';
 import 'package:proyecto_pasantia/layers/infrastructure/datasources/tales_datasource.dart';
+
+import '../../domain/entities/app/search/enums/enums.dart';
 
 class TalesRepository extends TaleRepositoryModel {
   final TalesDataSource datasource;
@@ -50,24 +53,48 @@ class TalesRepository extends TaleRepositoryModel {
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
-      int ageLimit, List<DocumentSnapshot> docsList) async {
-    return await datasource.fetchMoreTalesByAgeLimit(ageLimit, docsList);
+      AgeLimit ageLimit, List<DocumentSnapshot> docsList) {
+    return datasource.fetchMoreTalesByAgeLimit(ageLimit, docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> docsList) async {
-    return await datasource.fetchMoreTalesByCreationTime(docsList);
+    return datasource.fetchMoreTalesByCreationTime(docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
-      Gender gender, List<DocumentSnapshot> docsList) async {
-    return await datasource.fetchMoreTalesByGender(gender, docsList);
+      List<Gender> genders, List<DocumentSnapshot> docsList) {
+    return datasource.fetchMoreTalesByGender(genders, docsList);
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> fetchMoreTales(
+      List<DocumentSnapshot> documentList) {
+    return datasource.fetchMoreTales(documentList);
+  }
+
+  @override
+  Future<List<DocumentSnapshot>> multiFetchTales(
+    List<DocumentSnapshot> documentList,
+    String taleTitle,
+    List<Gender> genders,
+    AgeLimit ageLimit,
+    Accesibility accesibility,
+    TimeLapse timeLapse,
+  ) {
+    return throw UnimplementedError();
   }
 
   @override
   List<Tales> convertToTales(List<DocumentSnapshot<Object?>> docList) {
     return datasource.convertToTales(docList);
+  }
+
+  @override
+  Future<List<DocumentSnapshot<Object?>>> fetchMoreTalesByAccesibility(
+      Accesibility accesibility, List<DocumentSnapshot<Object?>> documentList) {
+    return datasource.fetchMoreTalesByAccesibility(accesibility, documentList);
   }
 }

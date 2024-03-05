@@ -23,17 +23,21 @@ class AppRoutes {
   static const String _talesGridViewRoute = 'view_tales';
   static const String _detailsTaleViewRoute = 'detail/:taleId';
   static const String _seachTaleViewRoute = 'search';
+  static const String _readerRoute = 'read';
 
   //Tales Sub Routes names
   static const String talesGridView = 'all_tales_by_tag';
   static const String taleDetails = 'tale_details';
   static const String searchTaleView = 'search_tale';
+  static const String readerView = 'reader_tale';
 
   //Settings Sub Routes paths
   static const String _accountRoute = 'account';
+  static const String _updateAccountRoute = 'update_user';
 
   //Settings Sub Routes names
   static const String accountView = 'account';
+  static const String updateAccountView = 'update_user';
 
   //Account Sub Routes paths
   static const String _signInRoute = 'sign_in';
@@ -78,6 +82,7 @@ class AppRoutes {
                     builder: (context, state) => const TalesGridScreen(
                       isSearching: false,
                     ),
+                    routes: const [],
                   ),
                   GoRoute(
                     parentNavigatorKey: _rootKey,
@@ -86,6 +91,7 @@ class AppRoutes {
                     builder: (context, state) => const TalesGridScreen(
                       isSearching: true,
                     ),
+                    routes: const [],
                   ),
                   GoRoute(
                     parentNavigatorKey: _rootKey,
@@ -94,7 +100,16 @@ class AppRoutes {
                     builder: (context, state) => TaleDetailsScreen(
                       taleId: state.pathParameters['taleId']!,
                     ),
-                  )
+                    routes: [
+                      GoRoute(
+                        parentNavigatorKey: _rootKey,
+                        path: _readerRoute,
+                        name: readerView,
+                        builder: (context, state) => const TalesReaderScreen(),
+                        routes: const [],
+                      ),
+                    ],
+                  ),
                 ],
               )
             ]),
@@ -117,30 +132,42 @@ class AppRoutes {
                 builder: (context, state) => const SettingsView(),
                 routes: [
                   GoRoute(
-                      path: _accountRoute,
-                      name: accountView,
-                      parentNavigatorKey: _rootKey,
-                      builder: (context, state) => const ChildScreen(
-                            widget: AccountView(),
-                          ),
-                      routes: [
-                        GoRoute(
-                          path: _signInRoute,
-                          name: signInView,
-                          parentNavigatorKey: _rootKey,
-                          builder: (context, state) =>
-                              const ChildScreen(widget: SignInView()),
-                          routes: const [],
-                        ),
-                        GoRoute(
-                          path: _registerRoute,
-                          name: registerView,
-                          parentNavigatorKey: _rootKey,
-                          builder: (context, state) =>
-                              const ChildScreen(widget: RegisterView()),
-                          routes: const [],
-                        ),
-                      ]),
+                    path: _accountRoute,
+                    name: accountView,
+                    parentNavigatorKey: _rootKey,
+                    builder: (context, state) => const ChildScreen(
+                      widget: AccountView(),
+                    ),
+                    routes: [
+                      GoRoute(
+                        path: _signInRoute,
+                        name: signInView,
+                        parentNavigatorKey: _rootKey,
+                        builder: (context, state) =>
+                            const ChildScreen(widget: SignInView()),
+                        routes: const [],
+                      ),
+                      GoRoute(
+                        path: _registerRoute,
+                        name: registerView,
+                        parentNavigatorKey: _rootKey,
+                        builder: (context, state) =>
+                            const ChildScreen(widget: RegisterView()),
+                        routes: const [],
+                      ),
+                      GoRoute(
+                        path: _updateAccountRoute,
+                        name: updateAccountView,
+                        parentNavigatorKey: _rootKey,
+                        builder: (context, state) {
+                          return const ChildScreen(
+                            widget: UpdateUserView(),
+                          );
+                        },
+                        routes: const [],
+                      )
+                    ],
+                  ),
                 ],
               )
             ])

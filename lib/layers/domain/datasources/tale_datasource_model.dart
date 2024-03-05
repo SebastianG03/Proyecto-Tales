@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../entities/app/search/enums/enums.dart';
 import '../entities/tales/tales_exports.dart';
 
 abstract class TaleDatasourceModel {
@@ -10,11 +11,22 @@ abstract class TaleDatasourceModel {
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
-      Gender gender, List<DocumentSnapshot> documentList);
+      List<Gender> genders, List<DocumentSnapshot> documentList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> documentList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
-      int ageLimit, List<DocumentSnapshot> documentList);
+      AgeLimit ageLimit, List<DocumentSnapshot> documentList);
+  Future<List<DocumentSnapshot>> fetchMoreTalesByAccesibility(
+      Accesibility accesibility, List<DocumentSnapshot> documentList);
+  Future<List<DocumentSnapshot>> fetchMoreTales(List<DocumentSnapshot> documentList);
+  Future<List<DocumentSnapshot>> multiFetchTales(
+    List<DocumentSnapshot> documentList,
+    String taleTitle,
+    List<Gender> genders,
+    AgeLimit ageLimit,
+    Accesibility accesibility,
+    TimeLapse timeLapse,
+  );
   List<Tales> convertToTales(List<DocumentSnapshot> documentList);
   Future<List<Chapter>> getTaleChapters(String taleId);
   Future<Chapter> getChapter(String taleId, int chapterId);

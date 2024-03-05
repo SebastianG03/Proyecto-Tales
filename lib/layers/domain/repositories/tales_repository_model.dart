@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:proyecto_pasantia/layers/domain/entities/app/search/enums/enums.dart';
 
 import '../entities/tales/tales_exports.dart';
 
@@ -8,11 +9,24 @@ abstract class TaleRepositoryModel {
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
-      Gender gender, List<DocumentSnapshot> docsList);
+      List<Gender> genders, List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
-      int ageLimit, List<DocumentSnapshot> docsList);
+      AgeLimit ageLimit, List<DocumentSnapshot> docsList);
+  Future<List<DocumentSnapshot>> fetchMoreTales(
+      List<DocumentSnapshot> documentList);
+  Future<List<DocumentSnapshot>> fetchMoreTalesByAccesibility(
+      Accesibility accesibility, List<DocumentSnapshot> documentList);
+  Future<List<DocumentSnapshot>> multiFetchTales(
+    List<DocumentSnapshot> documentList,
+    String taleTitle,
+    List<Gender> genders,
+    AgeLimit ageLimit,
+    Accesibility accesibility,
+    TimeLapse timeLapse,
+  );
+
   Future<List<Chapter>> getTaleChapters(String taleId);
   Future<Chapter> getChapter(String taleId, int chapterId);
   Future<Section> getSection(String taleId, int chapterId, String sectionId);

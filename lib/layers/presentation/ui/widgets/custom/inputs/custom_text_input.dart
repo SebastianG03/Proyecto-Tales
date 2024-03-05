@@ -9,16 +9,21 @@ class TextFormsModel extends StatelessWidget {
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
   final TextEditingController? controller;
+  final String? initialValue;
+  final bool isReadOnly;
 
-  const TextFormsModel(
-      {super.key,
-      required this.textInputType,
-      required this.labelText,
-      required this.icon,
-      required this.onChanged,
-      this.validator,
-      this.controller,
-      this.errorMessage});
+  const TextFormsModel({
+    super.key,
+    required this.textInputType,
+    required this.labelText,
+    required this.icon,
+    required this.onChanged,
+    this.validator,
+    this.controller,
+    this.errorMessage,
+    this.initialValue,
+    this.isReadOnly = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +34,8 @@ class TextFormsModel extends StatelessWidget {
         controller: controller,
         onChanged: onChanged,
         validator: validator,
+        initialValue: initialValue,
+        readOnly: isReadOnly,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         cupertino: (context, platform) => CupertinoTextFormFieldData(
           placeholder: labelText,

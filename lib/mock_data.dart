@@ -22,10 +22,10 @@ class MockData {
     List<Tales> tales = [];
     int imageIndex = 1;
 
-    for (int i = 1; i <= 40; i++) {
-      String title = "Cuento de prueba $i";
+    for (int i = 0; i <= 40; i++) {
+      String title = "Cuento de prueba ${i + 1}";
       String abstract = '''
-      Resumen del cuento de prueba $i.
+      Resumen del cuento de prueba ${i + 1}.
       Fugiat est adipisicing et ut. Ullamco labore voluptate culpa aliquip sit irure incididunt
       deserunt ullamco irure do occaecat cillum. Eu duis nulla consectetur sit.
       Nisi veniam irure et eu excepteur aute incididunt incididunt consectetur occaecat qui nisi qui aute.
@@ -36,16 +36,22 @@ class MockData {
       Tempor et proident quis adipisicing labore incididunt magna nisi aute nisi aliqua commodo minim.
       Sit mollit amet ullamco elit duis dolor proident.
     ''';
-      int ageLimit = Random().nextInt(16).clamp(12, 16);
+      int ageLimit = Random().nextInt(16).clamp(8, 16);
       bool premium = i % 3 != 0;
-      List<Gender> genders = [Gender.values[i % Gender.values.length]];
+      const values = Gender.values;
+      List<Gender> genders = [
+        values[Random().nextInt(values.length).clamp(0, 3)],
+        values[Random().nextInt(values.length).clamp(4, 6)],
+        values[Random().nextInt(values.length).clamp(7, 10)],
+        values[Random().nextInt(values.length).clamp(11, 13)],
+      ];
       if (imageIndex > 27) {
         imageIndex = 1;
       } else {
         imageIndex++;
       }
 
-      String dir = (await getApplicationDocumentsDirectory()).path;
+      final dir = (await getApplicationDocumentsDirectory()).path;
       File coverImage = File('$dir/portada$imageIndex.jpg');
 
       tales.add(Tales(
@@ -56,6 +62,10 @@ class MockData {
         ageLimit: ageLimit,
         genders: genders,
       ));
+
+      final chapters = generateChapters();
+      tales[i].setCoverUrl = getRandomUrl();
+      tales[i].setChapters = chapters;
     }
 
     return tales;
@@ -64,19 +74,8 @@ class MockData {
   List<Chapter> generateChapters() {
     List<Chapter> chapters = [];
     for (int i = 0; i < 10; i++) {
-      String chapterTitle = "Capítulo $i";
-      String chapterContent = '''
-      Contenido del capítulo $i.
-      Fugiat est adipisicing et ut. Ullamco labore voluptate culpa aliquip sit irure incididunt
-      deserunt ullamco irure do occaecat cillum. Eu duis nulla consectetur sit.
-      Nisi veniam irure et eu excepteur aute incididunt incididunt consectetur occaecat qui nisi qui aute.
-      Consectetur non ut irure amet nostrud excepteur. Pariatur proident aliquip dolor pariatur culpa dolor 
-      aliqua id.
-      Magna eu anim voluptate nulla eu dolore nulla cillum. Cupidatat laboris culpa proident aute voluptate
-      proident voluptate anim. Velit minim nostrud in non nulla sint proident aute duis est culpa elit.
-      Tempor et proident quis adipisicing labore incididunt magna nisi aute nisi aliqua commodo minim.
-      Sit mollit amet ullamco elit duis dolor proident.
-    ''';
+      String chapterTitle = "Capítulo ${i + 1}";
+
       final firstSections = generateSections(0);
       final secondSections = generateSections(10);
       final sections = linkSections(firstSections, secondSections);
@@ -100,17 +99,13 @@ class MockData {
       Nisi veniam irure et eu excepteur aute incididunt incididunt consectetur occaecat qui nisi qui aute.
       Consectetur non ut irure amet nostrud excepteur. Pariatur proident aliquip dolor pariatur culpa dolor 
       aliqua id.
-      Magna eu anim voluptate nulla eu dolore nulla cillum. Cupidatat laboris culpa proident aute voluptate
-      proident voluptate anim. Velit minim nostrud in non nulla sint proident aute duis est culpa elit.
-      Tempor et proident quis adipisicing labore incididunt magna nisi aute nisi aliqua commodo minim.
-      Sit mollit amet ullamco elit duis dolor proident.
     ''';
       final options = generateOptions();
       final section = Section(
           publicId: sectionTitle, text: sectionContent, options: options);
 
-      section.setImageUrl = getRandomUrl();
-      if (!pasted) sections.add(section);
+      if (!pasted) section.setImageUrl = getRandomUrl();
+      sections.add(section);
       pasted = true;
       index++;
     }
@@ -121,7 +116,9 @@ class MockData {
       List<Section> firstSections, List<Section> secondSections) {
     String idPrevius = "";
     for (int i = 0; i < firstSections.length; i++) {
-      if (i + 1 != firstSections.length) {
+      if (i == 0) {
+        firstSections.first.options.first.setNext = firstSections[i + 1].id;
+      } else if (i + 1 != firstSections.length) {
         firstSections[i].options.first.setPrevious = idPrevius;
         firstSections[i].options.first.setNext = firstSections[i + 1].id;
       } else {
@@ -134,11 +131,11 @@ class MockData {
     for (int i = 0; i < secondSections.length; i++) {
       if (i == 0) {
         firstSections.first.options.last.setNext = secondSections[i].id;
-      }
-      if (i + 1 != secondSections.length && i != 0) {
+      } else if (i + 1 != secondSections.length) {
         secondSections[i].options.first.setPrevious = idPrevius;
         secondSections[i].options.first.setNext = secondSections[i + 1].id;
-      } else if (i + 1 == secondSections.length) {
+      }
+      {
         firstSections[i].options.first.setPrevious = idPrevius;
       }
       idPrevius = secondSections[i].id;
@@ -146,6 +143,7 @@ class MockData {
     final List<Section> newList = [];
     newList.addAll(firstSections);
     newList.addAll(secondSections);
+
     return newList;
   }
 

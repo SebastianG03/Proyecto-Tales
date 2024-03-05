@@ -8,20 +8,25 @@ class PasswordFormsModel extends StatefulWidget {
   final String? Function(String?)? validator;
   final String? label;
   final String? erroMessage;
+  final String? initialValue;
+  final bool isReadOnly;
   final bool obscureText;
   final Function()? tap;
   final TextEditingController? controller;
 
-  const PasswordFormsModel(
-      {super.key,
-      required this.textInputType,
-      required this.label,
-      required this.onChanged,
-      this.obscureText = true,
-      required this.tap,
-      this.validator,
-      this.controller,
-      this.erroMessage});
+  const PasswordFormsModel({
+    super.key,
+    required this.textInputType,
+    required this.label,
+    required this.onChanged,
+    this.obscureText = true,
+    required this.tap,
+    this.validator,
+    this.controller,
+    this.erroMessage,
+    this.initialValue,
+    this.isReadOnly = false,
+  });
 
   @override
   State<PasswordFormsModel> createState() => _PasswordFormsModelState();
@@ -43,6 +48,8 @@ class _PasswordFormsModelState extends State<PasswordFormsModel> {
         onChanged: widget.onChanged,
         validator: widget.validator,
         controller: widget.controller,
+        initialValue: widget.initialValue,
+        readOnly: widget.isReadOnly,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         cupertino: (context, platform) => CupertinoTextFormFieldData(
           placeholder: widget.label,

@@ -16,7 +16,7 @@ class TalesGridScreen extends ConsumerStatefulWidget {
 class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
   bool isLoading = false;
   final ScrollController _scrollController = ScrollController();
-  int itemCount = 10;
+  int itemCount = 16;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
         setState(() {
           isLoading = true;
           Future.delayed(const Duration(seconds: 40));
-          itemCount += 10;
+          itemCount += 16;
           isLoading = false;
         });
       }
