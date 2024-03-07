@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:proyecto_pasantia/layers/aplication/providers/providers.dart';
 import '../../../../domain/entities/tales/tales_exports.dart';
 import '../../widgets/components/tale_details/tales_description.dart';
 import '../../widgets/components/tale_details/tales_details.dart';
@@ -25,6 +26,11 @@ class TaleDetailsView extends ConsumerStatefulWidget {
 
 class _TaleDetailsViewState extends ConsumerState<TaleDetailsView> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const ClampingScrollPhysics(),
@@ -34,7 +40,9 @@ class _TaleDetailsViewState extends ConsumerState<TaleDetailsView> {
             delegate: SliverChildBuilderDelegate(
           childCount: 1,
           (context, index) => TaleDescription(
-              abstract: widget.abstract, taleGenders: widget.tags, taleId: widget.taleId,),
+            abstract: widget.abstract,
+            taleGenders: widget.tags,
+          ),
         ))
       ],
     );

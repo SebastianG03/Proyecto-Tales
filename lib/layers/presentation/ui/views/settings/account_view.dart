@@ -11,6 +11,7 @@ class AccountView extends ConsumerWidget {
     final userStream = ref.watch(authUserProvider);
     return userStream.when(data: (user) {
       if (user != null) {
+        ref.read(preferencesProvider.notifier).getUserData();
         final userModel = ref.watch(preferencesProvider).user;
         return LoggedSettingsItems(user: userModel!);
       } else {

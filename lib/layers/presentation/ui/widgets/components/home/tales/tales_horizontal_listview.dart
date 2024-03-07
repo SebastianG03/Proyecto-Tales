@@ -36,9 +36,13 @@ class _HorizontalTalesListViewState
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
-                onTap: () => ref.read(routerProvider).router.goNamed(
-                    AppRoutes.taleDetails,
-                    pathParameters: {'taleId': widget.tales[index].id}),
+                onTap: () {
+                  ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
+                      pathParameters: {'taleId': widget.tales[index].id});
+                  ref
+                      .read(actualTaleProvider.notifier)
+                      .update((state) => widget.tales[index].id);
+                },
                 child: TaleHorizontalSlide(
                     imageUrl: widget.tales[index].getCoverUrl,
                     title: widget.tales[index].title,

@@ -7,3 +7,5 @@ export 'user/login_form_provider.dart';
 export 'user/register_form_provider.dart';
 export 'user/user_provider.dart';
 export 'tales/initial_loading_provider.dart';
+export 'tales/search_provider.dart';
+export 'tales/reader/tales_reader_provider.dart';

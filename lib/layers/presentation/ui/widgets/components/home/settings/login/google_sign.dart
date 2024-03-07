@@ -9,6 +9,9 @@ class GoogleSignInComponent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final notifier = ref.watch(userSignInProvider.notifier);
+    final state = ref.read(userSignInProvider);
+
     return SizedBox(
       height: 100,
       child: Row(
@@ -21,10 +24,9 @@ class GoogleSignInComponent extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () async {
-              ref
-                  .read(userSignInProvider.notifier)
-                  .signInWithGoogle(context: context);
-              final user = ref.read(preferencesProvider).user;
+              notifier.signInWithGoogle(context: context);
+              final user = state.user;
+  
               ref
                   .read(preferencesProvider.notifier)
                   .setUserData(user!.toJson());

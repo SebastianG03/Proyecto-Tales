@@ -55,6 +55,7 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         email: state.email.value,
         password: state.password.value);
     final user = notifier.user;
+    debugPrint(user?.name ?? 'Null user');
     prefs(user!.toJson());
     state = state.copyWith(isPosting: false);
   }

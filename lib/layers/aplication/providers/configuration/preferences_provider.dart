@@ -14,7 +14,6 @@ final preferencesProvider =
 
 class PreferencesState extends ChangeNotifier {
   final UserModel? user;
-
   final bool allowNotification;
 
   PreferencesState({this.user, this.allowNotification = true});

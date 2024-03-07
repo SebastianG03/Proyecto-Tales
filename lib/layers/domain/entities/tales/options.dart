@@ -1,17 +1,14 @@
 // ignore_for_file: unnecessary_null_comparison
 
-
 /// Clase Options, representa las opciones que el usuario puede seleccionar dentro de cada
 /// sección del cuento. Además sirve de unión entre los nodos del árbol.
 /// La id será un número algabético que representará la opción. Si es la primera opción será "A",
 /// la segunda "B" y así sucesivamente.
 library;
 
-
 class Options {
   String id;
   String text;
-  String _userSelection = "";
   String _nextSectionId = "";
   String _previousSectionId = "";
 
@@ -23,8 +20,6 @@ class Options {
   Options.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         text = json['text'] {
-    _userSelection = json['userSelection'];
-
     _nextSectionId = json['nextSection'];
     _previousSectionId = json['previousSection'];
   }
@@ -33,16 +28,12 @@ class Options {
     return {
       'id': id,
       'text': text,
-      'userSelection': _userSelection,
       'nextSection': _nextSectionId,
       'previousSection': _previousSectionId,
     };
   }
 
   /// GETTERS Y SETTERS
-  /// Selección del usuario, no puede ser nulo.
-  String get getUserSelection => _userSelection;
-  set setUserSelection(String userSelection) => _userSelection = userSelection;
 
   ///Siguiente nodo al que apunta el árbol. Dos o más nodos pueden apuntar al mismo nodo.
   String get getNext => _nextSectionId;

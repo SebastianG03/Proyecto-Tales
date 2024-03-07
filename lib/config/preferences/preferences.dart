@@ -23,7 +23,7 @@ class Preferences {
   Future<UserModel?> getUserData() async {
     final instance = await SharedPreferences.getInstance();
     final data = instance.getString(_userData);
-    if (data != null && data.isNotEmpty) {
+    if (data != null && data != "") {
       return UserModel.fromJson(jsonDecode(data));
     }
     return null;

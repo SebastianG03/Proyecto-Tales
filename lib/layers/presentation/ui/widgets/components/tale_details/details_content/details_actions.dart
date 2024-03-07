@@ -6,8 +6,7 @@ import 'package:proyecto_pasantia/config/configurations.dart';
 import '../../../../../../aplication/providers/providers.dart';
 
 class DetailsActions extends ConsumerWidget {
-  final String taleId;
-  const DetailsActions({super.key, required this.taleId});
+  const DetailsActions({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -18,9 +17,12 @@ class DetailsActions extends ConsumerWidget {
     return Row(
       children: [
         TextButton.icon(
-          onPressed: () => ref.read(routerProvider).router.pushNamed(
-              AppRoutes.readerView,
-              pathParameters: {'taleId': taleId}),
+          onPressed: () => ref
+              .read(routerProvider)
+              .router
+              .pushNamed(AppRoutes.readerView, pathParameters: {
+            'taleId': ref.read(actualTaleProvider.notifier).state
+          }),
           icon: const Icon(LineIcons.play),
           style: buttonStyle,
           label: const Text('Iniciar'),

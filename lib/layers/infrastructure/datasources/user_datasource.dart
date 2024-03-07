@@ -58,4 +58,32 @@ class UserDatasource implements UserDatasourceModel {
       return false;
     }
   }
+  
+  @override
+  void addUserTale(String userId, UserTales userTale) {
+    // TODO: implement addUserTale
+  }
+  
+  @override
+  Future<String> getTale(String userId, String taleId) {
+    // TODO: implement getTale
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<List<UserTales>> getTales(String userId) {
+    // TODO: implement getTales
+    throw UnimplementedError();
+  }
+  
+  @override
+  void updateUserTale(String userId, UserTales userTale) {
+    // TODO: implement updateUserTale
+  }
+  
+  @override
+  bool userTaleExists(String userId, String taleId) {
+    // TODO: implement userTaleExists
+    throw UnimplementedError();
+  }
 }
