@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "650300046203",
+    "project_id": "proyectopasantiatales",
+    "storage_bucket": "proyectopasantiatales.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650300046203:android:3841d209d1724e0a87dbde",
+        "android_client_info": {
+          "package_name": "com.example.cuentos_pasantia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650300046203-rui6rvvphb499gkr7ooc4stdr4rh00ph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cuentos_pasantia",
+            "certificate_hash": "5b8833b15b01101c1b439ea33e1c14a6be24c058"
+          }
+        },
+        {
+          "client_id": "650300046203-49fm7autb1kajtidum49q92ahl7j4vaq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk-i-aSL3L3smEFKN4mQVd-go2z4xObaU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650300046203-49fm7autb1kajtidum49q92ahl7j4vaq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "650300046203-5ider7o6a3p72g1l0fh97obsr8kp4nb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.proyectoPasantia"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
