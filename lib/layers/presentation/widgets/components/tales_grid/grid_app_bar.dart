@@ -8,8 +8,12 @@ import 'package:go_router/go_router.dart';
 class GridAppBar extends ConsumerWidget {
   final bool isSearching;
   final bool isPinned;
+  final VoidCallback? onPressed;
   const GridAppBar(
-      {super.key, required this.isSearching, this.isPinned = true});
+      {super.key,
+      required this.isSearching,
+      this.isPinned = true,
+      this.onPressed});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -24,7 +28,7 @@ class GridAppBar extends ConsumerWidget {
       leading: PlatformIconButton(
         cupertinoIcon: const Icon(CupertinoIcons.back),
         materialIcon: const Icon(Icons.arrow_back),
-        onPressed: () => context.pop(),
+        onPressed: () => (onPressed == null) ? context.pop() : onPressed,
       ),
       flexibleSpace: Visibility(
         visible: isSearching,

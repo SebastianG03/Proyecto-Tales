@@ -6,10 +6,15 @@ import 'tales_details.dart';
 class TaleDescription extends StatelessWidget {
   final List<Gender> taleGenders;
   final String abstract;
+  final String imageUrl;
+  final String title;
+
   const TaleDescription({
     super.key,
     required this.abstract,
     required this.taleGenders,
+    required this.imageUrl,
+    required this.title,
   });
 
   @override
@@ -25,7 +30,6 @@ class TaleDescription extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DetailsActions(),
             const SizedBox(
               height: 20,
             ),

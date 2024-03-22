@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../domain/entities/tales/tales_exports.dart';
-import '../providers.dart';
+import '../../../../domain/entities/tales/tales_exports.dart';
+import '../../providers.dart';
 
 final taleContentProvider =
     FutureProvider.family<Tales, String>((ref, id) async {

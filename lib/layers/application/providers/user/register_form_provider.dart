@@ -1,5 +1,5 @@
 import 'package:cuentos_pasantia/layers/application/providers/user/user_provider.dart';
-import 'package:cuentos_pasantia/layers/infraestructure/repositories/user_repository.dart';
+import 'package:cuentos_pasantia/layers/infraestructure/repositories/user_auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 
@@ -13,7 +13,7 @@ final registerFormProvider =
 });
 
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
-  final UserRepository register;
+  final UserAuthRepository register;
   RegisterFormNotifier(this.register) : super(RegisterFormState());
 
   void emailChanged(String value) {

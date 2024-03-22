@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/providers.dart';
 import '../../../domain/entities/app/search/enums/enums.dart';
-import '../../../domain/entities/user/users.dart';
 import '../../widgets/components/home/tales/tales_components.dart';
 import '../../widgets/shared/custom_appbar.dart';
 
@@ -21,10 +20,10 @@ class _TalesViewState extends ConsumerState<TalesView> {
     ref.read(sliderTalesProvider.notifier).loadTalesSliderTales();
     ref
         .read(premiumTalesProvider.notifier)
-        .loadTalesByAccesibility(Accesibility.premium);
+        .loadTalesByAccesibility(Accessibility.premium);
     ref
         .read(freeTalesProvider.notifier)
-        .loadTalesByAccesibility(Accesibility.free);
+        .loadTalesByAccesibility(Accessibility.free);
     ref.read(kidsTalesProvider.notifier).loadTalesByAgeLimit(AgeLimit.forKids);
     ref
         .read(teensTalesProvider.notifier)
@@ -68,11 +67,11 @@ class _TalesViewState extends ConsumerState<TalesView> {
                 ),
                 HorizontalTalesListView(
                   tales: premiumTales.take(8).toList(),
-                  tag: Accesibility.premium.name,
+                  tag: Accessibility.premium.name,
                 ),
                 HorizontalTalesListView(
                   tales: freeTales.take(8).toList(),
-                  tag: Accesibility.free.name,
+                  tag: Accessibility.free.name,
                 )
               ],
             );

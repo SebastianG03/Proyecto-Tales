@@ -1,4 +1,6 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/components/tale_details/details_content/details_actions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/providers/providers.dart';
@@ -11,31 +13,40 @@ class TaleDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final taleAsync = ref.watch(taleContentProvider(taleId));
+    final user = ref.watch(authUserProvider);
 
     return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: taleAsync.when(
-          data: (tale) {
-            return TaleDetailsView(
+      child: taleAsync.when(
+        data: (tale) {
+          final uid = user.asData?.value?.uid ?? "";
+          return Scaffold(
+            // resizeToAvoidBottomInset: false,
+            body: TaleDetailsView(
               imageUrl: tale.getCoverUrl,
               title: '${tale.title} (${tale.ageLimit}+)',
               abstract: tale.abstract,
               tags: tale.genders,
               taleId: tale.id,
-            );
-          },
-          error: (_, __) {
-            return const Center(
-              child: Text('Error al cargar la historia'),
-            );
-          },
-          loading: () {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
+            ),
+            floatingActionButtonLocation: ExpandableFab.location,
+            floatingActionButton: FBDetailsActions(
+              taleId: tale.id,
+              taleTitle: tale.title,
+              coverUrl: tale.getCoverUrl,
+              userId: uid,
+            ),
+          );
+        },
+        error: (_, __) {
+          return const Center(
+            child: Text('Error al cargar la historia'),
+          );
+        },
+        loading: () {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/entities/user/users.dart';
-import '../../../infraestructure/repositories/user_repository.dart';
+import '../../../infraestructure/repositories/user_auth_repository.dart';
 import '../../../presentation/widgets/custom/custom_components.dart';
 
-final userDatasourceProvider = Provider<UserRepository>((ref) {
-  return UserRepository();
+final userDatasourceProvider = Provider<UserAuthRepository>((ref) {
+  return UserAuthRepository();
 });
 
 final userSignInProvider =
@@ -30,9 +30,9 @@ class UserState extends ChangeNotifier {
 }
 
 class SignInNotifier extends StateNotifier<UserState> {
-  final UserRepository repository;
+  final UserAuthRepository repository;
   SignInNotifier()
-      : repository = UserRepository(),
+      : repository = UserAuthRepository(),
         super(UserState());
 
   void getUserById(

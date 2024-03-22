@@ -1,4 +1,3 @@
-
 import 'package:cuentos_pasantia/layers/domain/entities/user/user_tales.dart';
 
 /// La clase UserModel representa al usuario de la aplicación, los parámetros de name, email
@@ -47,7 +46,7 @@ class UserModel {
     };
   }
 
-  get getUserModelTales => _userModelTales;
+  List<UserTales> get getUserModelTales => _userModelTales;
   bool addUserModelTale(UserTales userModelTale) {
     if (!_userModelTales.contains(userModelTale)) {
       _userModelTales.add(userModelTale);

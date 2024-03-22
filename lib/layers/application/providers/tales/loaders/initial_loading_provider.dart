@@ -1,4 +1,4 @@
-import 'package:cuentos_pasantia/layers/application/providers/tales/tales_provider.dart';
+import 'package:cuentos_pasantia/layers/application/providers/tales/loaders/tales_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final initialLoadingProvider = Provider<bool>((ref) {

@@ -41,6 +41,8 @@ class _TaleDetailsViewState extends ConsumerState<TaleDetailsView> {
           (context, index) => TaleDescription(
             abstract: widget.abstract,
             taleGenders: widget.tags,
+            imageUrl: widget.imageUrl,
+            title: widget.title,
           ),
         ))
       ],

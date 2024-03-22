@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cuentos_pasantia/layers/domain/datasources/user_datasource_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/user/users.dart';
 
@@ -49,6 +50,9 @@ class UserDatasource implements UserDatasourceModel {
 
   ///Actualización de información de usuario.
   ///Este método solo será llamado cuando el usuario esté logueado.
+  ///No es recomendable utilizar este método para actualizar información de los cuentos
+  ///del usuario. Dado que puede reemplazar todos los cuentos y ocasionar pérdida de información si es aplicado
+  ///incorrectamente.
   @override
   Future<bool> updateUser(UserModel user) async {
     try {
@@ -60,30 +64,85 @@ class UserDatasource implements UserDatasourceModel {
   }
 
   @override
-  void addUserTale(String userId, UserTales userTale) {
-    // TODO: implement addUserTale
+  Future<void> updateUserTale(String userId, UserTales userTale) async {
+    try {
+      final user = await getUserById(userId);
+      final userTales = user.getUserModelTales;
+      int index =
+          userTales.indexWhere((tale) => tale.taleId == userTale.taleId);
+
+      if (index != -1) {
+        userTales.remove(userTale);
+        userTales.add(userTale);
+      } else {
+        userTales.add(userTale);
+      }
+
+      await _usersCollection.doc(userId).update(
+          {'userModelTales': userTales.map((e) => e.toJson()).toList()});
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  Future<String> getTale(String userId, String taleId) {
-    // TODO: implement getTale
-    throw UnimplementedError();
+  Future<bool> userTaleExists(String userId, String taleId) async {
+    try {
+      final query = await _usersCollection
+          .where('id', isEqualTo: userId)
+          .where('userModelTales', arrayContains: taleId)
+          .get();
+      return query.docs.isNotEmpty;
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  Future<List<UserTales>> getTales(String userId) {
-    // TODO: implement getTales
-    throw UnimplementedError();
+  Future<UserTales> getUserTale(String userId, String taleId) async {
+    try {
+      final user = await getUserById(userId);
+      int index =
+          user.getUserModelTales.indexWhere((tale) => tale.taleId == taleId);
+      return (index != -1)
+          ? user.getUserModelTales[index]
+          : throw Exception(
+              'No se encontró el cuento, intente de nuevo más tarde');
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  void updateUserTale(String userId, UserTales userTale) {
-    // TODO: implement updateUserTale
+  Future<List<UserTales>> getUserTales(String userId, int page) async {
+    try {
+      final user = await getUserById(userId);
+
+      return user.getUserModelTales;
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   @override
-  bool userTaleExists(String userId, String taleId) {
-    // TODO: implement userTaleExists
-    throw UnimplementedError();
+  Future<List<UserTales>> getUserTalesByStatus(
+      String userId, UserTalesStatus status, int page) async {
+    try {
+      final user = await getUserById(userId);
+
+      final limit = page * 10;
+
+      return user.getUserModelTales
+          .where((value) => value.progress == status)
+          .take(limit)
+          .toList();
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 }

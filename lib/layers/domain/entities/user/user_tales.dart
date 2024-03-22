@@ -8,8 +8,9 @@ class UserTales {
   final String taleId;
   final String taleTitle;
   String coverUrl = "";
+  //TODO cambiar a UserTalesStatus a una lista para mantener más de un estado a la vez.
   UserTalesStatus progress;
-  String _lastChapterReaded = "";
+  int _lastChapterReaded = 0;
   String _lastSectionReaded = "";
   DateTime? _lastTimeRead;
 
@@ -21,7 +22,7 @@ class UserTales {
   });
 
   UserTales.fromJson(Map<String, dynamic> json)
-      : progress = UserTalesStatus.inProgress,
+      : progress = UserTalesStatus.reading,
         taleId = json['idTale'],
         taleTitle = json['taleTitle'],
         coverUrl = json['coverUrl'] {
@@ -50,29 +51,40 @@ class UserTales {
   UserTalesStatus _parseUserTalesStatus(String progress) =>
       UserTalesStatus.values.firstWhere(
           (element) => element.toString() == progress,
-          orElse: () => UserTalesStatus.inProgress);
+          orElse: () => UserTalesStatus.reading);
 
-  int daysSinceLastRead() {
+  String timeSinceLastRead() {
     DateTime now = DateTime.now();
     if (_lastTimeRead != null) {
-      int daysDifference = now.difference(_lastTimeRead!).inDays;
-      return daysDifference.abs();
+      int timeDifferenceInSeconds = now.difference(_lastTimeRead!).inSeconds;
+      return _formatTimeFromSeconds(timeDifferenceInSeconds);
     }
-    return -1;
+    return '';
   }
 
-  int hoursSinceLastRead() {
-    DateTime now = DateTime.now();
-    if (_lastTimeRead != null) {
-      int hoursDifference = now.difference(_lastTimeRead!).inHours;
-      return hoursDifference.abs();
+  String _formatTimeFromSeconds(int timeDifferenceInSeconds) {
+    if (timeDifferenceInSeconds < 60) {
+      return "Leído hace menos de 1 minuto";
     }
-    return -1;
+
+    int minutes = timeDifferenceInSeconds ~/ 60;
+    if (minutes < 60) {
+      return "Leído hace $minutes minutos";
+    }
+
+    minutes = (timeDifferenceInSeconds % 3600) ~/ 60;
+    if (minutes > 0) {
+      int hours = timeDifferenceInSeconds ~/ 3600;
+      return "Leído hace $hours hora(s) y $minutes minuto(s)";
+    }
+
+    int days = timeDifferenceInSeconds ~/ 86400;
+    return "Leído hace $days día(s)";
   }
 
-  set setLastChapterReaded(String lastChapterReaded) =>
+  set setLastChapterReaded(int lastChapterReaded) =>
       lastChapterReaded = _lastChapterReaded;
-  String get getLastChapterReaded => _lastChapterReaded;
+  int get getLastChapterReaded => _lastChapterReaded;
 
   set setLastSectionReaded(String lastSectionReaded) =>
       lastSectionReaded = _lastSectionReaded;

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cuentos_pasantia/layers/infraestructure/services/fetch_tales_service.dart';
 
 import '../../domain/entities/app/search/enums/enums.dart';
 import '../../domain/entities/tales/tales_exports.dart';
@@ -7,6 +8,7 @@ import '../datasources/tales_datasource.dart';
 
 class TalesRepository extends TaleRepositoryModel {
   final TalesDataSource datasource;
+  final FetchTalesService service = FetchTalesService();
   final List<Tales> generalTales = [];
 
   TalesRepository() : datasource = TalesDataSource();
@@ -43,38 +45,38 @@ class TalesRepository extends TaleRepositoryModel {
   }
 
   @override
-  Future<List<Tales>> getTaleByTitle(String title) {
-    return datasource.getTaleByTitle(title);
+  Future<List<DocumentSnapshot>> getTaleByTitle(String title) {
+    return service.fetchTaleByTitle(title);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList) {
-    return datasource.fetchSliderTales(docsList);
+    return service.fetchSliderTales(docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByAgeLimit(
       AgeLimit ageLimit, List<DocumentSnapshot> docsList) {
-    return datasource.fetchMoreTalesByAgeLimit(ageLimit, docsList);
+    return service.fetchMoreTalesByAgeLimit(ageLimit, docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByCreationTime(
       List<DocumentSnapshot> docsList) async {
-    return datasource.fetchMoreTalesByCreationTime(docsList);
+    return service.fetchMoreTalesByCreationTime(docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
       List<Gender> genders, List<DocumentSnapshot> docsList) {
-    return datasource.fetchMoreTalesByGender(genders, docsList);
+    return service.fetchMoreTalesByGender(genders, docsList);
   }
 
   @override
   Future<List<DocumentSnapshot>> fetchMoreTales(
       List<DocumentSnapshot> documentList) {
-    return datasource.fetchMoreTales(documentList);
+    return service.fetchMoreTales(documentList);
   }
 
   @override
@@ -83,10 +85,11 @@ class TalesRepository extends TaleRepositoryModel {
     String taleTitle,
     List<Gender> genders,
     AgeLimit ageLimit,
-    Accesibility accesibility,
+    Accessibility accesibility,
     TimeLapse timeLapse,
   ) {
-    return throw UnimplementedError();
+    return service.multiFetchTales(
+        documentList, taleTitle, genders, ageLimit, accesibility, timeLapse);
   }
 
   @override
@@ -96,7 +99,8 @@ class TalesRepository extends TaleRepositoryModel {
 
   @override
   Future<List<DocumentSnapshot<Object?>>> fetchMoreTalesByAccesibility(
-      Accesibility accesibility, List<DocumentSnapshot<Object?>> documentList) {
-    return datasource.fetchMoreTalesByAccesibility(accesibility, documentList);
+      Accessibility accesibility,
+      List<DocumentSnapshot<Object?>> documentList) {
+    return service.fetchMoreTalesByAccesibility(accesibility, documentList);
   }
 }

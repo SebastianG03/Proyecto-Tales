@@ -4,12 +4,14 @@ class LibraryTale extends StatelessWidget {
   final String urlImage;
   final String title;
   final String chapter;
-  final int lastRead;
-  const LibraryTale(
-      {super.key,
-      required this.title,
-      required this.chapter,
-      required this.lastRead, required this.urlImage});
+  final String lastRead;
+  const LibraryTale({
+    super.key,
+    required this.title,
+    required this.chapter,
+    required this.lastRead,
+    required this.urlImage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class LibraryTale extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  Text('Leído hace $lastRead dias',
+                  Text(lastRead,
                       style:
                           TextStyle(fontSize: 12, color: Colors.grey.shade600))
                 ],

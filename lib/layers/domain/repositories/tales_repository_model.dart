@@ -5,7 +5,7 @@ import '../entities/tales/tales_exports.dart';
 
 abstract class TaleRepositoryModel {
   Future<Tales> getTale(String id);
-  Future<List<Tales>> getTaleByTitle(String title);
+  Future<List<DocumentSnapshot>> getTaleByTitle(String title);
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(
@@ -17,20 +17,20 @@ abstract class TaleRepositoryModel {
   Future<List<DocumentSnapshot>> fetchMoreTales(
       List<DocumentSnapshot> documentList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByAccesibility(
-      Accesibility accesibility, List<DocumentSnapshot> documentList);
+      Accessibility accesibility, List<DocumentSnapshot> documentList);
   Future<List<DocumentSnapshot>> multiFetchTales(
     List<DocumentSnapshot> documentList,
     String taleTitle,
     List<Gender> genders,
     AgeLimit ageLimit,
-    Accesibility accesibility,
+    Accessibility accesibility,
     TimeLapse timeLapse,
   );
   Future<List<Chapter>> getTaleChapters(String taleId);
   Future<Chapter> getChapter(String taleId, int chapterId);
   Future<Section> getSection(String taleId, int chapterId, int page);
   Future<Section> loadNextSection(
-    String taleId, int chapterId, String sectionId);
+      String taleId, int chapterId, String sectionId);
   Future<List<Section>> getSections(String taleId, int chapterId);
   List<Tales> convertToTales(List<DocumentSnapshot> docList);
 }

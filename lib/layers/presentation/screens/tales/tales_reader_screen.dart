@@ -1,10 +1,14 @@
-import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../domain/entities/tales/section.dart';
 import '../../widgets/components/tales_grid/tales_grid.dart';
+import 'package:cuentos_pasantia/config/router/app_routes.dart';
+import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+
+import '../../widgets/custom/custom_components.dart';
 
 class TalesReaderScreen extends ConsumerStatefulWidget {
   const TalesReaderScreen({super.key});
@@ -14,9 +18,9 @@ class TalesReaderScreen extends ConsumerStatefulWidget {
 }
 
 class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
-  int chapter = 1;
   final ScrollController _scrollController = ScrollController();
   IconData icon = Icons.arrow_drop_down;
+
   @override
   void initState() {
     super.initState();
@@ -36,159 +40,135 @@ class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final sectionDataNotifier = ref.watch(sectionDataProvider.notifier);
     final sectionData = ref.watch(sectionDataProvider);
-    AsyncValue<Section> sectionAsync = ref.watch(loadSectionProvider);
+    final section =
+        sectionDataNotifier.loadNextSection(ref.read(selectedOptionProvider));
+
     // const String imageUrl =
     //     'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada3.jpg?alt=media&token=d7f743a3-59e3-434d-a220-fe08fc27b268';
     final buttonStyle = ButtonStyle(
         backgroundColor: MaterialStateProperty.all(Colors.blue.shade100));
+
     return SafeArea(
       child: Scaffold(
-        body: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            const GridAppBar(
-              isSearching: false,
-              isPinned: false,
+          body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            elevation: 0,
+            pinned: false,
+            floating: true,
+            stretch: true,
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(10),
+              child: SizedBox(),
             ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              sliver: SliverToBoxAdapter(
-                  child: sectionAsync.when(data: (section) {
-                return Column(
-                  children: [
-                    Text(
-                      'Capítulo ${sectionData.chapter + 1}',
-                      style: const TextStyle(
-                          fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      section.text,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                );
-              }, error: (error, stack) {
-                return Center(
-                  child: Text(
-                    'Error: $error',
-                    style: const TextStyle(fontSize: 24),
+            leading: PlatformIconButton(
+              cupertinoIcon: const Icon(CupertinoIcons.back),
+              materialIcon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Text(
+                    'Capítulo ${sectionData.chapter + 1}',
+                    style: const TextStyle(
+                        fontSize: 32, fontWeight: FontWeight.bold),
                   ),
-                );
-              }, loading: () {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              })),
-            ),
-            SliverToBoxAdapter(
-              child: sectionAsync.when(
-                data: (section) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          ref
-                              .read(sectionDataProvider.notifier)
-                              .update((state) => state.copyWith(
-                                    lastSectionId:
-                                        section.options.first.getNext,
-                                    actualPage: state.actualPage + 1,
-                                  ));
-                          setState(() {
-                            sectionAsync =
-                                ref.read(loadNextSectionProvider(sectionData));
-                          });
-                        },
-                        style: buttonStyle,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            section.options.first.text,
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 16),
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          debugPrint('Opcion B');
-                        },
-                        style: buttonStyle,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(section.options.last.text,
-                              style: const TextStyle(
-                                  color: Colors.black, fontSize: 16)),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                error: (error, stack) {
-                  return Center(
-                    child: Text(
-                      'Error: $error',
-                      style: const TextStyle(fontSize: 24),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Text(
+                    section.text,
+                    style: const TextStyle(
+                      fontSize: 16,
                     ),
-                  );
-                },
-                loading: () {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: Icon(
-                  icon,
-                  size: 40,
+          ),
+          SliverToBoxAdapter(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    ref
+                        .read(selectedOptionProvider.notifier)
+                        .update((state) => section.options.first.getNext);
+                    debugPrint('Opcion A');
+                    ref.read(routerProvider).router.pushReplacementNamed(
+                        AppRoutes.readerView,
+                        pathParameters: {
+                          'taleId': ref.read(actualTaleProvider.notifier).state
+                        });
+                  },
+                  style: buttonStyle,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      section.options.first.text,
+                      style: const TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            SliverFillRemaining(
-              child: sectionAsync.when(
-                data: (section) {
-                  final url = section.getImageUrl;
-                  if (url != null) {
-                    return SizedBox(
-                      height: 100,
-                      child: Image.network(
-                        section.getImageUrl!,
-                        fit: BoxFit.scaleDown,
-                      ),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-                error: (error, stack) {
-                  return const Center(
+                TextButton(
+                  onPressed: () {
+                    ref
+                        .read(selectedOptionProvider.notifier)
+                        .update((state) => section.options.last.getNext);
+                    debugPrint('Opcion A');
+                    ref.read(routerProvider).router.pushReplacementNamed(
+                        AppRoutes.readerView,
+                        pathParameters: {
+                          'taleId': ref.read(actualTaleProvider.notifier).state
+                        });
+                  },
+                  style: buttonStyle,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      'Imagen no encontrada.',
-                      style: TextStyle(fontSize: 24),
+                      section.options.last.text,
+                      style: const TextStyle(color: Colors.black, fontSize: 16),
                     ),
-                  );
-                },
-                loading: () {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Icon(
+                icon,
+                size: 40,
               ),
             ),
-          ],
-        ),
-      ),
+          ),
+          SliverFillRemaining(
+              child: Visibility(
+            visible:
+                section.getImageUrl != null && section.getImageUrl!.isNotEmpty,
+            replacement: const SizedBox(),
+            child: SizedBox(
+              height: 100,
+              child:
+                  section.getImageUrl != null && section.getImageUrl!.isNotEmpty
+                      ? Image.network(
+                          section.getImageUrl!,
+                          fit: BoxFit.scaleDown,
+                        )
+                      : const SizedBox(),
+            ),
+          )),
+        ],
+      )),
     );
   }
 }

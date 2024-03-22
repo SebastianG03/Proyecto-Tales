@@ -1,51 +1,197 @@
 import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/user/user_tales_status.dart';
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../../../../../config/router/app_routes.dart';
+import '../../../custom/custom_text_button_with_icon.dart';
 
-class DetailsActions extends ConsumerWidget {
-  const DetailsActions({super.key});
+class FBDetailsActions extends ConsumerStatefulWidget {
+  final String taleId;
+  final String taleTitle;
+  final String coverUrl;
+  final String userId;
+  const FBDetailsActions({
+    super.key,
+    required this.taleId,
+    required this.taleTitle,
+    required this.coverUrl,
+    required this.userId,
+  });
 
   @override
-  Widget build(BuildContext context, ref) {
-    final buttonStyle = ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Colors.blue.shade100),
-      foregroundColor: MaterialStateColor.resolveWith((states) => Colors.black),
-    );
-    return Row(
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _FloatingButtonDetailsActionsState();
+}
+
+class _FloatingButtonDetailsActionsState
+    extends ConsumerState<FBDetailsActions> {
+  bool isFollowing = false;
+  final _key = GlobalKey<ExpandableFabState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpandableFab(
+      key: _key,
+      openButtonBuilder: RotateFloatingActionButtonBuilder(
+        child: const Icon(Icons.add),
+        fabSize: ExpandableFabSize.regular,
+        heroTag: 'openButton',
+        shape: const CircleBorder(),
+      ),
+      closeButtonBuilder: DefaultFloatingActionButtonBuilder(
+        heroTag: 'closeButton',
+        child: const Icon(Icons.close),
+        fabSize: ExpandableFabSize.small,
+        shape: const CircleBorder(),
+      ),
       children: [
-        TextButton.icon(
+        FloatingActionButton.small(
+          heroTag: 'playButton',
+          child: const Icon(
+            LineIcons.play,
+            size: 30,
+          ),
           onPressed: () {
-            ref.read(routerProvider).router.pushNamed(AppRoutes.readerView,
-                pathParameters: {
-                  'taleId': ref.read(actualTaleProvider.notifier).state
-                });
+            _onPressedPlay(widget.taleId, widget.userId, widget.coverUrl,
+                widget.taleTitle, ref);
           },
-          icon: const Icon(LineIcons.play),
-          style: buttonStyle,
-          label: const Text('Iniciar'),
         ),
-        const SizedBox(
-          width: 5,
-        ),
-        TextButton.icon(
+        FloatingActionButton.small(
+          heroTag: 'restartButton',
+          child: const Icon(
+            LineIcons.backward,
+            size: 30,
+          ),
           onPressed: () {},
-          icon: const Icon(LineIcons.backward),
-          label: const Text('Reiniciar'),
-          style: buttonStyle,
         ),
-        const SizedBox(
-          width: 5,
-        ),
-        TextButton.icon(
-          onPressed: () {},
-          icon: const Icon(LineIcons.plus),
-          label: const Text('Seguir'),
-          style: buttonStyle,
-        ),
+        ref.read(userTaleIsFollowing(widget.userId)).when(
+              data: (value) {
+                _toogleFollowing(value);
+                return FloatingActionButton.small(
+                  heroTag: 'followButton',
+                  child: !isFollowing
+                      ? const Icon(
+                          Icons.favorite_outline_rounded,
+                          size: 30,
+                        )
+                      : const Icon(
+                          Icons.favorite,
+                          size: 30,
+                        ),
+                  onPressed: () {
+                    _onPressedFollow(ref, widget.userId, widget.coverUrl,
+                        widget.taleTitle, widget.taleId);
+                  },
+                );
+              },
+              error: (_, __) => FloatingActionButton.small(
+                heroTag: 'followButton',
+                child: !isFollowing
+                    ? const Icon(
+                        Icons.favorite_outline_rounded,
+                        size: 30,
+                      )
+                    : const Icon(
+                        Icons.favorite,
+                        size: 30,
+                      ),
+                onPressed: () {
+                  _onPressedFollow(ref, widget.userId, widget.coverUrl,
+                      widget.taleTitle, widget.taleId);
+                },
+              ),
+              loading: () => FloatingActionButton.small(
+                heroTag: 'followButton',
+                child: !isFollowing
+                    ? const Icon(
+                        Icons.favorite_outline_rounded,
+                        size: 30,
+                      )
+                    : const Icon(
+                        Icons.favorite,
+                        size: 30,
+                      ),
+                onPressed: () {
+                  _onPressedFollow(ref, widget.userId, widget.coverUrl,
+                      widget.taleTitle, widget.taleId);
+                },
+              ),
+            )
       ],
     );
+  }
+
+  void _onPressedPlay(String taleId, String userId, String imageUrl,
+      String title, WidgetRef ref) async {
+    debugPrint(taleId);
+    final userTalesController = ref.read(libraryManagementProvider.notifier);
+    final exists = await userTalesController.userTaleExists(userId, taleId);
+
+    UserTalesStatus progress = UserTalesStatus.reading;
+
+    String actualSection = "";
+    int actualChapter = 0;
+
+    if (!exists) {
+      userTalesController.updateTale(
+        userId: userId,
+        taleId: taleId,
+        taleTitle: title,
+        coverUrl: imageUrl,
+        progress: progress,
+      );
+
+      debugPrint('not exists');
+    } else {
+      final usertale = await userTalesController.getTale(userId, taleId);
+      actualSection = usertale.getLastSectionReaded;
+      actualChapter = usertale.getLastChapterReaded;
+    }
+
+    final sectionDataNotifier = ref.read(sectionDataProvider.notifier);
+    await sectionDataNotifier.initData(taleId, actualChapter);
+    ref.read(selectedOptionProvider.notifier).update((state) => actualSection);
+
+    ref.read(routerProvider).router.goNamed(AppRoutes.readerView,
+        pathParameters: {
+          'taleId': ref.read(actualTaleProvider.notifier).state
+        });
+  }
+
+  void _onPressedFollow(WidgetRef ref, String uid, String imageUrl,
+      String title, String taleId) async {
+    final userTalesController = ref.read(libraryManagementProvider.notifier);
+    if (!isFollowing) {
+      await userTalesController.updateTale(
+        userId: uid,
+        taleId: taleId,
+        taleTitle: title,
+        coverUrl: imageUrl,
+        progress: UserTalesStatus.following,
+      );
+      debugPrint('following');
+    } else {
+      await userTalesController.updateTale(
+        userId: uid,
+        taleId: taleId,
+        taleTitle: title,
+        coverUrl: imageUrl,
+        progress: UserTalesStatus.unFollow,
+      );
+      debugPrint('not following');
+    }
+
+    _toogleFollowing(!isFollowing);
+  }
+
+  void _toogleFollowing(bool value) {
+    setState(() {
+      isFollowing = value;
+    });
   }
 }

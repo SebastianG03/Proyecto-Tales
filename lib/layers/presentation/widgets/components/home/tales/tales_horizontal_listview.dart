@@ -1,3 +1,5 @@
+import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/enums_helper.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/app/search/search_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,6 +39,20 @@ class _HorizontalTalesListViewState
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
+                  // ref.read(searchStateProvider.notifier).update((state) {
+                  //   return state.copyWith()
+                  // });
+                  ref.read(searchStateProvider.notifier).update((state) {
+                    bool contains = TagsHelper.tagContainsValue(widget.tag);
+                    if (contains) {
+                      return state.copyWith(
+                          ageLimit: TagsHelper.getAgeLimitValue(widget.tag));
+                    } else {
+                      return state.copyWith(
+                          accesibility:
+                              TagsHelper.getAccessibilityValue(widget.tag));
+                    }
+                  });
                   ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
                       pathParameters: {'taleId': widget.tales[index].id});
                   ref

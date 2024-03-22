@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../domain/entities/app/search/enums/enums.dart';
-import '../../../domain/entities/tales/tales_exports.dart';
-import '../../../infraestructure/repositories/tales_repository.dart';
+import '../../../../domain/entities/app/search/enums/enums.dart';
+import '../../../../domain/entities/tales/tales_exports.dart';
+import '../../../../infraestructure/repositories/tales_repository.dart';
 
 final talesRepositoryProvider = Provider((ref) => TalesRepository());
 
@@ -54,21 +54,20 @@ class TalesNotifier extends StateNotifier<List<Tales>> {
   TalesNotifier(this.repository, this.docList) : super([]);
 
   void loadTalesSliderTales() async {
-    docList = await repository.datasource.fetchSliderTales(docList);
+    docList = await repository.fetchSliderTales(docList);
     final List<Tales> tales = repository.convertToTales(docList);
     state = tales;
   }
 
   void loadTalesByAgeLimit(AgeLimit ageLimit) async {
-    docList =
-        await repository.datasource.fetchMoreTalesByAgeLimit(ageLimit, docList);
+    docList = await repository.fetchMoreTalesByAgeLimit(ageLimit, docList);
     final List<Tales> tales = repository.convertToTales(docList);
     state = tales;
   }
 
-  void loadTalesByAccesibility(Accesibility accesibility) async {
-    docList = await repository.datasource
-        .fetchMoreTalesByAccesibility(accesibility, docList);
+  void loadTalesByAccesibility(Accessibility accesibility) async {
+    docList =
+        await repository.fetchMoreTalesByAccesibility(accesibility, docList);
     final List<Tales> tales = repository.convertToTales(docList);
     state = tales;
   }

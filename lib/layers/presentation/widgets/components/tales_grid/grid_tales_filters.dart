@@ -32,7 +32,7 @@ class GridTalesFilters extends ConsumerWidget {
           title: 'Tipo de Acceso',
           isMultipleSelect: false,
           values:
-              Accesibility.values.map((e) => e.name).toList(growable: false),
+              Accessibility.values.map((e) => e.name).toList(growable: false),
         ),
         FilterExpansionTile(
           searchKey: SearchKeys.timeLapse,

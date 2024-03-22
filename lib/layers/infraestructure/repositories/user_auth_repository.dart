@@ -5,11 +5,11 @@ import '../../domain/entities/user/user.dart';
 import '../../domain/repositories/user_repository_model.dart';
 import '../datasources/user_datasource.dart';
 
-class UserRepository extends UserRepositoryModel {
+class UserAuthRepository extends UserRepositoryModel {
   final UserDatasource userDatasource;
   final AuthDatasource authDatasource;
 
-  UserRepository()
+  UserAuthRepository()
       : userDatasource = UserDatasource(),
         authDatasource = AuthDatasource();
 

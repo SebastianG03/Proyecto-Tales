@@ -2,16 +2,16 @@ import 'enums/enums.dart';
 
 class SearchState {
   final TimeLapse timeLapse;
-  final List<Gender>? genders;
+  final List<Gender> genders;
   final AgeLimit ageLimit;
-  final Accesibility accesibility;
+  final Accessibility accesibility;
   final String search;
   final bool isLoading;
 
   SearchState({
-    this.genders,
+    this.genders = const [],
     this.ageLimit = AgeLimit.forAll,
-    this.accesibility = Accesibility.all,
+    this.accesibility = Accessibility.all,
     this.timeLapse = TimeLapse.recent,
     this.search = "",
     this.isLoading = false,
@@ -21,7 +21,7 @@ class SearchState {
     TimeLapse? timeLapse,
     List<Gender>? genders,
     AgeLimit? ageLimit,
-    Accesibility? accesibility,
+    Accessibility? accesibility,
     String? search,
     bool? isLoading,
   }) {
