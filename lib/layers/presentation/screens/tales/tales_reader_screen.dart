@@ -1,14 +1,12 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../widgets/components/tales_grid/tales_grid.dart';
 import 'package:cuentos_pasantia/config/router/app_routes.dart';
 import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-
-import '../../widgets/custom/custom_components.dart';
 
 class TalesReaderScreen extends ConsumerStatefulWidget {
   const TalesReaderScreen({super.key});
@@ -19,23 +17,23 @@ class TalesReaderScreen extends ConsumerStatefulWidget {
 
 class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
   final ScrollController _scrollController = ScrollController();
-  IconData icon = Icons.arrow_drop_down;
+  // IconData icon = Icons.arrow_drop_down;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels - 100 >=
-          (_scrollController.position.maxScrollExtent / 3)) {
-        setState(() {
-          icon = Icons.arrow_drop_up;
-        });
-      } else {
-        setState(() {
-          icon = Icons.arrow_drop_down;
-        });
-      }
-    });
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels - 100 >=
+    //       (_scrollController.position.maxScrollExtent / 3)) {
+    //     setState(() {
+    //       icon = Icons.arrow_drop_up;
+    //     });
+    //   } else {
+    //     setState(() {
+    //       icon = Icons.arrow_drop_down;
+    //     });
+    //   }
+    // });
   }
 
   @override
@@ -44,11 +42,6 @@ class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
     final sectionData = ref.watch(sectionDataProvider);
     final section =
         sectionDataNotifier.loadNextSection(ref.read(selectedOptionProvider));
-
-    // const String imageUrl =
-    //     'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada3.jpg?alt=media&token=d7f743a3-59e3-434d-a220-fe08fc27b268';
-    final buttonStyle = ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.blue.shade100));
 
     return SafeArea(
       child: Scaffold(
@@ -76,7 +69,7 @@ class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
               child: Column(
                 children: [
                   Text(
-                    'Capítulo ${sectionData.chapter + 1}',
+                    sectionData.chapterTitle,
                     style: const TextStyle(
                         fontSize: 32, fontWeight: FontWeight.bold),
                   ),
@@ -89,86 +82,117 @@ class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
                       fontSize: 16,
                     ),
                   ),
+                  const SizedBox(
+                    height: 100,
+                  ),
                 ],
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    ref
-                        .read(selectedOptionProvider.notifier)
-                        .update((state) => section.options.first.getNext);
-                    debugPrint('Opcion A');
-                    ref.read(routerProvider).router.pushReplacementNamed(
-                        AppRoutes.readerView,
-                        pathParameters: {
-                          'taleId': ref.read(actualTaleProvider.notifier).state
-                        });
-                  },
-                  style: buttonStyle,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      section.options.first.text,
-                      style: const TextStyle(color: Colors.black, fontSize: 16),
+              children: section.options
+                  .map(
+                    (option) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextButton(
+                        onPressed: () {
+                          final nextChapter = sectionData.chapter + 1;
+                          if (option.getNext.isEmpty) {
+                            if (nextChapter < sectionData.numberOfChapters) {
+                              sectionDataNotifier.initData(
+                                  ref.read(actualTaleProvider.notifier).state,
+                                  nextChapter);
+                            } else {
+                              CustomSnackbar.showSnackBar(
+                                  context, "No hay más capítulos.");
+                              return;
+                            }
+                          }
+
+                          ref
+                              .read(selectedOptionProvider.notifier)
+                              .update((state) => option.getNext);
+                          debugPrint(option.id);
+                          ref.read(routerProvider).router.pushReplacementNamed(
+                              AppRoutes.readerView,
+                              pathParameters: {
+                                'taleId':
+                                    ref.read(actualTaleProvider.notifier).state
+                              });
+                        },
+                        label: option.text,
+                      ),
                     ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    ref
-                        .read(selectedOptionProvider.notifier)
-                        .update((state) => section.options.last.getNext);
-                    debugPrint('Opcion A');
-                    ref.read(routerProvider).router.pushReplacementNamed(
-                        AppRoutes.readerView,
-                        pathParameters: {
-                          'taleId': ref.read(actualTaleProvider.notifier).state
-                        });
-                  },
-                  style: buttonStyle,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      section.options.last.text,
-                      style: const TextStyle(color: Colors.black, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
+                  )
+                  .toList(),
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.5,
-              child: Icon(
-                icon,
-                size: 40,
-              ),
-            ),
-          ),
-          SliverFillRemaining(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20),
               child: Visibility(
-            visible:
-                section.getImageUrl != null && section.getImageUrl!.isNotEmpty,
-            replacement: const SizedBox(),
-            child: SizedBox(
-              height: 100,
-              child:
-                  section.getImageUrl != null && section.getImageUrl!.isNotEmpty
+                visible: section.getImageUrl != null &&
+                    section.getImageUrl!.isNotEmpty,
+                child: SizedBox(
+                  height: 300,
+                  child: section.getImageUrl != null &&
+                          section.getImageUrl!.isNotEmpty
                       ? Image.network(
                           section.getImageUrl!,
                           fit: BoxFit.scaleDown,
                         )
                       : const SizedBox(),
+                ),
+              ),
             ),
-          )),
+          ),
+          // SliverFillRemaining(
+          //     child: Visibility(
+          //   visible:
+          //       section.getImageUrl != null && section.getImageUrl!.isNotEmpty,
+          //   replacement: const SizedBox(),
+          //   child: SizedBox(
+          //     height: 100,
+          //     child:
+          //         section.getImageUrl != null && section.getImageUrl!.isNotEmpty
+          //             ? Image.network(
+          //                 section.getImageUrl!,
+          //                 fit: BoxFit.scaleDown,
+          //               )
+          //             : const SizedBox(),
+          //   ),
+          // )),
         ],
       )),
+    );
+  }
+}
+
+class CustomTextButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+  const CustomTextButton(
+      {super.key, required this.onPressed, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final buttonStyle = ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.blue.shade100));
+
+    return TextButton(
+      onPressed: () {
+        onPressed();
+      },
+      style: buttonStyle,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.black, fontSize: 16),
+        ),
+      ),
     );
   }
 }

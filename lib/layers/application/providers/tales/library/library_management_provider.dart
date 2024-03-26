@@ -24,14 +24,24 @@ class LibraryManagementNotifier extends StateNotifier<UserTalesRepository> {
     required String taleTitle,
     required String coverUrl,
     required UserTalesStatus progress,
+    int? lastChapterReaded,
+    String? lastSectionReaded,
   }) async {
-    await state.updateUserTale(
-        userId,
-        UserTales(
-            taleId: taleId,
-            taleTitle: taleTitle,
-            coverUrl: coverUrl,
-            progress: progress));
+    final record = UserTales(
+      taleId: taleId,
+      taleTitle: taleTitle,
+      coverUrl: coverUrl,
+      progress: progress,
+    );
+    record.setLastTimeRead = DateTime.now();
+    if (lastChapterReaded != null) {
+      record.setLastChapterReaded = lastChapterReaded;
+    }
+    if (lastSectionReaded != null) {
+      record.setLastSectionReaded = lastSectionReaded;
+    }
+
+    await state.updateUserTale(userId, record);
   }
 
   Future<UserTales> getTale(String userId, String taleId) async {

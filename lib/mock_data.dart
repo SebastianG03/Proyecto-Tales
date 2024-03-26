@@ -1,191 +1,445 @@
 import 'dart:io';
-import 'dart:math';
-import 'package:cuentos_pasantia/layers/infraestructure/datasources/tales_datasource.dart';
-import 'package:flutter/material.dart';
+
+import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/age_limit_enum.dart';
+import 'package:cuentos_pasantia/layers/infraestructure/datasources/datasources.dart';
+import 'package:cuentos_pasantia/layers/infraestructure/repositories/tales_repository.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'layers/domain/entities/tales/tales_exports.dart';
 
 class MockData {
   void mockData() async {
-    final List<Tales> tales = await generateTestTales();
-    final talesDatasource = TalesDataSource();
-
-    for (Tales tale in tales) {
-      Future.delayed(const Duration(seconds: 10), () {
-        talesDatasource.uploadTale(tale);
-      });
-    }
-    debugPrint('Mock data uploaded.');
+    final tale = await createTale();
+    final datasource = TalesDataSource();
+    Future.delayed(const Duration(microseconds: 100), () {
+      datasource.uploadTale(tale);
+    });
   }
 
-  Future<List<Tales>> generateTestTales() async {
-    List<Tales> tales = [];
-    int imageIndex = 1;
+  void loadData() {}
 
-    for (int i = 0; i <= 40; i++) {
-      String title = "Cuento de prueba ${i + 1}";
-      String abstract = '''
-      Resumen del cuento de prueba ${i + 1}.
-      Fugiat est adipisicing et ut. Ullamco labore voluptate culpa aliquip sit irure incididunt
-      deserunt ullamco irure do occaecat cillum. Eu duis nulla consectetur sit.
-      Nisi veniam irure et eu excepteur aute incididunt incididunt consectetur occaecat qui nisi qui aute.
-      Consectetur non ut irure amet nostrud excepteur. Pariatur proident aliquip dolor pariatur culpa dolor 
-      aliqua id.
-      Magna eu anim voluptate nulla eu dolore nulla cillum. Cupidatat laboris culpa proident aute voluptate
-      proident voluptate anim. Velit minim nostrud in non nulla sint proident aute duis est culpa elit.
-      Tempor et proident quis adipisicing labore incididunt magna nisi aute nisi aliqua commodo minim.
-      Sit mollit amet ullamco elit duis dolor proident.
-    ''';
-      int ageLimit = Random().nextInt(16).clamp(8, 16);
-      bool premium = i % 3 != 0;
-      const values = Gender.values;
-      List<Gender> genders = [
-        values[Random().nextInt(values.length).clamp(0, 3)],
-        values[Random().nextInt(values.length).clamp(4, 6)],
-        values[Random().nextInt(values.length).clamp(7, 10)],
-        values[Random().nextInt(values.length).clamp(11, 13)],
-      ];
-      if (imageIndex > 27) {
-        imageIndex = 1;
-      } else {
-        imageIndex++;
-      }
-
-      final dir = (await getApplicationDocumentsDirectory()).path;
-      File coverImage = File('$dir/portada$imageIndex.jpg');
-
-      tales.add(Tales(
-        title: title,
-        abstract: abstract,
-        premium: premium,
-        coverImage: coverImage,
-        ageLimit: ageLimit,
-        genders: genders,
-      ));
-
-      final chapters = generateChapters();
-      tales[i].setCoverUrl = getRandomUrl();
-      tales[i].setChapters = chapters;
-    }
-
-    return tales;
+  Future<Tales> createTale() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    Tales tale = Tales(
+        title: "Las aventuras de Alan y Elena",
+        abstract:
+            "Este es un cuento de prueba creado con el fin de comprobar el comportamiento de la App.",
+        coverImage: File(
+            "/Users/guama/Desktop/cuentos_pasantia/assets/tales_sample/portada_elena_alan.jpg"),
+        ageLimit: 8,
+        genders: [Gender.Aventura, Gender.Fantasia, Gender.Magia],
+        premium: false);
+    tale.setChapters = [generateFirstChapter(), generateSecondChapter()];
+    tale.setCoverUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada_elena_alan.jpg?alt=media&token=098f53de-4400-41a0-ba41-316c11bf91d8";
+    return tale;
   }
 
-  List<Chapter> generateChapters() {
-    List<Chapter> chapters = [];
-    for (int i = 0; i < 10; i++) {
-      String chapterTitle = "Capítulo ${i + 1}";
-
-      final firstSections = generateSections(0);
-      final secondSections = generateSections(10);
-      final sections = linkSections(firstSections, secondSections);
-      final chapter =
-          Chapter(id: i, chapterTitle: chapterTitle, sections: sections);
-      chapters.add(chapter);
-    }
-    return chapters;
+  Chapter generateFirstChapter() {
+    return Chapter(
+      id: 0,
+      chapterTitle: "Capítulo 1: La gran aventura.",
+      sections: firstChapterGenerateSectionsRoutes(),
+    );
   }
 
-  List<Section> generateSections(int firstIndex) {
-    int index = firstIndex;
-    List<Section> sections = [];
-    bool pasted = false;
-    for (int i = 0; i < 10; i++) {
-      String sectionTitle = "Sección $index";
-      String sectionContent = '''
-      Contenido de la sección $index.
-      Fugiat est adipisicing et ut. Ullamco labore voluptate culpa aliquip sit irure incididunt
-      deserunt ullamco irure do occaecat cillum. Eu duis nulla consectetur sit.
-      Nisi veniam irure et eu excepteur aute incididunt incididunt consectetur occaecat qui nisi qui aute.
-      Consectetur non ut irure amet nostrud excepteur. Pariatur proident aliquip dolor pariatur culpa dolor 
-      aliqua id.
-    ''';
-      final options = generateOptions();
-      final section = Section(
-          publicId: sectionTitle, text: sectionContent, options: options);
-
-      if (!pasted) section.setImageUrl = getRandomUrl();
-      sections.add(section);
-      pasted = true;
-      index++;
-    }
-    return sections;
+  Chapter generateSecondChapter() {
+    return Chapter(
+        id: 1,
+        chapterTitle: "Capítulo 2: El desafío final.",
+        sections: generateSecondChapterRoutes());
   }
 
-  List<Section> linkSections(
-      List<Section> firstSections, List<Section> secondSections) {
-    String idPrevius = "";
-    for (int i = 0; i < firstSections.length; i++) {
-      if (i == 0) {
-        firstSections.first.options.first.setNext = firstSections[i + 1].id;
-      } else if (i + 1 != firstSections.length) {
-        firstSections[i].options.first.setPrevious = idPrevius;
-        firstSections[i].options.first.setNext = firstSections[i + 1].id;
-      } else {
-        firstSections[i].options.first.setPrevious = idPrevius;
-      }
-      idPrevius = firstSections[i].id;
-    }
-    idPrevius = "";
+  List<Section> firstChapterGenerateSectionsRoutes() {
+    final endOfChapter = Section(
+        publicId: "",
+        text:
+            " Mientras tanto, en el pueblo, los rumores de la desaparición de los niños se propagaban como un incendio, "
+            "sembrando el temor y la desconfianza en los corazones de los lugareños. ¿Lograrían Elena y Alan encontrar el camino de regreso a casa?",
+        options: []);
+    final introduction = Section(
+      publicId: "Introduccion",
+      text:
+          "En un reino lejano, donde la magia impregnaba el aire, vivía Elena, una niña de noble cuna pero con un espíritu inquieto. Ansiaba explorar más allá de los muros de su hogar, curiosa por descubrir los secretos que se ocultaban en el vasto mundo.",
+      options: const [],
+    );
+    introduction.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Fintroduction.jpg?alt=media&token=b82d5db1-8e7e-4b25-be42-a9828f5ade98";
 
-    for (int i = 0; i < secondSections.length; i++) {
-      if (i == 0) {
-        firstSections.first.options.last.setNext = secondSections[i].id;
-      } else if (i + 1 != secondSections.length) {
-        secondSections[i].options.first.setPrevious = idPrevius;
-        secondSections[i].options.first.setNext = secondSections[i + 1].id;
-      }
-      {
-        firstSections[i].options.first.setPrevious = idPrevius;
-      }
-      idPrevius = secondSections[i].id;
-    }
-    final List<Section> newList = [];
-    newList.addAll(firstSections);
-    newList.addAll(secondSections);
+    final firstSelection = Section(
+      publicId: "Primero",
+      text:
+          "Un día, mientras jugaba en los jardines, Elena descubrió un pasadizo oculto que la llevó a un bosque encantado. "
+          "Elena avanzó mediante el pasadizo hasta llegar a una bifurcación. ¿Qué camino ha de tomar?",
+      options: [],
+    );
+    firstSelection.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_discovers_passage.jpg?alt=media&token=65f07ecc-baf0-4de9-b4ab-a425e5333c9f";
+    introduction.options = [
+      getOption("Continuar", "Continuar", "", firstSelection.id)
+    ];
+    List<Section> sectionsRouteA =
+        getFirstChapterRouteA(firstSelection, endOfChapter);
+    List<Section> sectionsRouteB =
+        getFirstChapterRouteB(firstSelection, endOfChapter);
 
-    return newList;
+    firstSelection.options.add(getOption("Opcion A", "Camino de la izquierda",
+        introduction.id, sectionsRouteA.first.id));
+    firstSelection.options.add(getOption("Opcion B", "Camino de la derecha",
+        introduction.id, sectionsRouteB.first.id));
+    endOfChapter.options
+        .add(getOption("Continuará...", "Continuará...", "", ""));
+
+    return [
+      introduction,
+      endOfChapter,
+      firstSelection,
+      ...sectionsRouteA,
+      ...sectionsRouteB
+    ];
   }
 
-  String getRandomUrl() {
-    final List<String> imageUrls = [
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada1.jpg?alt=media&token=1b95061d-a935-4b8b-b68a-5a0f6b0a7530',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada2.jpg?alt=media&token=75965b10-4a4d-4e82-8c35-c21199865d07',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada3.jpg?alt=media&token=d7f743a3-59e3-434d-a220-fe08fc27b268',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada4.jpg?alt=media&token=29b99035-0023-4f3c-b3e6-788c31db1701',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada5.jpg?alt=media&token=67ceb494-6071-472d-834c-2daa8d5c43fa',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada6.jpg?alt=media&token=cf180769-1287-4ad0-ae42-7d543a119532',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada7.jpg?alt=media&token=a5cd1735-d5bc-4f74-bedf-71efb2fa78d5',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada8.jpg?alt=media&token=90fc1441-cd69-43cf-adfd-a19b6a18a3a8',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada9.jpg?alt=media&token=80b3645a-b0e0-4ba4-8edd-f01ba25408db',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada10.jpg?alt=media&token=38cb05e9-ff98-4d28-bb1d-71b56e43c21b',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada11.jpg?alt=media&token=a5b5d9fb-3301-4700-8b89-e8fab4fc4ab0',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada12.jpg?alt=media&token=9e81622d-9eea-42a0-80ba-33e2cc77c784',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada13.jpg?alt=media&token=41a0cac3-53f5-401f-a405-9045ec66e402',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada14.jpg?alt=media&token=93441b8a-6ade-4df8-8fa4-ee3b218a3dad',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada15.jpg?alt=media&token=3df8ea7a-2ed5-48a7-8fc6-9a2df0a3ec85',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada16.jpg?alt=media&token=fa3f648f-1bb6-4298-bb4f-0595584cb2bf',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada17.jpg?alt=media&token=f09e9aeb-5781-4535-a43f-1e1fa18a9309',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada18.jpg?alt=media&token=a8cfa51f-08f6-43da-a4d4-a2593c5a356f',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada19.jpg?alt=media&token=c1d68371-f69d-4a7d-8681-644cdd4a80c3',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada20.jpg?alt=media&token=1eccd6ad-c3c6-4795-9821-4ca2c9370e2a',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada21.jpg?alt=media&token=102b35f8-fa33-49eb-8861-e6c5fef09d9e',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada22.jpg?alt=media&token=ddc6d7b2-359b-47b6-b6b7-61918a3ab246',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada23.jpg?alt=media&token=fc01fb36-f696-4b54-be83-87dd81bf92a5',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada24.jpg?alt=media&token=e2db677f-2b21-4860-b97f-2265945cb98d',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada25.jpg?alt=media&token=372d3deb-2f62-4b61-8c75-058357b8e56f',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada26.jpg?alt=media&token=93af8358-f4b8-4bd3-aa86-db91cdb9256a',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada27.jpg?alt=media&token=48ca17c4-bc11-4b00-b537-b9cc53e41a48',
-      'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fcovers%2Fportada27.jpg?alt=media&token=48ca17c4-bc11-4b00-b537-b9cc53e41a48',
+  List<Section> getFirstChapterRouteA(
+      Section firstSection, Section endOfChapter) {
+    //Ruta A
+    final initARoute = Section(
+      publicId: "Primera Ruta",
+      text: "Elena decidió tomar el camino de la izquierda. "
+          "Allí entró a un bosque mágico con árboles cubiertos de musgo fosforecente, donde vivía un sabío que la guió en su aventura",
+      options: [],
+    );
+    initARoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena-meeting-wiseman.jpg?alt=media&token=8451789d-f705-4708-a989-059d1c5e2230";
+
+    final secondSelectionSection = Section(
+        publicId: "Inicio ruta AA y AB",
+        text:
+            "El sabio la guió por el bosque, enseñádole todo tipo de criaturas mágicas que habitaban el lugar. "
+            "Maravillada se desvió del camino para perseguir a un conejo blanco como la nieve y con un cuerno en la frente que resplandecía en la oscuridad."
+            " De pronto, se encontró perdida y sin rumbo. ¿Qué debería hacer Elena?",
+        options: []);
+    secondSelectionSection.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_chasing_rabbit.jpg?alt=media&token=381f6b16-8a98-4b93-8e44-b0ee6714d515";
+
+    initARoute.options = [
+      getOption(
+          "Siguiente", "Continuar", firstSection.id, secondSelectionSection.id)
+    ];
+    //Ruta AA
+    final initAARoute = Section(
+        publicId: "Llegada al pueblo",
+        text: "Llegó a un pequeño pueblo de mala muerte."
+            "Allí conoció a Alan, un niño vivaz y travieso, quien se unió a su aventura sin dudarlo.",
+        options: []);
+    initAARoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_meeting_alan.jpg?alt=media&token=8326ba06-91bf-4c09-bdcc-725c9f514ce3";
+
+    secondSelectionSection.options.add(getOption(
+        "Ruta AA", "Deambular por el bosque", initARoute.id, initAARoute.id));
+
+    final lastSectionAARoute = Section(
+        publicId: "",
+        text: "Tiempo después el sabio los encontró en el pueblo."
+            "El sabio les reveló que una fuerza oscura amenazaba el reino y que sólo ellos, con su valentía y pureza de corazón, podrían detenerla.",
+        options: []);
+    lastSectionAARoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
+
+    initAARoute.options.add(getOption("Continuar", "Continuar",
+        secondSelectionSection.id, lastSectionAARoute.id));
+    lastSectionAARoute.options.add(
+        getOption("Continuar", "Continuar", initAARoute.id, endOfChapter.id));
+    //Ruta AB
+    final initABRoute = Section(
+        publicId: "Encuetro inesperado",
+        text:
+            "Tiempo después, Elena escuchó el sonido de arbustos moviéndose cerca suyo. "
+            "Asustada lanzó lo primero que alcanzó su mano al arbusto."
+            " Del cual, salió un niño cubriendo su cabeza mientras gemía de dolor. ¿Cuál es la reacción de Elena?",
+        options: []);
+    initABRoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Falan_hitted_by_a_rock.jpg?alt=media&token=b3cd0ee1-11fb-4300-9974-86988d15ac22";
+
+    secondSelectionSection.options.add(getOption("Opcion B",
+        "Esperar a la ayuda del sabio", initARoute.id, initABRoute.id));
+
+    //Ruta ABA
+    final initABARoute = Section(
+        publicId: "",
+        text:
+            "Tras un silencio incómodo Elena da un paso adelante y se presenta. En respuesta, Alan, un poco enojado también se presenta."
+            "Después de charlar un poco respecto a su situación, ambos descubren que están perdidos por lo que sin otra opción se recuestan "
+            "en un árbol cercano a esperar por ayuda del sabio.",
+        options: []);
+    initABRoute.options.add(getOption("Opcion A", "Finge que nada sucedió",
+        secondSelectionSection.id, initABARoute.id));
+
+    final endOfRouteABA = Section(
+        publicId: "",
+        text: "Tiempo después el sabio los encuentra."
+            "El sabio les reveló que una fuerza oscura amenazaba el reino y que sólo ellos, con su valentía y pureza de corazón, podrían detenerla. "
+            "Alan emocionado se une a la aventura ignorando la opinión de Elena.",
+        options: []);
+    endOfRouteABA.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
+
+    initABARoute.options.add(
+        getOption("Continuar", "Continuar", initABRoute.id, endOfRouteABA.id));
+    endOfRouteABA.options.add(
+        getOption("Continuar", "Continuar", initABARoute.id, endOfChapter.id));
+
+    //Ruta ABB
+    final initABBRoute = Section(
+        publicId: "",
+        text:
+            "Después de disculparse y presentarse. Elena aprende que Alan es un niño de un pueblo cercano que se perdió en el bosque. "
+            "Por simpatía Elena invita a Alan a unirse a viajar con ella y acepta gustosamente. "
+            "Tiempo después el sabio los encuentra.",
+        options: []);
+
+    initABRoute.options.add(getOption(
+        "Opcion B", "Se disculpa", secondSelectionSection.id, initABBRoute.id));
+
+    final endABBRoute = Section(
+        publicId: "",
+        text:
+            "El sabio les reveló que una fuerza oscura amenazaba el reino y que sólo ellos, con su valentía y pureza de corazón, podrían detenerla.",
+        options: []);
+
+    endABBRoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
+
+    initABBRoute.options.add(
+        getOption("Continuar", "Continuar", initABRoute.id, endABBRoute.id));
+
+    endABBRoute.options.add(
+        getOption("Continuar", "Continuar", initABBRoute.id, endOfChapter.id));
+
+    return [
+      initARoute,
+      secondSelectionSection,
+      initAARoute,
+      lastSectionAARoute,
+      initABRoute,
+      initABARoute,
+      endOfRouteABA,
+      initABBRoute,
+      endABBRoute,
+    ];
+  }
+
+  List<Section> getFirstChapterRouteB(
+      Section firstSelection, Section endOfChapter) {
+    final initSectionB = Section(
+        publicId: "Init Route B",
+        text:
+            "Allí conoció a Alan, un niño del pueblo cercano, quien se unió a su aventura sin dudarlo.",
+        options: []);
+    initSectionB.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_meeting_alan.jpg?alt=media&token=8326ba06-91bf-4c09-bdcc-725c9f514ce3";
+
+    final firstSelectionRoute = Section(
+        publicId: "",
+        text:
+            "Juntos se adentraron en el bosque, maravillados por las criaturas mágicas que los rodeaban. "
+            "De pronto, se encontraron perdidos y sin rumbo. ¿Cómo deberían encontrar el camino correcto?",
+        options: []);
+    initSectionB.options.add(getOption(
+        "Continuar", "Continuar", firstSelection.id, firstSelectionRoute.id));
+
+    //Ruta BA
+    final selectionRouteBA = Section(
+        publicId: "",
+        text: "Aunque se encuentran más perdidos que antes. "
+            "Elena descubrió un sendero cubierto por maleza debido a su desuso que guia hacia una pequeña cabaña. ¿Qué deberían hacer?",
+        options: []);
+
+    //Ruta Casa del sabio (BB)
+    final startRouteBB = Section(
+        publicId: "",
+        text:
+            "Encuentran a un anciano de barba blanca y aura misteriosa que camina a través del bosque."
+            "Alan y Elena acuden al anciano en busca de ayuda, quién gustosamente les ayuda",
+        options: []);
+    startRouteBB.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
+
+    final endOfSection = Section(
+        publicId: "",
+        text:
+            "El sabio les reveló que una fuerza oscura amenazaba el reino y que sólo ellos, con su valentía y pureza de corazón, podrían detenerla. "
+            "Los padres de Elena, preocupados por su desaparición buscaron cualquier rastro de su hija.",
+        options: []);
+    endOfSection.options.add(
+        getOption("Continuar", "Continuar", startRouteBB.id, endOfChapter.id));
+
+    startRouteBB.options.add(getOption(
+        "Continuar", "Continuar", firstSelectionRoute.id, endOfSection.id));
+
+    firstSelectionRoute.options = [
+      getOption(
+          "Opcion A",
+          "Alan guía a Elena en la dirección donde recuerda en la que se encuentra el pueblo.",
+          initSectionB.id,
+          selectionRouteBA.id),
+      getOption("Opcion B", "Escalan el árbol más alto en busca de ayuda.",
+          initSectionB.id, startRouteBB.id),
     ];
 
-    return imageUrls[Random().nextInt(imageUrls.length)];
+    //Final Corto
+    final initShortFinal = Section(
+        publicId: "",
+        text:
+            "El sendero resultó conectarse con el camino principal entre la casa de Elena y el pueblo de Alan. Dónde se ven obligados a separarse al encontrarse con los padres de Elena que iban en su búsqueda.",
+        options: []);
+    final alternativeEndOfChapter = Section(
+        publicId: "",
+        text:
+            "Aunque Elena se encontró un poco renuente a separarse, se sintió satisfecha con esta entretenida y corta aventura, por lo cual se despidió de Alan y volvió a casa con sus padres.",
+        options: []);
+    initShortFinal.options.add(getOption("Continuar", "Continuar",
+        selectionRouteBA.id, alternativeEndOfChapter.id));
+    alternativeEndOfChapter.options
+        .add(getOption("Fin", "Fin", initShortFinal.id, ""));
+
+    //Ruta alternativa
+    final initRouteAlternative = Section(
+        publicId: "",
+        text:
+            "Cuando Alan y Elena se encuentra en la cabaña tocan la puerta para comprobar si alguien se encuentra dentro. Afortunadamente, un hombre de barba blanca y aura misteriosa abre la puerta. Después de explicarle su situación se ofrece a guiarlos de vuelta al pueblo.",
+        options: []);
+    initRouteAlternative.options.add(getOption(
+        "Continuar", "Continuar", selectionRouteBA.id, endOfSection.id));
+    selectionRouteBA.options = [
+      getOption(
+          "Final corto",
+          "Siguen el sendero, en dirección contraria a la cabaña",
+          firstSelectionRoute.id,
+          initShortFinal.id),
+      getOption("Ruta alternativa", "Caminan hacia la cabaña.",
+          firstSelectionRoute.id, initRouteAlternative.id)
+    ];
+
+    return [
+      initSectionB,
+      firstSelectionRoute,
+      selectionRouteBA,
+      startRouteBB,
+      endOfSection,
+      initShortFinal,
+      alternativeEndOfChapter,
+      initRouteAlternative
+    ];
   }
 
-  List<Options> generateOptions() {
-    var option = Options(text: 'Opción 1', id: 'A');
-    var option2 = Options(text: 'Opción 2', id: 'B');
-    return [option, option2];
+  List<Section> generateSecondChapterRoutes() {
+    Section introduction = Section(
+        text:
+            "Después de días de caminata, Elena y Alan llegaron al corazón del bosque, donde una antigua criatura maligna había sido despertada. "
+            "El sabio les advirtió del peligro, pero ellos estaban decididos a enfrentarlo."
+            "Antes de la batalla Elena y Alan se decidieron cómo enfrentar a la criatura.",
+        options: []);
+    introduction.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fintroduction.jpg?alt=media&token=13691a96-4ef2-4156-a979-288474981788";
+
+    //Ruta A
+    Section sectionARoute = Section(
+        text:
+            "Cuando Alan y Elena fueron a pedir ayuda, se encontraron con los padres de Elena, quienes les ayudaron a prepararse para la batalla. "
+            "El sabio les entregó un talismán mágico, capaz de debilitar a la criatura oscura.",
+        options: []);
+    sectionARoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fwiseman-and-talisman.jpg?alt=media&token=1598fb3e-d724-467b-a846-4037900c802b";
+    //Ruta B
+    Section sectionBRoute = Section(
+        text:
+            "Los padres de Elena les sorprendieron durante su planificación y ayudaron a los niños a prepararse para la batalla. "
+            "El sabio les entregó un talismán mágico, capaz de debilitar a la criatura oscura.",
+        options: []);
+    sectionBRoute.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fwiseman-and-talisman.jpg?alt=media&token=1598fb3e-d724-467b-a846-4037900c802b";
+
+    introduction.options = [
+      getOption(
+          "Opcion A",
+          "Pedir ayuda al pueblo para derrotar a la criatura.",
+          "",
+          sectionARoute.id),
+      getOption(
+          "Opcion B",
+          "Calmar a la criatura y convencerla de volver a dormir.",
+          "",
+          sectionBRoute.id)
+    ];
+
+    Section secondSelectionSection = Section(
+        text:
+            "La batalla fue feroz, con hechizos y criaturas mágicas luchando de ambos bandos. ¿Cómo Alan y Elena deberían acercarse a la criatura?",
+        options: []);
+    secondSelectionSection.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fblack-dragon-being-attacked.jpg?alt=media&token=364cce0f-d91e-4122-a4be-496c279ceb22";
+
+    sectionARoute.options.add(getOption(
+        "Continuar", "Continuar", introduction.id, secondSelectionSection.id));
+    sectionBRoute.options.add(getOption(
+        "Continuar", "Continuar", introduction.id, secondSelectionSection.id));
+
+    //Ruta CA
+    Section sectionCARoute = Section(
+        text:
+            "Elena y Alan, armados con su valentía y el talismán, intentaron acercarse pero las criaturas mágicos del bando enemigo no les dejaron las cosas fáciles, rompiendo talisman en consecuencia cuando estaban cerca de la criatura.",
+        options: []);
+    //Ruta CB
+    Section sectionCBRoute = Section(
+        text:
+            "Elena y Alan, armados con su valentía y el talismán, lograron acercarse a la criatura maligna cuando ambos bandos estaba al borde del cansancio. Ningún bando se dió cuenta de sus acciones.",
+        options: []);
+    secondSelectionSection.options = [
+      getOption("Opcion A", "Corren directamente hacia la criatura",
+          sectionARoute.id, sectionCARoute.id),
+      getOption(
+          "Opcion B",
+          "Rodean a la criatura y se acercan por su punto ciego.",
+          sectionBRoute.id,
+          sectionCBRoute.id)
+    ];
+
+    Section finalSection = Section(
+        text:
+            "En un momento crucial, el talismán se rompió, y parecía que todo estaba perdido. Pero Elena, recordando las enseñanzas del sabio, logró invocar un poder oculto dentro de sí misma, derrotando a la criatura oscura.",
+        options: []);
+    finalSection.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fbroken-talisman.jpg?alt=media&token=1c0b286d-a567-453d-9041-6e0c1c2c498a";
+    sectionCARoute.options.add(getOption(
+        "Continuar", "Continuar", secondSelectionSection.id, finalSection.id));
+    sectionCBRoute.options.add(getOption(
+        "Continuar", "Continuar", secondSelectionSection.id, finalSection.id));
+    Section endOfChapter = Section(
+        text:
+            "El reino fue salvado gracias al coraje de los niños, y los pueblos vecinos se unieron en celebración. Elena y Alan regresaron a casa como héroes, con una nueva apreciación por la magia y las aventuras que los esperaban.",
+        options: []);
+    finalSection.options
+        .add(getOption("Continuar", "Continuar", "", endOfChapter.id));
+    endOfChapter.options.add(getOption("Fin", "Fin", finalSection.id, ""));
+    endOfChapter.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fend-tale.jpg?alt=media&token=a0338aa0-f7bf-48fd-9743-f6177dd24606";
+    return [
+      introduction,
+      sectionARoute,
+      sectionBRoute,
+      secondSelectionSection,
+      sectionCARoute,
+      sectionCBRoute,
+      finalSection,
+      endOfChapter
+    ];
+  }
+
+  Options getOption(
+      String id, String text, String previousSectionId, String nextSectionId) {
+    Options option = Options(id: id, text: text);
+    option.setNext = nextSectionId;
+    option.setPrevious = previousSectionId;
+    return option;
   }
 }

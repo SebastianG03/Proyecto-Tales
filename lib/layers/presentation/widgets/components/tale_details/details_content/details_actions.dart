@@ -69,65 +69,29 @@ class _FloatingButtonDetailsActionsState
           ),
           onPressed: () {},
         ),
-        ref.read(userTaleIsFollowing(widget.userId)).when(
-              data: (value) {
-                _toogleFollowing(value);
-                return FloatingActionButton.small(
-                  heroTag: 'followButton',
-                  child: !isFollowing
-                      ? const Icon(
-                          Icons.favorite_outline_rounded,
-                          size: 30,
-                        )
-                      : const Icon(
-                          Icons.favorite,
-                          size: 30,
-                        ),
-                  onPressed: () {
-                    _onPressedFollow(ref, widget.userId, widget.coverUrl,
-                        widget.taleTitle, widget.taleId);
-                  },
-                );
-              },
-              error: (_, __) => FloatingActionButton.small(
-                heroTag: 'followButton',
-                child: !isFollowing
-                    ? const Icon(
-                        Icons.favorite_outline_rounded,
-                        size: 30,
-                      )
-                    : const Icon(
-                        Icons.favorite,
-                        size: 30,
-                      ),
-                onPressed: () {
-                  _onPressedFollow(ref, widget.userId, widget.coverUrl,
-                      widget.taleTitle, widget.taleId);
-                },
-              ),
-              loading: () => FloatingActionButton.small(
-                heroTag: 'followButton',
-                child: !isFollowing
-                    ? const Icon(
-                        Icons.favorite_outline_rounded,
-                        size: 30,
-                      )
-                    : const Icon(
-                        Icons.favorite,
-                        size: 30,
-                      ),
-                onPressed: () {
-                  _onPressedFollow(ref, widget.userId, widget.coverUrl,
-                      widget.taleTitle, widget.taleId);
-                },
-              ),
-            )
+        FloatingActionButton.small(
+          heroTag: 'followButton',
+          child: !isFollowing
+              ? const Icon(
+                  Icons.favorite_outline_rounded,
+                  size: 30,
+                )
+              : const Icon(
+                  Icons.favorite,
+                  size: 30,
+                ),
+          onPressed: () {
+            _onPressedFollow(ref, widget.userId, widget.coverUrl,
+                widget.taleTitle, widget.taleId);
+          },
+        )
       ],
     );
   }
 
   void _onPressedPlay(String taleId, String userId, String imageUrl,
       String title, WidgetRef ref) async {
+    if (!isUserSigned(userId)) return;
     debugPrint(taleId);
     final userTalesController = ref.read(libraryManagementProvider.notifier);
     final exists = await userTalesController.userTaleExists(userId, taleId);
@@ -144,6 +108,8 @@ class _FloatingButtonDetailsActionsState
         taleTitle: title,
         coverUrl: imageUrl,
         progress: progress,
+        lastChapterReaded: actualChapter,
+        lastSectionReaded: actualSection,
       );
 
       debugPrint('not exists');
@@ -165,6 +131,7 @@ class _FloatingButtonDetailsActionsState
 
   void _onPressedFollow(WidgetRef ref, String uid, String imageUrl,
       String title, String taleId) async {
+    if (!isUserSigned(uid)) return;
     final userTalesController = ref.read(libraryManagementProvider.notifier);
     if (!isFollowing) {
       await userTalesController.updateTale(
@@ -193,5 +160,13 @@ class _FloatingButtonDetailsActionsState
     setState(() {
       isFollowing = value;
     });
+  }
+
+  bool isUserSigned(String userId) {
+    if (userId == "") {
+      CustomSnackbar.showSnackBar(context, "Inicie sesión para continuar");
+      return false;
+    }
+    return true;
   }
 }

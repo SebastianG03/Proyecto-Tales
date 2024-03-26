@@ -18,10 +18,12 @@ class LoggedLibrary extends ConsumerStatefulWidget {
 class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
   int page = 1;
   final ScrollController _scrollController = ScrollController();
+  late LibraryNotifier talesController;
 
   @override
   void initState() {
     super.initState();
+    talesController = ref.read(libraryContentProvider(widget.userId).notifier);
 
     // _scrollController.addListener(() {
     //   double maxScroll = _scrollController.position.maxScrollExtent;
@@ -45,10 +47,10 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
   @override
   Widget build(BuildContext context) {
     final actualState = ref.watch(libraryFilterProvider.notifier);
-    final values = ref.read(libraryStateValuesProvider);
-    final talesController =
-        ref.watch(libraryContentProvider(widget.userId).notifier);
-    talesController.loadTales(page);
+    talesController.loadTales();
+    final List<UserTales> userTales = [];
+    debugPrint('Tales length in controller ${talesController.tales.length}');
+    userTales.addAll(talesController.actualStatus(actualState.state));
 
     return SafeArea(
       child: Padding(
@@ -94,8 +96,14 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
               onSelectionChanged: (newSelected) {
                 UserTalesStatus selected = updateSelectedValue(newSelected);
                 actualState.update((state) => selected);
+                final List<UserTales> changedTales =
+                    talesController.actualStatus(selected);
                 setState(() {
+                  userTales.clear();
                   debugPrint(actualState.state.name);
+                  debugPrint('Actual tales length: ${userTales.length}');
+                  debugPrint('Changed tales length: ${changedTales.length}');
+                  userTales.addAll(changedTales);
                 });
               },
             ),
@@ -104,16 +112,16 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
             ),
             Expanded(
               child: ListView.builder(
-                // physics: const NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 controller: _scrollController,
-                itemCount: talesController.tales.length,
+                itemCount: userTales.length,
                 itemBuilder: (context, index) {
-                  final userTale = talesController.tales[index];
                   return LibraryTale(
-                    title: userTale.taleTitle,
-                    chapter: 'Capítulo ${userTale.getLastChapterReaded}',
-                    lastRead: userTale.timeSinceLastRead(),
-                    urlImage: userTale.coverUrl,
+                    title: userTales[index].taleTitle,
+                    chapter:
+                        'Capítulo ${userTales[index].getLastChapterReaded + 1}',
+                    lastRead: userTales[index].timeSinceLastRead(),
+                    urlImage: userTales[index].coverUrl,
                   );
                 },
               ),

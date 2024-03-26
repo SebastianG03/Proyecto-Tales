@@ -25,8 +25,14 @@ class UserDatasource implements UserDatasourceModel {
   @override
   Future<UserModel> getUserById(String id) async {
     try {
-      final DocumentSnapshot user = await _usersCollection.doc(id).get();
-      return UserModel.fromJson(user.data() as Map<String, dynamic>);
+      final query = await _usersCollection.where('id', isEqualTo: id).get();
+      final user =
+          UserModel.fromJson(query.docs.first.data() as Map<String, dynamic>);
+      debugPrint(
+          'Id: ${user.id} | length usertales: ${user.getUserModelTales.length}');
+      return user;
+      // final DocumentSnapshot user = await _usersCollection.doc(id).get();
+      // return UserModel.fromJson(user.data() as Map<String, dynamic>);
     } on Exception catch (_) {
       throw ('''No se pudo obtener la información del usuario.
        El usuario no existe o no se encuentra registrado''');
@@ -72,7 +78,7 @@ class UserDatasource implements UserDatasourceModel {
           userTales.indexWhere((tale) => tale.taleId == userTale.taleId);
 
       if (index != -1) {
-        userTales.remove(userTale);
+        userTales.remove(userTales[index]);
         userTales.add(userTale);
       } else {
         userTales.add(userTale);
@@ -89,11 +95,11 @@ class UserDatasource implements UserDatasourceModel {
   @override
   Future<bool> userTaleExists(String userId, String taleId) async {
     try {
-      final query = await _usersCollection
-          .where('id', isEqualTo: userId)
-          .where('userModelTales', arrayContains: taleId)
-          .get();
-      return query.docs.isNotEmpty;
+      final user = await getUserById(userId);
+
+      return user.getUserModelTales
+          .where((doc) => doc.taleId == taleId)
+          .isNotEmpty;
     } on Exception catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -104,12 +110,7 @@ class UserDatasource implements UserDatasourceModel {
   Future<UserTales> getUserTale(String userId, String taleId) async {
     try {
       final user = await getUserById(userId);
-      int index =
-          user.getUserModelTales.indexWhere((tale) => tale.taleId == taleId);
-      return (index != -1)
-          ? user.getUserModelTales[index]
-          : throw Exception(
-              'No se encontró el cuento, intente de nuevo más tarde');
+      return user.getUserModelTales.where((doc) => doc.taleId == taleId).first;
     } on Exception catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -117,32 +118,24 @@ class UserDatasource implements UserDatasourceModel {
   }
 
   @override
-  Future<List<UserTales>> getUserTales(String userId, int page) async {
+  Future<List<UserTales>> getUserTales(String userId) async {
     try {
-      final user = await getUserById(userId);
-
+      final query = await _usersCollection.where('id', isEqualTo: userId).get();
+      final user =
+          UserModel.fromJson(query.docs.first.data() as Map<String, dynamic>);
       return user.getUserModelTales;
-    } on Exception catch (e) {
-      debugPrint(e.toString());
-      rethrow;
+    } catch (e) {
+      throw ('''No se pudo obtener la información del usuario.
+       El usuario no existe o no se encuentra registrado,
+       ${e.toString()}''');
     }
-  }
+    // try {
+    //   final user = await getUserById(userId);
 
-  @override
-  Future<List<UserTales>> getUserTalesByStatus(
-      String userId, UserTalesStatus status, int page) async {
-    try {
-      final user = await getUserById(userId);
-
-      final limit = page * 10;
-
-      return user.getUserModelTales
-          .where((value) => value.progress == status)
-          .take(limit)
-          .toList();
-    } on Exception catch (e) {
-      debugPrint(e.toString());
-      rethrow;
-    }
+    //   return user.getUserModelTales;
+    // } on Exception catch (e) {
+    //   debugPrint(e.toString());
+    //   rethrow;
+    // }
   }
 }

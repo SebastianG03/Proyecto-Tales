@@ -40,7 +40,7 @@ class UserTales {
       'idTale': taleId,
       'taleTitle': taleTitle,
       'coverUrl': coverUrl,
-      'progress': progress.toString(),
+      'progress': progress.name,
       'lastChapterReaded': _lastChapterReaded,
       'lastSectionReaded': _lastSectionReaded,
       'lastTimeRead':
@@ -50,7 +50,7 @@ class UserTales {
 
   UserTalesStatus _parseUserTalesStatus(String progress) =>
       UserTalesStatus.values.firstWhere(
-          (element) => element.toString() == progress,
+          (element) => element.name.compareTo(progress) == 0,
           orElse: () => UserTalesStatus.reading);
 
   String timeSinceLastRead() {
@@ -83,13 +83,13 @@ class UserTales {
   }
 
   set setLastChapterReaded(int lastChapterReaded) =>
-      lastChapterReaded = _lastChapterReaded;
+      _lastChapterReaded = lastChapterReaded;
   int get getLastChapterReaded => _lastChapterReaded;
 
   set setLastSectionReaded(String lastSectionReaded) =>
-      lastSectionReaded = _lastSectionReaded;
+      _lastSectionReaded = lastSectionReaded;
   String get getLastSectionReaded => _lastSectionReaded;
 
-  set setLastTimeRead(DateTime? lastTimeRead) => lastTimeRead = _lastTimeRead;
+  set setLastTimeRead(DateTime? lastTimeRead) => _lastTimeRead = lastTimeRead;
   DateTime? get getLastTimeRead => _lastTimeRead;
 }

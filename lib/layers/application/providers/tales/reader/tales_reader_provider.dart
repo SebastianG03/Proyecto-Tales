@@ -30,6 +30,7 @@ class SectionData extends ChangeNotifier {
   final int actualPage;
   final String lastSectionId;
   final int numberOfChapters;
+  final String chapterTitle;
 
   SectionData({
     required this.taleId,
@@ -37,6 +38,7 @@ class SectionData extends ChangeNotifier {
     this.lastSectionId = "",
     this.actualPage = 1,
     this.numberOfChapters = 0,
+    this.chapterTitle = "",
   });
 
   copyWith({
@@ -45,6 +47,7 @@ class SectionData extends ChangeNotifier {
     int? numberOfChapters,
     int? actualPage,
     String? lastSectionId,
+    String? chapterTitle,
   }) {
     return SectionData(
       taleId: taleId ?? this.taleId,
@@ -52,6 +55,7 @@ class SectionData extends ChangeNotifier {
       actualPage: actualPage ?? this.actualPage,
       lastSectionId: lastSectionId ?? this.lastSectionId,
       numberOfChapters: numberOfChapters ?? this.numberOfChapters,
+      chapterTitle: chapterTitle ?? this.chapterTitle,
     );
   }
 
@@ -64,14 +68,15 @@ class SectionDataNotifier extends StateNotifier<SectionData> {
   SectionDataNotifier(super.state, this.repository);
 
   Future<void> initData(String taleId, int chapter) async {
-    final sections = await repository.getSections(taleId, chapter);
+    final chapters = await repository.getTaleChapters(taleId);
     state = state.copyWith(
       taleId: taleId,
       chapter: chapter,
-      numberOfChapters: sections.length,
+      numberOfChapters: chapters.length,
+      chapterTitle: chapters[chapter].getChapterTitle,
     );
-    this.sections.clear();
-    this.sections.addAll(sections);
+    sections.clear();
+    sections.addAll(chapters[chapter].getSections);
     state.notify();
   }
 
@@ -95,7 +100,11 @@ class SectionDataNotifier extends StateNotifier<SectionData> {
             lastSectionId: sectionId, actualPage: state.actualPage + 1);
       });
       state.notify();
-      return sections.firstWhere((element) => element.id == sectionId);
+      if (sectionId != "") {
+        return sections.firstWhere((element) => element.id == sectionId);
+      } else {
+        return sections.first;
+      }
     } else {
       // CustomSnackbar.showSnackBar(context, "No se pudo cargar el contenido");
       throw Exception("No se pudo cargar el contenido");
@@ -103,15 +112,16 @@ class SectionDataNotifier extends StateNotifier<SectionData> {
   }
 
   Future<void> loadNextChapter() async {
-    if (state.chapter + 1 > state.numberOfChapters) return;
-    final newSections =
-        await repository.getSections(state.taleId, state.chapter + 1);
+    if (state.chapter >= state.numberOfChapters) return;
+    final nextChapter =
+        await repository.getChapter(state.taleId, state.chapter + 1);
     state = state.copyWith(
       chapter: state.chapter + 1,
       actualPage: 0,
+      chapterTitle: nextChapter.getChapterTitle,
     );
     sections.clear();
-    sections.addAll(newSections);
+    sections.addAll(nextChapter.getSections);
     state.notify();
   }
 }

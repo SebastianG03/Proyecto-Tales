@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/user/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -30,9 +31,8 @@ class TalesDataSource extends TaleDatasourceModel {
 
   @override
   void uploadTale(Tales tale) async {
-    // final cover = await tale.coverImage!.create();
-    // final coverUrl = await uploadTaleCover(cover, tale.id, false);
-    // tale.setCoverUrl = coverUrl;
+    // final coverUrl = await uploadTaleCover(tale.coverImage!, tale.id, false);
+    // debugPrint(coverUrl);
     // tale = await _recursiveUploadSectionFiles(tale.id, tale, false);
     await _talesCollection.doc(tale.id).set(tale.toJson());
   }
@@ -131,18 +131,23 @@ class TalesDataSource extends TaleDatasourceModel {
 
   @override
   Future<List<Chapter>> getTaleChapters(String taleId) async {
-    final tale = await getTale(taleId);
-    return tale.getChapters;
+    try {
+      final snapshot = await _talesCollection.doc(taleId).get();
+      return Tales.allDataFromJson(snapshot.data() as Map<String, dynamic>)
+          .getChapters;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
   }
 
   @override
   Future<Chapter> getChapter(String taleId, int chapterId) async {
     try {
-      final query = await _talesCollection
-          .where('id', isEqualTo: taleId)
-          .where('chapters', arrayContains: chapterId)
-          .get();
-      return Chapter.fromJson(query.docs.first.data() as Map<String, dynamic>);
+      final query = await _talesCollection.where('id', isEqualTo: taleId).get();
+      final tale = Tales.allDataFromJson(
+          query.docs.first.data() as Map<String, dynamic>);
+      return tale.getChapters.where((chapter) => chapter.id == chapterId).first;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -154,7 +159,7 @@ class TalesDataSource extends TaleDatasourceModel {
     try {
       final query = await _talesCollection.where('id', isEqualTo: taleId).get();
       final json = query.docs.first.data() as Map<String, dynamic>;
-      final tale = Tales.allDataFromJason(json);
+      final tale = Tales.allDataFromJson(json);
       debugPrint(
           'Tale: ${tale.title} | Section: ${tale.getChapters[chapterId].getSections[page].id}');
       return tale.getChapters[chapterId].getSections[page];
@@ -170,7 +175,7 @@ class TalesDataSource extends TaleDatasourceModel {
     try {
       final query = await _talesCollection.where('id', isEqualTo: taleId).get();
       final json = query.docs.first.data() as Map<String, dynamic>;
-      final tale = Tales.allDataFromJason(json);
+      final tale = Tales.allDataFromJson(json);
       return tale.getChapters[chapterId].getSections
           .where((section) => section.id == sectionId)
           .first;
@@ -185,7 +190,7 @@ class TalesDataSource extends TaleDatasourceModel {
     try {
       final query = await _talesCollection.where('id', isEqualTo: taleId).get();
       final json = query.docs.first.data() as Map<String, dynamic>;
-      final tale = Tales.allDataFromJason(json);
+      final tale = Tales.allDataFromJson(json);
       return tale.getChapters[chapterId].getSections;
     } catch (e) {
       debugPrint(e.toString());

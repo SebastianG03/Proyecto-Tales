@@ -47,7 +47,7 @@ class Tales {
     });
   }
 
-  Tales.allDataFromJason(Map<String, dynamic> json)
+  Tales.allDataFromJson(Map<String, dynamic> json)
       : id = json['id'],
         title = json['title'],
         abstract = json["abstract"],
