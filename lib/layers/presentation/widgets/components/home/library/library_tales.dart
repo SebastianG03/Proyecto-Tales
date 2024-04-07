@@ -23,10 +23,14 @@ class LibraryTale extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image(
-                  image: AssetImage(urlImage),
+                child: Image.network(
+                  urlImage,
                   fit: BoxFit.cover,
                   height: 80,
+                  loadingBuilder: (context, child, loadingProgress) =>
+                      loadingProgress == null
+                          ? child
+                          : const Center(child: CircularProgressIndicator()),
                 ),
               ),
               const SizedBox(
@@ -36,8 +40,9 @@ class LibraryTale extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    title.length > 24 ? "${title.substring(0, 24)}..." : title,
                     style: const TextStyle(fontSize: 16),
+                    softWrap: true,
                   ),
                   const SizedBox(
                     height: 10,

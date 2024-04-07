@@ -36,6 +36,11 @@ class MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final user = ref.read(authUserProvider);
+    final uid = user.asData?.value?.uid ?? "";
+    if (uid.isNotEmpty) {
+      ref.read(libraryContentProvider(uid).notifier).loadTales();
+    }
   }
 
   @override

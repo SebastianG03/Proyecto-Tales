@@ -1,26 +1,29 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
 import 'package:cuentos_pasantia/layers/domain/entities/user/user_tales_status.dart';
 import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../../../../../config/router/app_routes.dart';
-import '../../../custom/custom_text_button_with_icon.dart';
 
 class FBDetailsActions extends ConsumerStatefulWidget {
   final String taleId;
   final String taleTitle;
   final String coverUrl;
   final String userId;
-  const FBDetailsActions({
+  bool isFollowing;
+
+  FBDetailsActions({
     super.key,
     required this.taleId,
     required this.taleTitle,
     required this.coverUrl,
     required this.userId,
+    required this.isFollowing,
   });
 
   @override
@@ -30,7 +33,6 @@ class FBDetailsActions extends ConsumerStatefulWidget {
 
 class _FloatingButtonDetailsActionsState
     extends ConsumerState<FBDetailsActions> {
-  bool isFollowing = false;
   final _key = GlobalKey<ExpandableFabState>();
 
   @override
@@ -71,7 +73,7 @@ class _FloatingButtonDetailsActionsState
         ),
         FloatingActionButton.small(
           heroTag: 'followButton',
-          child: !isFollowing
+          child: !widget.isFollowing
               ? const Icon(
                   Icons.favorite_outline_rounded,
                   size: 30,
@@ -133,7 +135,7 @@ class _FloatingButtonDetailsActionsState
       String title, String taleId) async {
     if (!isUserSigned(uid)) return;
     final userTalesController = ref.read(libraryManagementProvider.notifier);
-    if (!isFollowing) {
+    if (!widget.isFollowing) {
       await userTalesController.updateTale(
         userId: uid,
         taleId: taleId,
@@ -153,12 +155,12 @@ class _FloatingButtonDetailsActionsState
       debugPrint('not following');
     }
 
-    _toogleFollowing(!isFollowing);
+    _toogleFollowing(!widget.isFollowing);
   }
 
   void _toogleFollowing(bool value) {
     setState(() {
-      isFollowing = value;
+      widget.isFollowing = value;
     });
   }
 

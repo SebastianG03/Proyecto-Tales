@@ -1,10 +1,10 @@
 import 'package:cuentos_pasantia/layers/application/providers/tales/library/library_data_provider.dart';
-import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
 import 'package:cuentos_pasantia/layers/domain/entities/user/users.dart';
 import 'package:cuentos_pasantia/layers/infraestructure/repositories/user_auth_repository.dart';
 import 'package:cuentos_pasantia/layers/infraestructure/repositories/usertales_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 
 // final contentProvider =
 //     FutureProvider.family<String>(
@@ -31,7 +31,7 @@ class LibraryNotifier extends StateNotifier<UserTalesRepository> {
   }
 
   Future<void> loadTales() async {
-    // tales.clear();
+    tales.clear();
     final repository = UserAuthRepository();
     final user = await repository.getUserById(userId);
     debugPrint('Id: ${user.id} | user loaded');

@@ -10,8 +10,7 @@ import '../providers.dart';
 final loginFormProvider =
     StateNotifierProvider<LoginFormNotifier, LoginFormState>(
   (ref) {
-    final loginCallback =
-        ref.read(userSignInProvider.notifier).signInWithEmailAndPassword;
+    final loginCallback = ref.read(userSignInProvider.notifier);
     final notifier = ref.watch(userSignInProvider);
     final prefs = ref.watch(preferencesProvider);
     return LoginFormNotifier(loginCallback, prefs, notifier);
@@ -19,11 +18,8 @@ final loginFormProvider =
 );
 
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
-  final void Function(
-      {required BuildContext context,
-      required String email,
-      required String password}) loginCallback;
-  AsyncValue<Preferences> prefs;
+  final SignInNotifier loginCallback;
+  Future<Preferences> prefs;
   final UserState notifier;
   LoginFormNotifier(
     this.loginCallback,
@@ -52,13 +48,13 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     if (!state.isValid) return;
 
     state = state.copyWith(isPosting: true);
-    loginCallback(
+    final user = await loginCallback.signInWithEmailAndPassword(
         context: context,
         email: state.email.value,
         password: state.password.value);
-    final user = notifier.user;
-    debugPrint(user?.name ?? 'Null user');
-    prefs.whenData((prefs) => prefs.setUserData(user!.toJson()));
+    final preferences = await prefs;
+    preferences.setUserData(user.toJson());
+    preferences.setUserId(user.id);
     state = state.copyWith(isPosting: false);
   }
 

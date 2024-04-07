@@ -19,6 +19,8 @@ class TaleDetailsScreen extends ConsumerWidget {
       child: taleAsync.when(
         data: (tale) {
           final uid = user.asData?.value?.uid ?? "";
+          final bool isFollowing =
+              ref.read(userTaleIsFollowing(uid)).asData?.value ?? false;
           return Scaffold(
             // resizeToAvoidBottomInset: false,
             body: TaleDetailsView(
@@ -33,6 +35,7 @@ class TaleDetailsScreen extends ConsumerWidget {
               taleId: tale.id,
               taleTitle: tale.title,
               coverUrl: tale.getCoverUrl,
+              isFollowing: isFollowing,
               userId: uid,
             ),
           );

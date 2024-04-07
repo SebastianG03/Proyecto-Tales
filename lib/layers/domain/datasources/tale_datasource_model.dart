@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../entities/app/search/enums/enums.dart';
 import '../entities/tales/tales_exports.dart';
 
 abstract class TaleDatasourceModel {

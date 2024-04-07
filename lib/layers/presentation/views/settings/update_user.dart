@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/providers/providers.dart';
-import '../../../domain/entities/user/users.dart';
 import '../../widgets/components/forms/register_form.dart';
 
 class UpdateUserView extends ConsumerStatefulWidget {
-  const UpdateUserView({super.key});
+  final String userId;
+  const UpdateUserView({super.key, required this.userId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _UpdateUserViewState();
@@ -19,8 +19,7 @@ class _UpdateUserViewState extends ConsumerState<UpdateUserView> {
 
   @override
   Widget build(BuildContext context) {
-    final prefs = ref.read(preferencesProvider);
-    late UserModel user;
+    final userAsync = ref.read(userInformationProvider(widget.userId));
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: ConstrainedBox(
@@ -29,9 +28,8 @@ class _UpdateUserViewState extends ConsumerState<UpdateUserView> {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-          child: prefs.when(
-            data: (pref) {
-              user = pref.getUserData()!;
+          child: userAsync.when(
+            data: (user) {
               return Form(
                 key: formKey,
                 child: Column(
@@ -53,7 +51,7 @@ class _UpdateUserViewState extends ConsumerState<UpdateUserView> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: ElevatedButton(
-                        onPressed: () => editForm,
+                        onPressed: () => editForm(),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 10.0),

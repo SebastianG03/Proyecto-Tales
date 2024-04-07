@@ -34,7 +34,7 @@ class AppRoutes {
 
   //Settings Sub Routes paths
   static const String _accountRoute = 'account';
-  static const String _updateAccountRoute = 'update_user';
+  static const String _updateAccountRoute = 'update_user/:userId';
 
   //Settings Sub Routes names
   static const String accountView = 'account';
@@ -166,8 +166,9 @@ class AppRoutes {
                         name: updateAccountView,
                         parentNavigatorKey: _rootKey,
                         builder: (context, state) {
-                          return const ChildScreen(
-                            widget: UpdateUserView(),
+                          return ChildScreen(
+                            widget: UpdateUserView(
+                                userId: state.pathParameters['userId']!),
                           );
                         },
                         routes: const [],

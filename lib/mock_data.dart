@@ -254,6 +254,9 @@ class MockData {
             "Elena descubrió un sendero cubierto por maleza debido a su desuso que guia hacia una pequeña cabaña. ¿Qué deberían hacer?",
         options: []);
 
+    selectionRouteBA.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_house.jpg?alt=media&token=d0c95f6e-61bd-47e9-9099-0750d050a15a";
+
     //Ruta Casa del sabio (BB)
     final startRouteBB = Section(
         publicId: "",
@@ -306,8 +309,12 @@ class MockData {
     final initRouteAlternative = Section(
         publicId: "",
         text:
-            "Cuando Alan y Elena se encuentra en la cabaña tocan la puerta para comprobar si alguien se encuentra dentro. Afortunadamente, un hombre de barba blanca y aura misteriosa abre la puerta. Después de explicarle su situación se ofrece a guiarlos de vuelta al pueblo.",
+            "Cuando Alan y Elena se encuentra en la cabaña tocan la puerta para comprobar si alguien se encuentra dentro. "
+            "Afortunadamente, un hombre de barba blanca y aura misteriosa abre la puerta. "
+            "Después de explicarle su situación se ofrece a guiarlos de vuelta al pueblo.",
         options: []);
+    initRouteAlternative.setImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_house.jpg?alt=media&token=d0c95f6e-61bd-47e9-9099-0750d050a15a";
     initRouteAlternative.options.add(getOption(
         "Continuar", "Continuar", selectionRouteBA.id, endOfSection.id));
     selectionRouteBA.options = [

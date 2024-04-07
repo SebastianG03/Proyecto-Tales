@@ -19,7 +19,6 @@ class UserRegisterForm extends ConsumerStatefulWidget {
 
 class UserRegisterFormState extends ConsumerState<UserRegisterForm> {
   bool obscurePassword = true;
-  bool obscureConfirmPassword = true;
 
   @override
   Widget build(BuildContext context) {

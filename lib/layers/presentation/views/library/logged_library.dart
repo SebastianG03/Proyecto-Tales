@@ -1,7 +1,5 @@
-import 'package:cuentos_pasantia/layers/presentation/views/home/library_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:line_icons/line_icons.dart';
 
 import '../../../application/providers/providers.dart';
 import '../../../domain/entities/user/users.dart';
@@ -19,38 +17,31 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
   int page = 1;
   final ScrollController _scrollController = ScrollController();
   late LibraryNotifier talesController;
+  bool isLoading = false;
+  final List<UserTales> userTales = [];
 
   @override
   void initState() {
     super.initState();
     talesController = ref.read(libraryContentProvider(widget.userId).notifier);
 
-    // _scrollController.addListener(() {
-    //   double maxScroll = _scrollController.position.maxScrollExtent;
-    //   double currentScroll = _scrollController.position.pixels;
-    //   double delta = MediaQuery.of(context).size.height * 0.25;
-
-    //   if (maxScroll - currentScroll <= delta) {
-    //     int actualLength = talesController.tales.length;
-    //     ref
-    //         .read(libraryContentProvider(widget.userId).notifier)
-    //         .loadTales(page);
-    //     if (actualLength != talesController.tales.length) {
-    //       page++;
-    //     } else {
-    //       _scrollController.removeListener(() {});
-    //     }
-    //   }
-    // });
+    Future.delayed(const Duration(milliseconds: 100), () async {
+      isLoading = true;
+      await talesController.loadTales();
+      userTales.clear();
+      userTales.addAll(talesController
+          .actualStatus(ref.read(libraryFilterProvider.notifier).state));
+      isLoading = false;
+      setState(() {});
+    });
+    debugPrint(
+        'Controller list lengt: ${talesController.tales.length} | local list length ${userTales.length}');
   }
 
   @override
   Widget build(BuildContext context) {
-    final actualState = ref.watch(libraryFilterProvider.notifier);
-    talesController.loadTales();
-    final List<UserTales> userTales = [];
     debugPrint('Tales length in controller ${talesController.tales.length}');
-    userTales.addAll(talesController.actualStatus(actualState.state));
+    final actualState = ref.watch(libraryFilterProvider.notifier);
 
     return SafeArea(
       child: Padding(
@@ -98,13 +89,14 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
                 actualState.update((state) => selected);
                 final List<UserTales> changedTales =
                     talesController.actualStatus(selected);
-                setState(() {
-                  userTales.clear();
-                  debugPrint(actualState.state.name);
-                  debugPrint('Actual tales length: ${userTales.length}');
-                  debugPrint('Changed tales length: ${changedTales.length}');
-                  userTales.addAll(changedTales);
-                });
+                userTales.clear();
+                updateList(changedTales);
+                // setState(() {
+                debugPrint(actualState.state.name);
+                debugPrint('Actual tales length: ${userTales.length}');
+                debugPrint('Changed tales length: ${changedTales.length}');
+                //   userTales.addAll(changedTales);
+                // });
               },
             ),
             const SizedBox(
@@ -116,13 +108,22 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
                 controller: _scrollController,
                 itemCount: userTales.length,
                 itemBuilder: (context, index) {
-                  return LibraryTale(
-                    title: userTales[index].taleTitle,
-                    chapter:
-                        'Capítulo ${userTales[index].getLastChapterReaded + 1}',
-                    lastRead: userTales[index].timeSinceLastRead(),
-                    urlImage: userTales[index].coverUrl,
-                  );
+                  return isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            strokeAlign: 3.0,
+                          ),
+                        )
+                      : userTales.isNotEmpty
+                          ? LibraryTale(
+                              title: userTales[index].taleTitle,
+                              chapter:
+                                  'Capítulo ${userTales[index].getLastChapterReaded + 1}',
+                              lastRead: userTales[index].timeSinceLastRead(),
+                              urlImage: userTales[index].coverUrl,
+                            )
+                          : const Center(
+                              child: Text('No hay cuentos en esta sección'));
                 },
               ),
             )
@@ -140,5 +141,12 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
     } else {
       return UserTalesStatus.following;
     }
+  }
+
+  void updateList(List<UserTales> listChanged) {
+    userTales.clear();
+    userTales.addAll(listChanged);
+    userTales.forEach((element) => debugPrint(element.taleId));
+    setState(() {});
   }
 }

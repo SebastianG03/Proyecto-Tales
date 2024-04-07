@@ -4,7 +4,6 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../../../../../config/router/app_routes.dart';
 import '../../../../../application/providers/providers.dart';
-import '../../../../../domain/entities/user/users.dart';
 import '../../../custom/custom_components.dart';
 
 class LoggedSettingsItems extends ConsumerWidget {
@@ -18,13 +17,11 @@ class LoggedSettingsItems extends ConsumerWidget {
         SliverList.list(
           children: [
             CustomTile(
-              title: 'Información del Perfil',
-              icon: LineIcons.userCircle,
-              action: () => ref
-                  .read(routerProvider)
-                  .router
-                  .pushNamed(AppRoutes.updateAccountView),
-            ),
+                title: 'Información del Perfil',
+                icon: LineIcons.userCircle,
+                action: () => ref.read(routerProvider).router.pushNamed(
+                    AppRoutes.updateAccountView,
+                    pathParameters: {'userId': userId})),
             const Divider(
               thickness: 1,
               indent: 0,
@@ -45,8 +42,9 @@ class LoggedSettingsItems extends ConsumerWidget {
     final bool isGoogleSigned =
         await ref.read(userDatasourceProvider).isGoogleSigned();
     ref.read(userSignInProvider.notifier).signOut(isGoogleSigned);
-    final prefs = ref.read(preferencesProvider);
-    prefs.whenData((pref) => pref.clearUserData());
+    final prefs = await ref.read(preferencesProvider);
+    prefs.clearUserData();
+    prefs.clearUserId();
     if (context.mounted) {
       CustomSnackbar.showSnackBar(context, 'Su sesión ha finalizado.');
     }

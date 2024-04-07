@@ -55,9 +55,9 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                                 email: loginForm.email.value,
                                 password: loginForm.password.value);
                             final user = ref.read(userSignInProvider).user!;
-                            ref.read(preferencesProvider).whenData(
-                                (pref) async =>
-                                    await pref.setUserData(user.toJson()));
+                            final prefs = await ref.read(preferencesProvider);
+                            prefs.setUserData(user.toJson());
+                            prefs.setUserId(user.id);
                             router.router.pop();
                           },
                     child: const Padding(

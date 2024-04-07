@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/providers.dart';
-import '../../../domain/entities/user/user.dart';
 import '../../widgets/components/home/settings/settings_components.dart';
 
 class AccountView extends ConsumerWidget {

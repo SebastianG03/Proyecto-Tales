@@ -131,17 +131,23 @@ class _TalesReaderScreenState extends ConsumerState<TalesReaderScreen> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.symmetric(vertical: 30.0),
               child: Visibility(
                 visible: section.getImageUrl != null &&
                     section.getImageUrl!.isNotEmpty,
                 child: SizedBox(
-                  height: 300,
+                  width: MediaQuery.of(context).size.width,
                   child: section.getImageUrl != null &&
                           section.getImageUrl!.isNotEmpty
                       ? Image.network(
                           section.getImageUrl!,
                           fit: BoxFit.scaleDown,
+                          loadingBuilder: (context, child, loadingProgress) =>
+                              loadingProgress == null
+                                  ? child
+                                  : const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
                         )
                       : const SizedBox(),
                 ),

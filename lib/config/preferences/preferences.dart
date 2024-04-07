@@ -9,6 +9,7 @@ import '../../layers/domain/entities/user/users.dart';
 class Preferences {
   final String _notificationPreferences = "allowNotifications";
   final String _userData = "userData";
+  final String _userId = "userId";
   final SharedPreferences instance;
 
   Preferences({required this.instance});
@@ -18,7 +19,15 @@ class Preferences {
   }
 
   Future<bool> setAllowNotifications(bool value) async {
-    return instance.setBool(_notificationPreferences, value);
+    return await instance.setBool(_notificationPreferences, value);
+  }
+
+  String getUserId() {
+    return instance.getString(_userId) ?? "";
+  }
+
+  Future<bool> setUserId(String id) async {
+    return await instance.setString(_userId, id);
   }
 
   UserModel? getUserData() {
@@ -33,10 +42,14 @@ class Preferences {
 
   Future<bool> setUserData(Map<String, dynamic> json) async {
     String userData = jsonEncode(json);
-    return instance.setString(_userData, userData);
+    return await instance.setString(_userData, userData);
   }
 
   void clearUserData() {
     instance.remove(_userData);
+  }
+
+  void clearUserId() {
+    instance.remove(_userId);
   }
 }
