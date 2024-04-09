@@ -9,7 +9,6 @@ class GoogleSignInComponent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final notifier = ref.watch(userSignInProvider.notifier);
-    final state = ref.read(userSignInProvider);
 
     return SizedBox(
       height: 100,
@@ -23,18 +22,17 @@ class GoogleSignInComponent extends ConsumerWidget {
           ),
           GestureDetector(
             onTap: () async {
-              await notifier.signInWithGoogle(context: context);
-              final user = state.user;
+              final user = await notifier.signInWithGoogle(context: context);
 
               final prefs = await ref.read(preferencesProvider);
-              prefs.setUserData(user!.toJson());
+              prefs.setUserData(user.toJson());
               prefs.setUserId(user.id);
 
               ref.read(routerProvider).router.pop();
               ref.read(routerProvider).router.refresh();
             },
-            child: Image.asset(
-              'assets/app_icons/google_logo.png',
+            child: Image.network(
+              'https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fapp_icons%2Fgoogle_logo.png?alt=media&token=c5d2022b-8d37-4adf-af6a-7ff27d27915d',
               width: 50,
               height: 50,
             ),

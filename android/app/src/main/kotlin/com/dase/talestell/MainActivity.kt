@@ -1,4 +1,4 @@
-package com.example.cuentos_pasantia
+package com.dase.talestell
 
 import io.flutter.embedding.android.FlutterActivity
 

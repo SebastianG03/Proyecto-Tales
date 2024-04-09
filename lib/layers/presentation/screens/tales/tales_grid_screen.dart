@@ -21,21 +21,8 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
   @override
   void initState() {
     super.initState();
-    // ref.read(searchProvider.notifier).init();
-    // _scrollController.addListener(() {
-    //   _listen;
-    // });
   }
 
-  // void _listen() {
-  // if (ref.read(searchProvider).isLoading) return;
-  //   if (_scrollController.position.pixels + 10 >
-  //       _scrollController.position.maxScrollExtent) {
-  //     if (ref.read(searchProvider.notifier).tales.length > 40) return;
-  //     ref.read(searchProvider.notifier).init();
-  //     debugPrint('Loading');
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

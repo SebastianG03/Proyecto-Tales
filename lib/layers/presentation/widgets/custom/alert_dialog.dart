@@ -21,7 +21,7 @@ class CustomAlertDialog {
             child: PlatformText('Cancelar'),
             onPressed: () {
               onPressedCancel;
-              context.pop(context);
+              context.pop();
             },
           ),
           PlatformDialogAction(

@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/providers.dart';
@@ -21,7 +22,6 @@ class RegisterViewState extends ConsumerState<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    final signInNotifier = ref.read(userSignInProvider.notifier);
     final loginForm = ref.watch(loginFormProvider);
     final router = ref.read(routerProvider);
 
@@ -50,14 +50,7 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                         ? null
                         : () async {
                             ref.read(registerFormProvider.notifier).onSubmit();
-                            signInNotifier.signInWithEmailAndPassword(
-                                context: context,
-                                email: loginForm.email.value,
-                                password: loginForm.password.value);
-                            final user = ref.read(userSignInProvider).user!;
-                            final prefs = await ref.read(preferencesProvider);
-                            prefs.setUserData(user.toJson());
-                            prefs.setUserId(user.id);
+                            CustomAlertDialog.showAlertDialog(context, "Registro exitoso", "Proceda a iniciar sesión.", () { }, () { });
                             router.router.pop();
                           },
                     child: const Padding(

@@ -16,11 +16,11 @@ final userSignInProvider =
 final authUserProvider = StreamProvider<User?>((ref) =>
     ref.watch(userSignInProvider.notifier).repository.userAuthChanges());
 
-final userInformationProvider = FutureProvider.family<UserModel, String>((ref, userId) async {
+final userInformationProvider =
+    FutureProvider.family<UserModel, String>((ref, userId) async {
   final datasource = ref.watch(userDatasourceProvider);
   return await datasource.getUserById(userId);
 });
-
 
 class UserState extends ChangeNotifier {
   final UserModel? user;
@@ -70,10 +70,9 @@ class SignInNotifier extends StateNotifier<UserState> {
     }
   }
 
-  Future<void> signInWithGoogle({required BuildContext context}) async {
+  Future<UserModel> signInWithGoogle({required BuildContext context}) async {
     try {
-      final user = await repository.googleSignIn();
-      state = state.copyWith(user: user, isGoogleSigned: true);
+      return await repository.googleSignIn();
     } catch (e) {
       if (context.mounted) {
         CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',

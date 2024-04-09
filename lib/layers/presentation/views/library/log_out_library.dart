@@ -41,10 +41,10 @@ class LogOutLibrary extends StatelessWidget {
           const SizedBox(
             height: 50,
           ),
-          const SizedBox(
+          SizedBox(
             width: 250,
-            child: Image(
-                image: AssetImage('assets/library_img/library_img1.png'),
+            child: Image.network(
+                "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Fapp_icons%2Flibrary_img1.png?alt=media&token=c0f82980-e0a8-443f-8813-dce9ab5c9944",
                 fit: BoxFit.cover,
                 width: 250),
           ),

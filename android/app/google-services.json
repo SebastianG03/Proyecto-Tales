@@ -7,20 +7,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:650300046203:android:3841d209d1724e0a87dbde",
+        "mobilesdk_app_id": "1:650300046203:android:fe62653e23e2183187dbde",
         "android_client_info": {
-          "package_name": "com.example.cuentos_pasantia"
+          "package_name": "com.dase.talestell"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "650300046203-rui6rvvphb499gkr7ooc4stdr4rh00ph.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.cuentos_pasantia",
-            "certificate_hash": "5b8833b15b01101c1b439ea33e1c14a6be24c058"
-          }
-        },
         {
           "client_id": "650300046203-49fm7autb1kajtidum49q92ahl7j4vaq.apps.googleusercontent.com",
           "client_type": 3

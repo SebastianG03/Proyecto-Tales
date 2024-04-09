@@ -35,7 +35,7 @@ class _CustomAppBarWithLeading extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            "App de Cuentos",
+            "TaleTell",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,
@@ -60,7 +60,7 @@ class _CustomAppBarWithoutLeading extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            "App de Cuentos",
+            "TaleTell",
             style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,
