@@ -23,7 +23,7 @@ class SignInViewState extends ConsumerState<SignInView> {
   @override
   Widget build(BuildContext context) {
     final router = ref.read(routerProvider);
-    final registerForm = ref.watch(registerFormProvider);
+    final loginForm = ref.watch(loginFormProvider);
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -46,12 +46,28 @@ class SignInViewState extends ConsumerState<SignInView> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: ElevatedButton(
-                    onPressed: registerForm.isPosting
+                    onPressed: loginForm.isPosting
                         ? null
                         : () async {
-                            ref
-                                .read(loginFormProvider.notifier)
-                                .onSubmit(context);
+                          // final auth = ref.read(user)
+                            // final signInNotifier =
+                            //     ref.read(userSignInProvider.notifier);
+                            // final prefs = ref.watch(preferencesProvider);
+
+                            // final user =
+                            //     await signInNotifier.signInWithEmailAndPassword(
+                            //         context: context,
+                            //         email: loginForm.email.value,
+                            //         password: loginForm.password.value);
+                            final preferences = await prefs;
+                            preferences.setUserData(user.toJson());
+                            preferences.setUserId(user.id);
+
+                            // if (context.mounted) {
+                            //   ref
+                            //       .read(loginFormProvider.notifier)
+                            //       .onSubmit(context);
+                            // }
                             router.router.pop();
                           },
                     child: const Padding(

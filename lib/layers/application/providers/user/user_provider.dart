@@ -63,8 +63,7 @@ class SignInNotifier extends StateNotifier<UserState> {
       return await repository.signInWithEmailAndPassword(email, password);
     } catch (e) {
       if (context.mounted) {
-        CustomAlertDialog.showAlertDialog(context, 'Error al iniciar sesión',
-            'No se pudo iniciar sesión', null, null);
+        CustomAlertDialog.showAlertDialog(context, 'No se pudo iniciar sesión', 'Error: ${e.toString()}', null, null);
       }
       rethrow;
     }
