@@ -1,0 +1,12 @@
+export 'home/home_views.dart';
+export 'home/library_view.dart';
+export 'home/settings_view.dart';
+export 'home/tales_view.dart';
+export 'login/login_views.dart';
+export 'login/register_view.dart';
+export 'login/sign_in_view.dart';
+export 'settings/account_view.dart';
+export 'tales/tales_details_view.dart';
+export 'tales/tales_grid_view.dart';
+export 'tales/tales_views.dart';
+export 'settings/update_user.dart';

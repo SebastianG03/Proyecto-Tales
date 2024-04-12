@@ -1,0 +1,38 @@
+// ignore_for_file: curly_braces_in_flow_control_structures
+
+import 'package:formz/formz.dart';
+
+// Define input validation errors
+enum EmailError { empty, format }
+
+// Extend FormzInput and provide the input type and error type.
+class Email extends FormzInput<String, EmailError> {
+  static final RegExp emailRegExp = RegExp(
+    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+  );
+
+  // Call super.pure to represent an unmodified form input.
+  const Email.pure() : super.pure('');
+
+  // Call super.dirty to represent a modified form input.
+  const Email.dirty(super.value) : super.dirty();
+
+  String? get errorMessage {
+    if (isValid || isPure) return null;
+
+    if (displayError == EmailError.empty) return 'El campo es requerido';
+    if (displayError == EmailError.format)
+      return 'No tiene formato de correo electrónico';
+
+    return null;
+  }
+
+  // Override validator to handle validating a given input value.
+  @override
+  EmailError? validator(String value) {
+    if (value.isEmpty || value.trim().isEmpty) return EmailError.empty;
+    if (!emailRegExp.hasMatch(value)) return EmailError.format;
+
+    return null;
+  }
+}
