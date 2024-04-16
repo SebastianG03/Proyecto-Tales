@@ -58,9 +58,6 @@ class LibraryTale extends StatelessWidget {
                           TextStyle(fontSize: 12, color: Colors.grey.shade600))
                 ],
               ),
-              const Spacer(),
-              IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.delete_outline))
             ],
           )),
     );

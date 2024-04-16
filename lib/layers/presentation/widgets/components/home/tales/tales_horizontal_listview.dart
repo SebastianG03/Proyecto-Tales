@@ -1,4 +1,5 @@
-import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/enums_helper.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/enums.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/tags_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -42,14 +43,14 @@ class _HorizontalTalesListViewState
                   //   return state.copyWith()
                   // });
                   ref.read(searchStateProvider.notifier).update((state) {
-                    bool contains = TagsHelper.tagContainsValue(widget.tag);
-                    if (contains) {
+                    final key = TagsHelper.getInstanceOf(widget.tag);
+                    if (key == SearchKeys.ageLimit) {
                       return state.copyWith(
-                          ageLimit: TagsHelper.getAgeLimitValue(widget.tag));
+                          ageLimit: TagsHelper.getAgeLimitByName(widget.tag));
                     } else {
                       return state.copyWith(
                           accesibility:
-                              TagsHelper.getAccessibilityValue(widget.tag));
+                              TagsHelper.getAccessibilityByName(widget.tag));
                     }
                   });
 

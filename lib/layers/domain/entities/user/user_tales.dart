@@ -8,7 +8,8 @@ class UserTales {
   final String taleId;
   final String taleTitle;
   String coverUrl = "";
-  //TODO cambiar a UserTalesStatus a una lista para mantener más de un estado a la vez.
+  //TODO aplicar cambios.
+  //List<UserTalesStatus> progress
   UserTalesStatus progress;
   int _lastChapterReaded = 0;
   String _lastSectionReaded = "";

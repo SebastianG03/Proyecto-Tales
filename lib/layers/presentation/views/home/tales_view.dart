@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/views/loading/tales_initial_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/providers.dart';
@@ -39,8 +40,6 @@ class _TalesViewState extends ConsumerState<TalesView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final router = ref.read(routerProvider).router;
-    // router.;
     super.activate();
     setState(() {});
   }
@@ -61,6 +60,9 @@ class _TalesViewState extends ConsumerState<TalesView>
     final teensTales = ref.watch(teensTalesProvider);
     final favoriteTales =
         ref.watch(favoriteUsertalesProvider.notifier).favoriteTales;
+    final initialLoading = ref.watch(initialLoadingProvider);
+
+    if (initialLoading) return const TalesScreenLoader();
 
     return CustomScrollView(
       slivers: [

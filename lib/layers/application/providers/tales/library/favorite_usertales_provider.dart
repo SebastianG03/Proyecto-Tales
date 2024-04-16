@@ -3,8 +3,6 @@ import 'package:cuentos_pasantia/layers/domain/entities/user/users.dart';
 import 'package:cuentos_pasantia/layers/infraestructure/repositories/usertales_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../domain/entities/user/user_tales.dart';
-
 final favoriteUsertalesProvider =
     StateNotifierProvider<FavoriteUsertalesNotifier, UserTalesRepository>(
         (ref) {
@@ -24,7 +22,7 @@ class FavoriteUsertalesNotifier extends StateNotifier<UserTalesRepository> {
         .where((tale) => tale.progress == UserTalesStatus.following)
         .toList();
 
-        readingTales = usertales
+    readingTales = usertales
         .where((tale) => tale.progress == UserTalesStatus.reading)
         .toList();
   }

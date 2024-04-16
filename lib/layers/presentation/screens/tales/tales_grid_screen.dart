@@ -1,4 +1,5 @@
 import 'package:cuentos_pasantia/config/router/app_routes.dart';
+import 'package:cuentos_pasantia/layers/presentation/views/loading/tales_grid_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,13 +22,18 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
   @override
   void initState() {
     super.initState();
+    final searchState = ref.read(searchStateProvider);
+    ref.read(searchProvider.notifier).loadTales(searchState);
   }
-
 
   @override
   Widget build(BuildContext context) {
     // final tales = ref.watch(searchProvider.notifier);
-    final talesAsync = ref.watch(talesSearchProvider);
+    // final talesAsync = ref.watch(talesSearchProvider);
+    final searchTales = ref.watch(searchProvider);
+    final isSearching = ref.watch(initialSearchLoadingProvider);
+    final isLoading = ref.watch(initialSearchLoadingProvider);
+
     return SafeArea(
       child: PlatformScaffold(
         body: CustomScrollView(
@@ -44,46 +50,43 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              sliver: talesAsync.when(data: (tales) {
-                return SliverGrid.builder(
-                  itemCount: tales.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 1.0,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    mainAxisExtent: 180,
-                  ),
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        ref.read(routerProvider).router.goNamed(
-                            AppRoutes.taleDetails,
-                            pathParameters: {'taleId': tales[index].id});
-                        ref
-                            .read(actualTaleProvider.notifier)
-                            .update((state) => tales[index].id);
+              sliver: (isLoading)
+                  ? const TalesGridLoader()
+                  : SliverGrid.builder(
+                      itemCount: searchTales.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.0,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        mainAxisExtent: 180,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (isSearching) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return GestureDetector(
+                          onTap: () {
+                            ref.read(routerProvider).router.goNamed(
+                                AppRoutes.taleDetails,
+                                pathParameters: {
+                                  'taleId': searchTales[index].id
+                                });
+                            ref
+                                .read(actualTaleProvider.notifier)
+                                .update((state) => searchTales[index].id);
+                          },
+                          child: TaleGridSlide(
+                              imageUrl: searchTales[index].getCoverUrl,
+                              title: searchTales[index].title,
+                              premium: searchTales[index].premium),
+                        );
                       },
-                      child: TaleGridSlide(
-                          imageUrl: tales[index].getCoverUrl,
-                          title: tales[index].title,
-                          premium: tales[index].premium),
-                    );
-                  },
-                );
-              }, error: (error, stack) {
-                return SliverToBoxAdapter(
-                  child: Center(
-                    child: Text('Error: $error'),
-                  ),
-                );
-              }, loading: () {
-                return SliverToBoxAdapter(
-                  child: Center(
-                    child: PlatformCircularProgressIndicator(),
-                  ),
-                );
-              }),
+                    ),
             )
             // TalesGridView(
             //   tales: tales.tales,

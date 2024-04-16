@@ -2,19 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
 import 'package:cuentos_pasantia/layers/domain/entities/app/search/search_state.dart';
 import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
+import 'package:cuentos_pasantia/layers/infraestructure/repositories/tales_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../infraestructure/repositories/tales_repository.dart';
-
-final searchProvider =
-    StateNotifierProvider<SearchNotifier, SearchState>((ref) {
-  List<DocumentSnapshot> docList = [];
-  final repository = ref.watch(talesRepositoryProvider);
-  return SearchNotifier(repository, docList);
-});
-
+/// State provider, se encarga de manejar el estado de la busqueda.
+/// Es necesario para ejecutar talesSearchProvider.
+/// Devuelve un SearchState.
 final searchStateProvider = StateProvider((ref) => SearchState());
 
+/// Future provider, se encarga de buscar los cuentos en la base de datos.
+/// Depende de searchStateProvider.
+/// Devuelve una lista de cuentos.
 final talesSearchProvider = FutureProvider(((ref) async {
   List<DocumentSnapshot> docList = [];
   final repo = ref.watch(talesRepositoryProvider);
@@ -29,14 +27,27 @@ final talesSearchProvider = FutureProvider(((ref) async {
   return repo.convertToTales(docList);
 }));
 
-class SearchNotifier extends StateNotifier<SearchState> {
-  List<DocumentSnapshot> docList;
-  List<Tales> tales = [];
-  TalesRepository repository;
-  SearchNotifier(this.repository, this.docList) : super(SearchState());
+final searchProvider =
+    StateNotifierProvider<SearchNotifier, List<Tales>>((ref) {
+  final repository = ref.watch(talesRepositoryProvider);
+  return SearchNotifier(repository: repository);
+});
 
-  void init() async {
-    docList = await repository.fetchMoreTales(docList);
-    tales = repository.convertToTales(docList);
+class SearchNotifier extends StateNotifier<List<Tales>> {
+  final TalesRepository repository;
+
+  SearchNotifier({required this.repository}) : super([]);
+
+  Future<void> loadTales(SearchState newState) async {
+    state.clear();
+    final docList = await repository.multiFetchTales([],
+        newState.search,
+        newState.genders,
+        newState.ageLimit,
+        newState.accesibility,
+        newState.timeLapse);
+
+    state = repository.convertToTales(docList);
+    newState.notify();
   }
 }

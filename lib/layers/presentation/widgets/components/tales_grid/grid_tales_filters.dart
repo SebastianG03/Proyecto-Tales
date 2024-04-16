@@ -1,7 +1,9 @@
+import 'package:cuentos_pasantia/layers/presentation/screens/screens.dart';
 import 'package:cuentos_pasantia/layers/presentation/widgets/components/tales_grid/tales_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../application/providers/providers.dart';
 import '../../../../domain/entities/app/search/enums/enums.dart';
 
 class GridTalesFilters extends ConsumerWidget {
@@ -40,7 +42,21 @@ class GridTalesFilters extends ConsumerWidget {
           isMultipleSelect: false,
           values: TimeLapse.values.map((e) => e.name).toList(growable: false),
         ),
+        const SizedBox(
+          height: 10,
+        ),
+        CustomTextButton(
+          onPressed: () {
+            _applyFilters(ref);
+          },
+          label: 'Aplicar',
+        ),
       ],
     );
+  }
+
+  void _applyFilters(WidgetRef ref) {
+    final actualState = ref.read(searchStateProvider);
+    ref.read(searchProvider.notifier).loadTales(actualState);
   }
 }

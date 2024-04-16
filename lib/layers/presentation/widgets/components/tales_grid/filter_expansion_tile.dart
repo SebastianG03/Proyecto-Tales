@@ -1,8 +1,10 @@
+import 'package:cuentos_pasantia/layers/application/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../domain/entities/app/search/enums/enums.dart';
 
-class FilterExpansionTile extends StatefulWidget {
+class FilterExpansionTile extends ConsumerStatefulWidget {
   final SearchKeys searchKey;
   final String title;
   final List<String> values;
@@ -16,11 +18,13 @@ class FilterExpansionTile extends StatefulWidget {
   });
 
   @override
-  State<FilterExpansionTile> createState() => _FilterExpansionTileState();
+  ConsumerState<FilterExpansionTile> createState() =>
+      _FilterExpansionTileState();
 }
 
-class _FilterExpansionTileState extends State<FilterExpansionTile> {
+class _FilterExpansionTileState extends ConsumerState<FilterExpansionTile> {
   List<bool> isSelected = [];
+  List<String> selectedValues = [];
 
   @override
   void initState() {
@@ -57,7 +61,8 @@ class _FilterExpansionTileState extends State<FilterExpansionTile> {
                         label: Text(e),
                         selected: isSelected[widget.values.indexOf(e)],
                         selectedColor: const Color.fromARGB(255, 151, 187, 205),
-                        onSelected: (value) => _onSelected(value, widget.values.indexOf(e)),
+                        onSelected: (value) =>
+                            _onSelected(value, widget.values.indexOf(e)),
                       ),
                     ],
                   ),
@@ -69,17 +74,29 @@ class _FilterExpansionTileState extends State<FilterExpansionTile> {
     );
   }
 
+  ///Si es de seleccion multiple, se agrega o elimina el valor seleccionado en la lista de valores
+  ///y actualiza el estado de la busqueda. Caso contrario únicamente se modifica el estado de la busqueda.
   void _onSelected(bool value, int index) {
-    if(widget.isMultipleSelect) {
-      setState(() {
-        isSelected[index] = value;
-      });
-    } else {
-      setState(() {
-        isSelected = List.filled(widget.values.length, false, growable: false);
-        isSelected[index] = value;
-      });
-    }
-    
+    setState(() {
+      if (widget.isMultipleSelect) {
+        (isSelected[index])
+            ? selectedValues.add(widget.values[index])
+            : selectedValues.remove(widget.values[index]);
+        _updateSearchState(isSelected[index], widget.searchKey, selectedValues);
+      } else {
+        _updateSearchState(
+            isSelected[index], widget.searchKey, widget.values[index]);
+      }
+    });
+  }
+
+  void _updateSearchState(bool isSelected, SearchKeys key, dynamic value) {
+    ref.read(searchStateProvider.notifier).update((state) {
+      if (isSelected || widget.isMultipleSelect) {
+        return state.updateByKey(key, value);
+      } else {
+        return state.resetKeyValue(key);
+      }
+    });
   }
 }
