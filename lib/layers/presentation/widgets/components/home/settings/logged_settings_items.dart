@@ -50,7 +50,6 @@ class LoggedSettingsItems extends ConsumerWidget {
     ref.read(userSignInProvider.notifier).signOut(isGoogleSigned);
     final prefs = await ref.read(preferencesProvider);
     prefs.clearUserData();
-    prefs.clearUserId();
     if (context.mounted) {
       CustomSnackbar.showSnackBar(context, 'Su sesión ha finalizado.');
     }

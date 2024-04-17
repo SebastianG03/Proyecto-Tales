@@ -58,7 +58,9 @@ class RegisterViewState extends ConsumerState<RegisterView> {
                                   'El usuario se está creando. Esto puede tardar unos minutos. Espere por favor.',
                                   () {},
                                   () {});
-                              register.onSubmit();
+                              final user = await register.onSubmit();
+                              final prefs = await ref.read(preferencesProvider);
+                              prefs.setUserData(user.toJson());
                             } else {
                               CustomSnackbar.showSnackBar(context,
                                   'Datos inválidos, por favor revise sus datos');

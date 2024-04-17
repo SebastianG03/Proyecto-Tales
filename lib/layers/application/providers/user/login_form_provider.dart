@@ -54,7 +54,6 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
         password: state.password.value);
     final preferences = await prefs;
     preferences.setUserData(user.toJson());
-    preferences.setUserId(user.id);
     state = state.copyWith(isPosting: false);
   }
 

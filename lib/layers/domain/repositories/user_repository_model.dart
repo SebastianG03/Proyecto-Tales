@@ -6,7 +6,7 @@ import '../entities/user/user.dart';
 abstract class UserRepositoryModel {
   Future<UserModel> googleSignIn();
   Future<UserModel> signInWithEmailAndPassword(String email, String password);
-  Future<bool> createUserWithEmailAndPassword(
+  Future<UserModel> createUserWithEmailAndPassword(
       {required String name,
       required int age,
       required String email,
@@ -14,7 +14,7 @@ abstract class UserRepositoryModel {
   Future<UserModel> getUserById(String id);
   String getActualUserId();
   User getActualUser();
-  Future<bool> updateUser(UserModel user);
+  String updateUser(UserModel user);
   // Future<UserTales> getUserTalesByUserId(String userId);
   // Future<void> updateUserTales(UserTales userTales, String userId);
   Future<void> signOut(bool isGoogleSignIn);

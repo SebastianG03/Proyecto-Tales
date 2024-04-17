@@ -14,16 +14,16 @@ class UserAuthRepository extends UserRepositoryModel {
         authDatasource = AuthDatasource();
 
   @override
-  Future<bool> createUserWithEmailAndPassword(
+  Future<UserModel> createUserWithEmailAndPassword(
       {required String name,
       required int age,
       required String email,
       required String password}) async {
     final id =
         await authDatasource.createUserWithEmailAndPassword(email, password);
-    userDatasource
-        .uploadUserInfo(UserModel(id: id, name: name, email: email, age: age));
-    return true;
+    final user = UserModel(id: id, name: name, email: email, age: age);
+    userDatasource.uploadUserInfo(user);
+    return user;
   }
 
   @override
@@ -71,19 +71,14 @@ class UserAuthRepository extends UserRepositoryModel {
   }
 
   @override
-  Future<bool> updateUser(UserModel user) {
-    return userDatasource.updateUser(user);
+  String updateUser(UserModel user) {
+    userDatasource.updateUser(user);
+    return changeEmail(user.email);
   }
 
   @override
   String changeEmail(String newEmail) {
-    User user = FirebaseAuth.instance.currentUser!;
-    if (newEmail.compareTo(user.email!) == 0) {
-      user.verifyBeforeUpdateEmail(newEmail);
-      return "Se ha enviado una notificación a $newEmail. Por favor, confirme su correo.";
-    } else {
-      return "";
-    }
+    return authDatasource.changeEmail(newEmail);
   }
 
   @override

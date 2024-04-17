@@ -78,6 +78,9 @@ class _UpdateUserViewState extends ConsumerState<UpdateUserView> {
       isReadOnly = !isReadOnly;
       buttonText = isReadOnly ? "Editar" : "Guardar Cambios";
     });
+    if (!isReadOnly) {
+      _updateUser();
+    }
   }
 
   void updatePassword(String email) {
@@ -89,5 +92,22 @@ class _UpdateUserViewState extends ConsumerState<UpdateUserView> {
         'Un correo para reestablecer su contraseña ha sido enviado a $email.',
         () {},
         () {});
+  }
+
+  void _updateUser() async {
+    final repo = ref.read(authRepositoryProvider);
+    final data = ref.read(registerFormProvider);
+
+    final user = UserModel(
+      id: widget.user.id,
+      name: data.username.value,
+      email: data.email.value,
+      age: int.parse(data.age.value),
+      suscription: widget.user.suscription,
+    );
+
+    final response = repo.updateUser(user);
+    CustomAlertDialog.showAlertDialog(
+        context, "Su información fue modificada", response, () {}, () {});
   }
 }

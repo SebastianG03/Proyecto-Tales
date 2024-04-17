@@ -61,15 +61,14 @@ class AuthDatasource implements AuthDatasourceModel {
   }
 
   @override
-  Future<void> changeEmail(String email) async {
-    // TODO: implement changePassword
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> changePassword(String password) {
-    // TODO: implement changePassword
-    throw UnimplementedError();
+  String changeEmail(String newEmail) {
+    User user = _auth.currentUser!;
+    if (newEmail.compareTo(user.email!) == 0) {
+      user.verifyBeforeUpdateEmail(newEmail);
+      return "Se ha enviado una notificación a $newEmail. Por favor, confirme su correo.";
+    } else {
+      return "";
+    }
   }
 
   @override

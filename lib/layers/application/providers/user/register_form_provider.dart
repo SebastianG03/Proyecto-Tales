@@ -1,4 +1,5 @@
 import 'package:cuentos_pasantia/layers/application/providers/user/user_provider.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/user/user.dart';
 import 'package:cuentos_pasantia/layers/infraestructure/repositories/user_auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
@@ -52,14 +53,15 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  void onSubmit() async {
+  Future<UserModel> onSubmit() async {
     state = state.copyWith(isPosting: true);
-    register.createUserWithEmailAndPassword(
+    final user = await register.createUserWithEmailAndPassword(
         name: state.username.value,
         age: int.parse(state.age.value),
         email: state.email.value,
         password: state.password.value);
     state = state.copyWith(isPosting: false);
+    return user;
   }
 
   bool validateAll() {

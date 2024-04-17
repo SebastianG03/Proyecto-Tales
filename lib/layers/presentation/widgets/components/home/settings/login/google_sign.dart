@@ -26,7 +26,6 @@ class GoogleSignInComponent extends ConsumerWidget {
 
               final prefs = await ref.read(preferencesProvider);
               prefs.setUserData(user.toJson());
-              prefs.setUserId(user.id);
 
               ref.read(routerProvider).router.pop();
             },
