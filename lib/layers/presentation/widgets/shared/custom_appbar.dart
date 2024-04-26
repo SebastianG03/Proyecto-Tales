@@ -1,10 +1,10 @@
+import 'package:cuentos_pasantia/layers/application/delegates/search_tale_delegate.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-
-import '../../../../config/router/app_routes.dart';
 import '../../../application/providers/providers.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -71,9 +71,23 @@ class _CustomAppBarWithoutLeading extends ConsumerWidget {
       ),
       trailingActions: [
         IconButton(
-          onPressed: () {
-            final routes = ref.read(routerProvider);
-            routes.router.pushNamed(AppRoutes.searchTaleView);
+          onPressed: () async {
+            final searchQuery = ref.read(searchQueryProvider);
+
+            await showSearch<Tales?>(
+                context: context,
+                query: searchQuery,
+                delegate: SearchTaleDelegate(
+                  searchTales:
+                      ref.read(searchTalesProvider.notifier).searchTalesByQuery,
+                ));
+
+            // if (tale != null) {
+            //   ref.read(actualTaleProvider.notifier).update((state) => tale.id);
+
+            //   ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
+            //       pathParameters: {'taleId': tale.id});
+            // }
           },
           icon: Icon(Icons.search, color: colors.primary),
         ),

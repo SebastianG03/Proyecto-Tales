@@ -91,7 +91,7 @@ class _FilterExpansionTileState extends ConsumerState<FilterExpansionTile> {
   }
 
   void _updateSearchState(bool isSelected, SearchKeys key, dynamic value) {
-    ref.read(searchStateProvider.notifier).update((state) {
+    ref.read(gridTalesStateProvider.notifier).update((state) {
       if (isSelected || widget.isMultipleSelect) {
         return state.updateByKey(key, value);
       } else {

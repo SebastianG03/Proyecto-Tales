@@ -22,15 +22,15 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
   @override
   void initState() {
     super.initState();
-    final searchState = ref.read(searchStateProvider);
-    ref.read(searchProvider.notifier).loadTales(searchState);
+    final searchState = ref.read(gridTalesStateProvider);
+    ref.read(filterProvider.notifier).loadTales(searchState);
   }
 
   @override
   Widget build(BuildContext context) {
     // final tales = ref.watch(searchProvider.notifier);
     // final talesAsync = ref.watch(talesSearchProvider);
-    final searchTales = ref.watch(searchProvider);
+    final searchTales = ref.watch(filterProvider);
     final isSearching = ref.watch(initialSearchLoadingProvider);
     final isLoading = ref.watch(initialSearchLoadingProvider);
 

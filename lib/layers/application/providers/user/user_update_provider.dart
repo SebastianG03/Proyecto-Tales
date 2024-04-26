@@ -14,7 +14,7 @@ final userUpdateDataProvider =
     CustomSnackbar.showSnackBar(context, emailChangeResponse);
   }
 
-  final response = await repository.updateUser(UserModel(
+  final response = repository.updateUser(UserModel(
     id: repository.getActualUserId(),
     name: data.username.value,
     email: data.email.value,

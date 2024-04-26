@@ -42,7 +42,7 @@ class _HorizontalTalesListViewState
                   // ref.read(searchStateProvider.notifier).update((state) {
                   //   return state.copyWith()
                   // });
-                  ref.read(searchStateProvider.notifier).update((state) {
+                  ref.read(gridTalesStateProvider.notifier).update((state) {
                     final key = TagsHelper.getInstanceOf(widget.tag);
                     if (key == SearchKeys.ageLimit) {
                       return state.copyWith(

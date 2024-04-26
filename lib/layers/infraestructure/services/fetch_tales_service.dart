@@ -13,6 +13,8 @@ class FetchTalesService extends FetchTalesServiceModel {
   @override
   Future<List<DocumentSnapshot>> fetchTaleByTitle(String title) async {
     try {
+      if (title.isEmpty) return [];
+
       final query = await _talesCollection
           .where('title', isEqualTo: title)
           .limit(16)

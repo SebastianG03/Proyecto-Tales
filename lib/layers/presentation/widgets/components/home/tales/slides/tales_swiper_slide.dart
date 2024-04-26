@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
 
 class SwiperSlide extends StatelessWidget {
@@ -23,18 +24,9 @@ class SwiperSlide extends StatelessWidget {
       child: DecoratedBox(
         decoration: decoration,
         child: Stack(fit: StackFit.expand, children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              )),
+          CustomNetworkImage(
+            url: imageUrl,
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Row(

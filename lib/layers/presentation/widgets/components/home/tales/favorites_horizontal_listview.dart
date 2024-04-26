@@ -67,15 +67,9 @@ class _Titles extends ConsumerWidget {
   Widget build(BuildContext context, ref) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
+      height: 50.0,
       child: Row(children: [
         Text(tag, style: const TextStyle(fontSize: 16)),
-        const Spacer(),
-        IconButton(
-          onPressed: () =>
-              ref.read(routerProvider).router.goNamed(AppRoutes.talesGridView),
-          icon: const Icon(Icons.arrow_forward_ios),
-          iconSize: 20,
-        )
       ]),
     );
   }

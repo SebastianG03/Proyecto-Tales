@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
 
 class LibraryTale extends StatelessWidget {
@@ -17,21 +18,15 @@ class LibraryTale extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
+      height: 120,
       child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 15),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  urlImage,
-                  fit: BoxFit.cover,
-                  height: 80,
-                  loadingBuilder: (context, child, loadingProgress) =>
-                      loadingProgress == null
-                          ? child
-                          : const Center(child: CircularProgressIndicator()),
-                ),
+              CustomNetworkImage(
+                url: urlImage,
+                boxFit: BoxFit.scaleDown,
+                borderRadius: 5,
               ),
               const SizedBox(
                 width: 20,

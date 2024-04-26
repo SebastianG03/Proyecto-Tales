@@ -1,4 +1,4 @@
-import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_search_bar.dart';
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/inputs/custom_search_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';

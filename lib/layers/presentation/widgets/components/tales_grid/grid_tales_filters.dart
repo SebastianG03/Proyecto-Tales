@@ -56,7 +56,7 @@ class GridTalesFilters extends ConsumerWidget {
   }
 
   void _applyFilters(WidgetRef ref) {
-    final actualState = ref.read(searchStateProvider);
-    ref.read(searchProvider.notifier).loadTales(actualState);
+    final actualState = ref.read(gridTalesStateProvider);
+    ref.read(filterProvider.notifier).loadTales(actualState);
   }
 }

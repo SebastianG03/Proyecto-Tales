@@ -6,8 +6,9 @@ export 'tales/loaders/tales_content_provider.dart';
 export 'tales/loaders/tales_provider.dart';
 export 'tales/loaders/initial_loading_provider.dart';
 
-export 'tales/search/search_provider.dart';
+export 'tales/search/grid_tales_provider.dart';
 export 'tales/search/on_loading_provider.dart';
+export 'tales/search/search_provider.dart';
 
 export 'tales/reader/tales_reader_provider.dart';
 
