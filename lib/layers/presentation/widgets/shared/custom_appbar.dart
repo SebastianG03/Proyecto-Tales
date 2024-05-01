@@ -10,19 +10,23 @@ import '../../../application/providers/providers.dart';
 
 class CustomAppBar extends StatelessWidget {
   final bool leading;
+  final String? title;
 
-  const CustomAppBar({super.key, this.leading = false});
+  const CustomAppBar({super.key, this.leading = false, this.title});
 
   @override
   Widget build(BuildContext context) {
     return (leading)
-        ? const _CustomAppBarWithLeading()
+        ? _CustomAppBarWithLeading(
+            title: title,
+          )
         : const _CustomAppBarWithoutLeading();
   }
 }
 
 class _CustomAppBarWithLeading extends StatelessWidget {
-  const _CustomAppBarWithLeading();
+  final String? title;
+  const _CustomAppBarWithLeading({this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,12 @@ class _CustomAppBarWithLeading extends StatelessWidget {
         cupertinoIcon: const Icon(CupertinoIcons.back),
         materialIcon: const Icon(Icons.arrow_back),
       ),
-      title: const Row(
+      title: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            "TaleTell",
-            style: TextStyle(
+            title ?? "TaleTell",
+            style: const TextStyle(
                 color: Colors.black,
                 fontSize: 20,
                 fontStyle: FontStyle.italic,

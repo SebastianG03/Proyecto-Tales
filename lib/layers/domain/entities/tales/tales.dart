@@ -84,6 +84,20 @@ class Tales {
     };
   }
 
+  Map<String, dynamic> dataToJson() {
+    final dateFormat = DateFormat('yyyy-MM-dd');
+    return {
+      'id': id,
+      'title': title,
+      'abstract': abstract,
+      'coverUrl': _coverUrl,
+      'ageLimit': ageLimit,
+      'premium': premium,
+      'creationTime': dateFormat.format(creationTime),
+      'genders': genders.map((e) => e.name).toList(),
+    };
+  }
+
   String get getCoverUrl => _coverUrl;
   set setCoverUrl(String coverUrl) => _coverUrl = coverUrl;
 

@@ -16,7 +16,7 @@ class FetchTalesService extends FetchTalesServiceModel {
       if (title.isEmpty) return [];
 
       final query = await _talesCollection
-          .where('title', isEqualTo: title)
+          .where('title', isGreaterThanOrEqualTo: title)
           .limit(16)
           .get();
       return query.docs;

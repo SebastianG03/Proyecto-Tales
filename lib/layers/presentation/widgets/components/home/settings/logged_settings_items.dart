@@ -21,22 +21,12 @@ class LoggedSettingsItems extends ConsumerWidget {
             CustomTile(
                 title: 'Información del Perfil',
                 icon: LineIcons.userCircle,
-                action: () async {
-                  final prefs = await ref.read(preferencesProvider);
-                  final user = prefs.getUserData()!.toJson();
-                  ref.read(routerProvider).router.pushNamed(
-                      AppRoutes.updateAccountView,
-                      pathParameters: {'user': jsonEncode(user)});
-                }),
-            const Divider(
-              thickness: 1,
-              indent: 0,
-            ),
+                action: () => _profileInformation(ref)),
             CustomTile(
               title: 'Cerrar Sesión',
               icon: Icons.logout_outlined,
               fontWeight: FontWeight.w500,
-              action: () => cerrarSesion(ref, context),
+              action: () => _signOut(ref, context),
             ),
           ],
         )
@@ -44,7 +34,14 @@ class LoggedSettingsItems extends ConsumerWidget {
     );
   }
 
-  void cerrarSesion(WidgetRef ref, BuildContext context) async {
+  void _profileInformation(WidgetRef ref) async {
+    final prefs = await ref.read(preferencesProvider);
+    final user = prefs.getUserData()!.toJson();
+    ref.read(routerProvider).router.pushNamed(AppRoutes.updateAccountView,
+        pathParameters: {'user': jsonEncode(user)});
+  }
+
+  void _signOut(WidgetRef ref, BuildContext context) async {
     final bool isGoogleSigned =
         await ref.read(authRepositoryProvider).isGoogleSigned();
     ref.read(userSignInProvider.notifier).signOut(isGoogleSigned);

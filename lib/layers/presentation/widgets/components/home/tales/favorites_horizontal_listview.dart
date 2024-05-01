@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/components/home/tales/slides/horizontal_slide_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -25,7 +26,10 @@ class _FavoritesHorizontalListViewState
       height: 320,
       child: Column(
         children: [
-          const _Titles(tag: 'Favoritos'),
+          const HorizontalSlideTitle(
+            tag: 'Favoritos',
+            height: 50,
+          ),
           const SizedBox(
             height: 5,
           ),
@@ -35,16 +39,7 @@ class _FavoritesHorizontalListViewState
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  ref
-                      .read(actualTaleProvider.notifier)
-                      .update((state) => widget.usertales[index].taleId);
-
-                  ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
-                      pathParameters: {
-                        'taleId': widget.usertales[index].taleId
-                      });
-                },
+                onTap: () => _onItemTapped(index),
                 child: TaleHorizontalSlide(
                   imageUrl: widget.usertales[index].coverUrl,
                   title: widget.usertales[index].taleTitle,
@@ -57,20 +52,13 @@ class _FavoritesHorizontalListViewState
       ),
     );
   }
-}
 
-class _Titles extends ConsumerWidget {
-  final String tag;
-  const _Titles({required this.tag});
+  void _onItemTapped(int index) {
+    ref
+        .read(actualTaleProvider.notifier)
+        .update((state) => widget.usertales[index].taleId);
 
-  @override
-  Widget build(BuildContext context, ref) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      height: 50.0,
-      child: Row(children: [
-        Text(tag, style: const TextStyle(fontSize: 16)),
-      ]),
-    );
+    ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
+        pathParameters: {'taleId': widget.usertales[index].taleId});
   }
 }

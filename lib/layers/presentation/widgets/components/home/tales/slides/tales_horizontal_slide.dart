@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
 
 class TaleHorizontalSlide extends StatelessWidget {
@@ -39,15 +40,9 @@ class TaleHorizontalSlide extends StatelessWidget {
             width: 200,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
+              child: CustomNetworkImage(
+                url: imageUrl,
+                borderRadius: 0,
               ),
             ),
           ),

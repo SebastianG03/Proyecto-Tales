@@ -41,7 +41,6 @@ class _TalesViewState extends ConsumerState<TalesView>
   void didChangeDependencies() {
     super.didChangeDependencies();
     super.activate();
-    setState(() {});
   }
 
   @override
@@ -88,18 +87,22 @@ class _TalesViewState extends ConsumerState<TalesView>
                 ),
                 HorizontalTalesListView(
                   tales: kidsTales.take(8).toList(),
+                  searchKey: SearchKeys.ageLimit,
                   tag: AgeLimit.forKids.name,
                 ),
                 HorizontalTalesListView(
                   tales: teensTales.take(8).toList(),
+                  searchKey: SearchKeys.ageLimit,
                   tag: AgeLimit.forTeens.name,
                 ),
                 HorizontalTalesListView(
                   tales: premiumTales.take(8).toList(),
+                  searchKey: SearchKeys.accesibility,
                   tag: Accessibility.premium.name,
                 ),
                 HorizontalTalesListView(
                   tales: freeTales.take(8).toList(),
+                  searchKey: SearchKeys.accesibility,
                   tag: Accessibility.free.name,
                 )
               ],

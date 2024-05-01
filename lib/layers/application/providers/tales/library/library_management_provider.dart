@@ -3,7 +3,8 @@ import 'package:cuentos_pasantia/layers/domain/entities/user/users.dart';
 import 'package:cuentos_pasantia/layers/infraestructure/repositories/usertales_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final userTaleIsFollowing = FutureProvider.family<bool, String>((ref, userId) {
+final userTaleIsFollowing =
+    FutureProvider.autoDispose.family<bool, String>((ref, userId) {
   if (userId.isEmpty) return Future.value(false);
   return ref
       .watch(libraryManagementProvider.notifier)

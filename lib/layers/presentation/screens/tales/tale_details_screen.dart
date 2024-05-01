@@ -6,13 +6,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../application/providers/providers.dart';
 import '../../views/views.dart';
 
-class TaleDetailsScreen extends ConsumerWidget {
+class TaleDetailsScreen extends ConsumerStatefulWidget {
   final String taleId;
   const TaleDetailsScreen({super.key, required this.taleId});
 
   @override
-  Widget build(BuildContext context, ref) {
-    final taleAsync = ref.watch(taleContentProvider(taleId));
+  ConsumerState<TaleDetailsScreen> createState() => _TaleDetailsScreenState();
+}
+
+class _TaleDetailsScreenState extends ConsumerState<TaleDetailsScreen> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final taleAsync = ref.watch(taleContentProvider(widget.taleId));
 
     return SafeArea(
       child: taleAsync.when(

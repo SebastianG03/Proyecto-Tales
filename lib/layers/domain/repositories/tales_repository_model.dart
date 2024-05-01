@@ -5,7 +5,7 @@ import '../entities/tales/tales_exports.dart';
 
 abstract class TaleRepositoryModel {
   Future<Tales> getTale(String id);
-  Future<List<DocumentSnapshot>> getTaleByTitle(String title);
+  Future<List<DocumentSnapshot>> fetchTalesByTitle(String title);
   Future<List<DocumentSnapshot>> fetchSliderTales(
       List<DocumentSnapshot> docsList);
   Future<List<DocumentSnapshot>> fetchMoreTalesByGender(

@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
 
 class TaleGridSlide extends StatelessWidget {
@@ -20,16 +21,9 @@ class TaleGridSlide extends StatelessWidget {
         SizedBox(
           height: 120,
           width: double.infinity,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.network(imageUrl, fit: BoxFit.scaleDown, scale: 1.0,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-              if (loadingProgress == null) return child;
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }),
+          child: CustomNetworkImage(
+            url: imageUrl,
+            boxFit: BoxFit.scaleDown,
           ),
         ),
         Text(title,

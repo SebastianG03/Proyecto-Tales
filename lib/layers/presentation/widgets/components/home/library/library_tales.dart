@@ -16,45 +16,41 @@ class LibraryTale extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 120,
-      child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 15),
-          child: Row(
-            children: [
-              CustomNetworkImage(
-                url: urlImage,
-                boxFit: BoxFit.scaleDown,
-                borderRadius: 5,
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title.length > 24 ? "${title.substring(0, 24)}..." : title,
-                    style: const TextStyle(fontSize: 16),
-                    softWrap: true,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(chapter,
-                      style:
-                          TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(lastRead,
-                      style:
-                          TextStyle(fontSize: 12, color: Colors.grey.shade600))
-                ],
-              ),
-            ],
-          )),
-    );
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 1),
+        child: Row(
+          children: [
+            CustomNetworkImage(
+              url: urlImage,
+              boxFit: BoxFit.scaleDown,
+              borderRadius: 2.5,
+              height: 100,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title.length > 24 ? "${title.substring(0, 24)}..." : title,
+                  style: const TextStyle(fontSize: 16),
+                  softWrap: true,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(chapter,
+                    style:
+                        TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text(lastRead,
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600))
+              ],
+            ),
+          ],
+        ));
   }
 }

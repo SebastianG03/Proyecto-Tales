@@ -1,3 +1,4 @@
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/custom_components.dart';
 import 'package:flutter/material.dart';
 
 class CoverDetails extends StatelessWidget {
@@ -22,16 +23,7 @@ class CoverDetails extends StatelessWidget {
         background: Stack(
           children: [
             SizedBox.expand(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                },
-              ),
+              child: CustomNetworkImage(url: imageUrl),
             ),
             const SizedBox.expand(
               child: DecoratedBox(

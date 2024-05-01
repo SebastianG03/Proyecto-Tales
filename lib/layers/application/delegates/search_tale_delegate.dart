@@ -63,7 +63,7 @@ class SearchTaleDelegate extends SearchDelegate<Tales?> {
         builder: (context, snapshot) {
           if (snapshot.data ?? false) {
             return SpinPerfect(
-              spins: 10,
+              spins: 15,
               curve: Curves.fastOutSlowIn,
               duration: const Duration(seconds: 10),
               infinite: true,

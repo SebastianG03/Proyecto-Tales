@@ -37,14 +37,7 @@ class _TalesSlideshowState extends ConsumerState<TalesSlideshow> {
               ),
             ),
             itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    ref.read(routerProvider).router.goNamed(
-                        AppRoutes.taleDetails,
-                        pathParameters: {'taleId': widget.tales[index].id});
-                    ref
-                        .read(actualTaleProvider.notifier)
-                        .update((state) => widget.tales[index].id);
-                  },
+                  onTap: () => _onItemTapped(index),
                   child: SwiperSlide(
                     imageUrl: widget.tales[index].getCoverUrl,
                     title: widget.tales[index].title,
@@ -52,5 +45,13 @@ class _TalesSlideshowState extends ConsumerState<TalesSlideshow> {
                 )),
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    ref.read(routerProvider).router.goNamed(AppRoutes.taleDetails,
+        pathParameters: {'taleId': widget.tales[index].id});
+    ref
+        .read(actualTaleProvider.notifier)
+        .update((state) => widget.tales[index].id);
   }
 }

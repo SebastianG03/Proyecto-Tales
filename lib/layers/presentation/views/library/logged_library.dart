@@ -1,10 +1,7 @@
-import 'package:cuentos_pasantia/config/router/app_routes.dart';
-import 'package:cuentos_pasantia/layers/domain/entities/user/user_tales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/providers/providers.dart';
-import '../../widgets/components/home/library/library_tales.dart';
 import '../../widgets/components/home/library/usertales_list_view.dart';
 
 class LoggedLibrary extends ConsumerStatefulWidget {
@@ -27,7 +24,6 @@ class _LoggedLibraryState extends ConsumerState<LoggedLibrary> {
   @override
   Widget build(BuildContext context) {
     final userTales = ref.watch(favoriteUsertalesProvider.notifier).usertales;
-    // final actualState = ref.watch(libraryFilterProvider.notifier);
 
     return SafeArea(
       child: Padding(

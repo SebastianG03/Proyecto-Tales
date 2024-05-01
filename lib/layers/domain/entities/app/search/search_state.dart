@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'enums/enums.dart';
 
 class SearchState extends ChangeNotifier {
+  final String principalTag;
   final TimeLapse timeLapse;
   final List<Gender> genders;
   final AgeLimit ageLimit;
@@ -12,6 +13,7 @@ class SearchState extends ChangeNotifier {
   final bool isLoading;
 
   SearchState({
+    this.principalTag = "",
     this.genders = const [],
     this.ageLimit = AgeLimit.forAll,
     this.accesibility = Accessibility.all,
@@ -21,6 +23,7 @@ class SearchState extends ChangeNotifier {
   });
 
   SearchState copyWith({
+    String? principalTag,
     TimeLapse? timeLapse,
     List<Gender>? genders,
     AgeLimit? ageLimit,
@@ -29,6 +32,7 @@ class SearchState extends ChangeNotifier {
     bool? isLoading,
   }) {
     return SearchState(
+      principalTag: principalTag ?? this.principalTag,
       timeLapse: timeLapse ?? this.timeLapse,
       genders: genders ?? this.genders,
       ageLimit: ageLimit ?? this.ageLimit,

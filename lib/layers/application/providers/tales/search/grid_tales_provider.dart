@@ -17,6 +17,7 @@ final filterProvider =
 
 class FilterTalesNotifier extends StateNotifier<List<Tales>> {
   final TalesRepository repository;
+  int visibleTales = 8;
 
   FilterTalesNotifier({required this.repository}) : super([]);
 
@@ -32,4 +33,6 @@ class FilterTalesNotifier extends StateNotifier<List<Tales>> {
     state = repository.convertToTales(docList);
     newState.notify();
   }
+
+  void loadMoreTales() => visibleTales += 8;
 }

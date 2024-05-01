@@ -1,11 +1,11 @@
 import 'package:cuentos_pasantia/config/router/app_routes.dart';
-import 'package:cuentos_pasantia/layers/presentation/views/loading/tales_grid_loading.dart';
+import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
+import 'package:cuentos_pasantia/layers/presentation/widgets/custom/images/network_image.dart';
+import 'package:cuentos_pasantia/layers/presentation/widgets/shared/custom_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../application/providers/providers.dart';
-import '../../widgets/components/tales_grid/tales_grid.dart';
 
 class TalesGridScreen extends ConsumerStatefulWidget {
   final bool isSearching;
@@ -24,6 +24,13 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
     super.initState();
     final searchState = ref.read(gridTalesStateProvider);
     ref.read(filterProvider.notifier).loadTales(searchState);
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent) {
+        ref.read(filterProvider.notifier).loadMoreTales();
+      }
+    });
   }
 
   @override
@@ -31,69 +38,68 @@ class _TalesGridScreenState extends ConsumerState<TalesGridScreen> {
     // final tales = ref.watch(searchProvider.notifier);
     // final talesAsync = ref.watch(talesSearchProvider);
     final searchTales = ref.watch(filterProvider);
-    final isSearching = ref.watch(initialSearchLoadingProvider);
-    final isLoading = ref.watch(initialSearchLoadingProvider);
-
+    // final isLoading = ref.watch(initialSearchLoadingProvider);
     return SafeArea(
-      child: PlatformScaffold(
-        body: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+      child: Scaffold(
+        appBar: const PreferredSize(
+          preferredSize: Size.fromHeight(100),
+          child: CustomAppBar(leading: true),
+        ),
+        body: ListView.builder(
+          physics: const BouncingScrollPhysics(),
           controller: _scrollController,
-          slivers: [
-            GridAppBar(isSearching: widget.isSearching),
-            SliverList.list(
-              children: [
-                Visibility(
-                    visible: widget.isSearching,
-                    child: const GridTalesFilters()),
-              ],
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              sliver: (isLoading)
-                  ? const TalesGridLoader()
-                  : SliverGrid.builder(
-                      itemCount: searchTales.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.0,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        mainAxisExtent: 180,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (isSearching) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+          itemCount: searchTales.length,
+          itemBuilder: (context, index) {
+            String accesibility =
+                (searchTales[index].premium) ? "Premium" : "Gratis";
 
-                        return GestureDetector(
-                          onTap: () {
-                            ref.read(routerProvider).router.goNamed(
-                                AppRoutes.taleDetails,
-                                pathParameters: {
-                                  'taleId': searchTales[index].id
-                                });
-                            ref
-                                .read(actualTaleProvider.notifier)
-                                .update((state) => searchTales[index].id);
-                          },
-                          child: TaleGridSlide(
-                              imageUrl: searchTales[index].getCoverUrl,
-                              title: searchTales[index].title,
-                              premium: searchTales[index].premium),
-                        );
-                      },
-                    ),
-            )
-            // TalesGridView(
-            //   tales: tales.tales,
-            // ),
-          ],
+            return GestureDetector(
+              onTap: () => _onTap(searchTales[index]),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 1),
+                  child: Row(
+                    children: [
+                      CustomNetworkImage(
+                        url: searchTales[index].getCoverUrl,
+                        boxFit: BoxFit.scaleDown,
+                        borderRadius: 2.5,
+                        height: 100,
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            searchTales[index].title.length > 24
+                                ? "${searchTales[index].title.substring(0, 24)}..."
+                                : searchTales[index].title,
+                            style: const TextStyle(fontSize: 16),
+                            softWrap: true,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(accesibility,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey)),
+                        ],
+                      ),
+                    ],
+                  )),
+            );
+          },
         ),
       ),
     );
+  }
+
+  void _onTap(Tales tale) {
+    ref
+        .read(routerProvider)
+        .router
+        .goNamed(AppRoutes.taleDetails, pathParameters: {'taleId': tale.id});
+    ref.read(actualTaleProvider.notifier).update((state) => tale.id);
   }
 }

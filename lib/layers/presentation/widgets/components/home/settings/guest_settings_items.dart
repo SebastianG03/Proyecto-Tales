@@ -20,10 +20,6 @@ class GuestSettingsItems extends ConsumerWidget {
               icon: LineIcons.alternateSignIn,
               action: () => signIn(ref),
             ),
-            const Divider(
-              thickness: 1,
-              indent: 0,
-            ),
             CustomTile(
               title: 'Registrarse',
               icon: LineIcons.userPlus,

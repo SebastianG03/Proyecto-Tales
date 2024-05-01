@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
-import 'package:cuentos_pasantia/layers/presentation/widgets/components/search/tales_list_view.dart';
+import 'package:cuentos_pasantia/layers/presentation/widgets/components/search/search_tales_list_view.dart';
 import 'package:flutter/material.dart';
 
 class BuildResultsAndSuggestions extends StatelessWidget {
@@ -25,7 +25,7 @@ class BuildResultsAndSuggestions extends StatelessWidget {
         builder: (context, snapshot) {
           List<Tales> tales = snapshot.data ?? [];
 
-          return TalesListView(
+          return SearchTalesListView(
             scrollController: scrollController,
             tales: tales,
             onClose: (context, tale) {

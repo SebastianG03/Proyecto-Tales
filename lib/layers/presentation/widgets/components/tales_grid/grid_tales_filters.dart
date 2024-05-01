@@ -11,6 +11,8 @@ class GridTalesFilters extends ConsumerWidget {
     super.key,
   });
 
+  ///Implementa los filtros de busqueda
+  ///Es necesario arreglar los providers para habilitar su funcionamiento
   @override
   Widget build(BuildContext context, ref) {
     return ExpansionTile(

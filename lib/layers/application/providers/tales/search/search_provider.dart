@@ -11,7 +11,7 @@ final searchTalesProvider =
     StateNotifierProvider<SearchTalesNotifier, List<Tales>>((ref) {
   final repo = ref.watch(talesRepositoryProvider);
   return SearchTalesNotifier(
-      searchTales: repo.service.fetchTaleByTitle,
+      searchTales: repo.fetchTalesByTitle,
       convertToTales: repo.convertToTales,
       ref: ref);
 });
