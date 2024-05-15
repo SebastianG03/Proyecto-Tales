@@ -8,8 +8,7 @@ class UserTales {
   final String taleId;
   final String taleTitle;
   String coverUrl = "";
-  //TODO aplicar cambios.
-  //List<UserTalesStatus> progress
+  // List<UserTalesStatus> progress;
   UserTalesStatus progress;
   int _lastChapterReaded = 0;
   String _lastSectionReaded = "";
@@ -28,6 +27,13 @@ class UserTales {
         taleTitle = json['taleTitle'],
         coverUrl = json['coverUrl'] {
     progress = _parseUserTalesStatus(json['progress']);
+    // if (json['progress'] != null) {
+    //   progress = json['progress'].map((value) {
+    //     return _parseUserTalesStatus(value);
+    //   }).toList();
+    // } else {
+    //   progress = [];
+    // }
     _lastChapterReaded = json['lastChapterReaded'];
     _lastSectionReaded = json['lastSectionReaded'];
     _lastTimeRead = json['lastTimeRead'] != null
@@ -42,6 +48,11 @@ class UserTales {
       'taleTitle': taleTitle,
       'coverUrl': coverUrl,
       'progress': progress.name,
+      // (progress.isNotEmpty)
+      //     ? progress.map((value) {
+      //         value.name;
+      //       }).toList()
+      //     : [],
       'lastChapterReaded': _lastChapterReaded,
       'lastSectionReaded': _lastSectionReaded,
       'lastTimeRead':

@@ -1,5 +1,4 @@
 import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/enums.dart';
-import 'package:cuentos_pasantia/layers/domain/entities/app/search/enums/tags_helper.dart';
 import 'package:cuentos_pasantia/layers/presentation/widgets/components/home/tales/slides/horizontal_slide_title.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,32 +29,35 @@ class _HorizontalTalesListViewState
     extends ConsumerState<HorizontalTalesListView> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 320,
-      child: Column(
-        children: [
-          HorizontalSlideTitle(
-            tag: widget.tag,
-            onTap: () => _onTagTapped(),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.tales.length,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () => _onItemTapped(index),
-                child: TaleHorizontalSlide(
-                    imageUrl: widget.tales[index].getCoverUrl,
-                    title: widget.tales[index].title,
-                    premium: widget.tales[index].premium),
-              ),
+    return Visibility(
+      visible: widget.tales.isNotEmpty,
+      child: SizedBox(
+        height: 320,
+        child: Column(
+          children: [
+            HorizontalSlideTitle(
+              tag: widget.tag,
+              onTap: () => _onTagTapped(),
             ),
-          )
-        ],
+            const SizedBox(
+              height: 5,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.tales.length,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () => _onItemTapped(index),
+                  child: TaleHorizontalSlide(
+                      imageUrl: widget.tales[index].getCoverUrl,
+                      title: widget.tales[index].title,
+                      premium: widget.tales[index].premium),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

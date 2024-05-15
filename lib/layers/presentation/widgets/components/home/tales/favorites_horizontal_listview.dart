@@ -22,33 +22,36 @@ class _FavoritesHorizontalListViewState
     extends ConsumerState<FavoritesHorizontalListView> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 320,
-      child: Column(
-        children: [
-          const HorizontalSlideTitle(
-            tag: 'Favoritos',
-            height: 50,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.usertales.length,
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () => _onItemTapped(index),
-                child: TaleHorizontalSlide(
-                  imageUrl: widget.usertales[index].coverUrl,
-                  title: widget.usertales[index].taleTitle,
-                  premium: null,
+    return Visibility(
+      visible: widget.usertales.isNotEmpty,
+      child: SizedBox(
+        height: 320,
+        child: Column(
+          children: [
+            const HorizontalSlideTitle(
+              tag: 'Favoritos',
+              height: 50,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.usertales.length,
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () => _onItemTapped(index),
+                  child: TaleHorizontalSlide(
+                    imageUrl: widget.usertales[index].coverUrl,
+                    title: widget.usertales[index].taleTitle,
+                    premium: null,
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

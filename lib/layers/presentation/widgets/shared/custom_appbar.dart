@@ -53,26 +53,28 @@ class _CustomAppBarWithLeading extends StatelessWidget {
   }
 }
 
-class _CustomAppBarWithoutLeading extends ConsumerWidget {
+class _CustomAppBarWithoutLeading extends ConsumerStatefulWidget {
   const _CustomAppBarWithoutLeading();
 
   @override
-  Widget build(BuildContext context, ref) {
+  ConsumerState<_CustomAppBarWithoutLeading> createState() =>
+      _CustomAppBarWithoutLeadingState();
+}
+
+class _CustomAppBarWithoutLeadingState
+    extends ConsumerState<_CustomAppBarWithoutLeading> {
+  @override
+  Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
 
     return PlatformAppBar(
-      title: const Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "TaleTell",
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold),
-          ),
-        ],
+      title: const Text(
+        "Cuentos interactivos",
+        style: TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.bold),
       ),
       trailingActions: [
         IconButton(

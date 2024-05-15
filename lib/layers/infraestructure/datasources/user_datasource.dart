@@ -3,7 +3,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cuentos_pasantia/layers/domain/datasources/user_datasource_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:firebase_database/ui/firebase_list.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../domain/entities/user/users.dart';
 
@@ -78,8 +82,9 @@ class UserDatasource implements UserDatasourceModel {
           userTales.indexWhere((tale) => tale.taleId == userTale.taleId);
 
       if (index != -1) {
+        final actualUserTale = _updateUserTale(userTales[index], userTale);
         userTales.remove(userTales[index]);
-        userTales.add(userTale);
+        userTales.add(actualUserTale);
       } else {
         userTales.add(userTale);
       }
@@ -129,13 +134,187 @@ class UserDatasource implements UserDatasourceModel {
        El usuario no existe o no se encuentra registrado,
        ${e.toString()}''');
     }
-    // try {
-    //   final user = await getUserById(userId);
-
-    //   return user.getUserModelTales;
-    // } on Exception catch (e) {
-    //   debugPrint(e.toString());
-    //   rethrow;
-    // }
   }
+
+  Stream<List<UserTales>> getStreamUserTales(String userId) async* {
+    try {
+      final Stream<QuerySnapshot<Object?>> query =
+          _usersCollection.where('id', isEqualTo: userId).get().asStream();
+
+      await for (var snapshot in query) {
+        final user = UserModel.fromJson(
+            snapshot.docs.first.data() as Map<String, dynamic>);
+        yield user.getUserModelTales;
+      }
+    } catch (e) {
+      throw ('''No se pudo obtener la información del usuario.
+       El usuario no existe o no se encuentra registrado,
+       ${e.toString()}''');
+    }
+  }
+
+  UserTales _updateUserTale(UserTales oldUserTale, UserTales newUserTale) {
+    //Compares both instances and selects the last content if is updated.
+    String taleId = oldUserTale.taleId == newUserTale.taleId
+        ? oldUserTale.taleId
+        : newUserTale.taleId.isEmpty
+            ? oldUserTale.taleId
+            : newUserTale.taleId;
+    String taleTitle = oldUserTale.taleTitle == newUserTale.taleTitle
+        ? oldUserTale.taleTitle
+        : newUserTale.taleTitle.isEmpty
+            ? oldUserTale.taleTitle
+            : newUserTale.taleTitle;
+    String coverUrl = oldUserTale.coverUrl == newUserTale.coverUrl
+        ? oldUserTale.coverUrl
+        : newUserTale.coverUrl.isEmpty
+            ? oldUserTale.coverUrl
+            : newUserTale.coverUrl;
+    UserTalesStatus progress = oldUserTale.progress == newUserTale.progress
+        ? oldUserTale.progress
+        : newUserTale.progress;
+    int lastChapterReaded =
+        oldUserTale.getLastChapterReaded == newUserTale.getLastChapterReaded
+            ? oldUserTale.getLastChapterReaded
+            : newUserTale.getLastChapterReaded == 0
+                ? oldUserTale.getLastChapterReaded
+                : newUserTale.getLastChapterReaded;
+    String lastSectionReaded =
+        oldUserTale.getLastSectionReaded == newUserTale.getLastSectionReaded
+            ? oldUserTale.getLastSectionReaded
+            : newUserTale.getLastSectionReaded.isEmpty
+                ? oldUserTale.getLastSectionReaded
+                : newUserTale.getLastSectionReaded;
+    DateTime? lastTimeReaded = (oldUserTale.getLastTimeRead != null &&
+            newUserTale.getLastTimeRead == null)
+        ? oldUserTale.getLastTimeRead
+        : (newUserTale.getLastTimeRead != null &&
+                oldUserTale.getLastTimeRead == null)
+            ? newUserTale.getLastTimeRead
+            : (newUserTale.getLastTimeRead != null &&
+                    oldUserTale.getLastTimeRead != null)
+                ? (newUserTale.getLastTimeRead!
+                        .isBefore(oldUserTale.getLastTimeRead!)
+                    ? newUserTale.getLastTimeRead
+                    : oldUserTale.getLastTimeRead)
+                : null;
+
+    UserTales actualUserTale = UserTales(
+        taleId: taleId,
+        taleTitle: taleTitle,
+        coverUrl: coverUrl,
+        progress: progress);
+    actualUserTale.setLastChapterReaded = lastChapterReaded;
+    actualUserTale.setLastSectionReaded = lastSectionReaded;
+    actualUserTale.setLastTimeRead = lastTimeReaded;
+
+    return actualUserTale;
+  }
+
+  // @override
+  // Future<void> updateUserTale(String userId, UserTales userTale) async {
+  //   final userTalesSnapshot = await _userTales.child(userId).get();
+  //   List<UserTales> userTales = userTalesSnapshot.children
+  //       .map((val) => UserTales.fromJson(val as Map<String, dynamic>))
+  //       .toList();
+
+  //   userTales = _updateList(userTales, userTale);
+
+  //   await _userTales
+  //       .child(userId)
+  //       .set(userTales.map((e) => e.toJson()).toList());
+  // }
+
+  // @override
+  // Future<bool> userTaleExists(String userId, String taleId) async {
+  //   try {
+  //     final snapshot = await _userTales.child(userId).get();
+  //     final usertales = snapshot.children
+  //         .map((val) => UserTales.fromJson(val as Map<String, dynamic>))
+  //         .toList();
+
+  //     return usertales.where((data) => data.taleId == taleId).isNotEmpty;
+  //   } on Exception catch (e) {
+  //     debugPrint(e.toString());
+  //     rethrow;
+  //   }
+  // }
+
+  // @override
+  // Future<UserTales> getUserTale(String userId, String taleId) async {
+  //   try {
+  //     final snapshot = await _userTales.child(userId).get();
+  //     final usertales = snapshot.children
+  //         .map((val) => UserTales.fromJson(val as Map<String, dynamic>))
+  //         .toList();
+
+  //     return usertales.where((data) => data.taleId == taleId).first;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  // @override
+  // Future<List<UserTales>> getUserTales(String userId) async {
+  //   try {
+  //     final ref = FirebaseDatabase.instance.ref('usertales/$userId');
+  //     final dataSnapshot = await ref.get();
+  //     if (!dataSnapshot.exists) return [];
+  //     final listSnapshot = dataSnapshot.value as List<dynamic>;
+  //     final usertales = listSnapshot.map((val) {
+  //       return UserTales.fromJson(Map<String, dynamic>.from(val));
+  //     }).toList();
+  //     return usertales;
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  // List<UserTales> _updateList(List<UserTales> usertales, UserTales usertale) {
+  //   int index = usertales.indexWhere((tale) => tale.taleId == usertale.taleId);
+
+  //   if (index == -1) return [usertale];
+
+  //   final oldUsertale = usertales[index];
+  //   usertale.progress = _updateUserTalesStatus(oldUsertale, usertale);
+
+  //   if (index != -1) {
+  //     usertales.remove(usertales[index]);
+  //     usertales.add(usertale);
+  //   } else {
+  //     usertales.add(usertale);
+  //   }
+
+  //   return usertales;
+  // }
+
+  // List<UserTalesStatus> _updateUserTalesStatus(
+  //     UserTales oldUsertale, UserTales newUsertale) {
+  //   final List<UserTalesStatus> oldProgress = oldUsertale.progress;
+  //   final List<UserTalesStatus> newProgress = newUsertale.progress;
+  //   final List<UserTalesStatus> actualProgress = [];
+  //   if (listEquals(oldProgress, newProgress)) return newProgress;
+
+  //   if ((oldProgress.contains(UserTalesStatus.completed) ||
+  //           newProgress.contains(UserTalesStatus.completed)) &&
+  //       !actualProgress.contains(UserTalesStatus.completed)) {
+  //     actualProgress.add(UserTalesStatus.completed);
+  //   }
+  //   if ((oldProgress.contains(UserTalesStatus.following) &&
+  //               newProgress.contains(UserTalesStatus.following) ||
+  //           !oldProgress.contains(UserTalesStatus.following) &&
+  //               newProgress.contains(UserTalesStatus.following)) &&
+  //       !actualProgress.contains(UserTalesStatus.following)) {
+  //     actualProgress.add(UserTalesStatus.following);
+  //   }
+  //   if ((oldProgress.contains(UserTalesStatus.reading) &&
+  //               newProgress.contains(UserTalesStatus.reading) ||
+  //           !oldProgress.contains(UserTalesStatus.reading) &&
+  //               newProgress.contains(UserTalesStatus.reading)) &&
+  //       !actualProgress.contains(UserTalesStatus.reading)) {
+  //     actualProgress.add(UserTalesStatus.reading);
+  //   }
+
+  //   return actualProgress;
+  // }
 }

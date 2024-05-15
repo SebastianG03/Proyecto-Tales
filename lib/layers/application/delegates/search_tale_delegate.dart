@@ -14,7 +14,6 @@ class SearchTaleDelegate extends SearchDelegate<Tales?> {
   List<Tales> initialTales;
 
   SearchTaleDelegate({required this.searchTales, this.initialTales = const []});
-
   StreamController<List<Tales>> debounceTales = StreamController.broadcast();
   StreamController<bool> isLoading = StreamController.broadcast();
   Timer? _debounceTimer;
@@ -26,7 +25,7 @@ class SearchTaleDelegate extends SearchDelegate<Tales?> {
 
   void _onQueryChange(String query) {
     isLoading.add(true);
-
+    // initialTales = [];
     debugPrint("query: $query");
 
     if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
@@ -63,7 +62,7 @@ class SearchTaleDelegate extends SearchDelegate<Tales?> {
         builder: (context, snapshot) {
           if (snapshot.data ?? false) {
             return SpinPerfect(
-              spins: 15,
+              spins: 20,
               curve: Curves.fastOutSlowIn,
               duration: const Duration(seconds: 10),
               infinite: true,

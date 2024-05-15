@@ -11,6 +11,7 @@ class Options {
   String text;
   String _nextSectionId = "";
   String _previousSectionId = "";
+  bool? isAEnd; // Only use if the tale is going to end and not continue anymore
 
   Options({
     required this.id,
@@ -22,12 +23,14 @@ class Options {
         text = json['text'] {
     _nextSectionId = json['nextSection'];
     _previousSectionId = json['previousSection'];
+    isAEnd = json['isAEnd'];
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'text': text,
+      'isAEnd': isAEnd,
       'nextSection': _nextSectionId,
       'previousSection': _previousSectionId,
     };

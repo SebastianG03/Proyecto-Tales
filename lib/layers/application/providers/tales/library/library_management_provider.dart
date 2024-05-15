@@ -21,9 +21,10 @@ class LibraryManagementNotifier extends StateNotifier<UserTalesRepository> {
   Future<void> updateTale({
     required String userId,
     required String taleId,
-    required String taleTitle,
-    required String coverUrl,
-    required UserTalesStatus progress,
+    String taleTitle = "",
+    String coverUrl = "",
+    UserTalesStatus progress = UserTalesStatus.reading,
+    // required List<UserTalesStatus> progress,
     int? lastChapterReaded,
     String? lastSectionReaded,
   }) async {

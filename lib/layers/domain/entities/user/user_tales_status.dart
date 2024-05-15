@@ -1,4 +1,4 @@
-enum UserTalesStatus { reading, completed, following, unFollow }
+enum UserTalesStatus { reading, completed, following, unfollowing }
 
 extension UserTalesStatusExtension on UserTalesStatus {
   String get name {
@@ -9,8 +9,8 @@ extension UserTalesStatusExtension on UserTalesStatus {
         return 'Completado';
       case UserTalesStatus.following:
         return 'Siguiendo';
-      case UserTalesStatus.unFollow:
-        return 'Sin seguir';
+      case UserTalesStatus.unfollowing:
+        return 'Dejar de seguir';
     }
   }
 }

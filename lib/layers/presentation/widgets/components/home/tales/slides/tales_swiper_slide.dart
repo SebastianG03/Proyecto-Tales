@@ -26,6 +26,7 @@ class SwiperSlide extends StatelessWidget {
         child: Stack(fit: StackFit.expand, children: [
           CustomNetworkImage(
             url: imageUrl,
+            boxFit: BoxFit.cover,
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10),

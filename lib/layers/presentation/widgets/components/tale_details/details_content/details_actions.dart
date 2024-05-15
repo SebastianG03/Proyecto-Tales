@@ -10,13 +10,13 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../../../../../config/router/app_routes.dart';
 
-class FBDetailsActions extends ConsumerStatefulWidget {
+class DetailsActions extends ConsumerStatefulWidget {
   final String taleId;
   final String taleTitle;
   final String coverUrl;
   bool isFollowing;
 
-  FBDetailsActions({
+  DetailsActions({
     super.key,
     required this.taleId,
     required this.taleTitle,
@@ -29,14 +29,15 @@ class FBDetailsActions extends ConsumerStatefulWidget {
       _FloatingButtonDetailsActionsState();
 }
 
-class _FloatingButtonDetailsActionsState
-    extends ConsumerState<FBDetailsActions> {
+class _FloatingButtonDetailsActionsState extends ConsumerState<DetailsActions> {
   final _key = GlobalKey<ExpandableFabState>();
 
   @override
   Widget build(BuildContext context) {
     return ExpandableFab(
       key: _key,
+      distance: MediaQuery.of(context).size.height * 0.08,
+      type: ExpandableFabType.up,
       openButtonBuilder: RotateFloatingActionButtonBuilder(
         child: const Icon(Icons.add),
         fabSize: ExpandableFabSize.regular,
@@ -46,32 +47,34 @@ class _FloatingButtonDetailsActionsState
       closeButtonBuilder: DefaultFloatingActionButtonBuilder(
         heroTag: 'closeButton',
         child: const Icon(Icons.close),
-        fabSize: ExpandableFabSize.small,
+        fabSize: ExpandableFabSize.regular,
         shape: const CircleBorder(),
       ),
       children: [
-        FloatingActionButton.small(
+        FloatingActionButton.extended(
           heroTag: 'playButton',
-          child: const Icon(
+          label: const Text('Iniciar'),
+          icon: const Icon(
             LineIcons.play,
             size: 30,
           ),
-          onPressed: () {
-            _onPressedPlay(
-                widget.taleId, widget.coverUrl, widget.taleTitle, ref);
-          },
+          onPressed: () => _onPressedPlay(
+              widget.taleId, widget.coverUrl, widget.taleTitle, ref),
         ),
-        FloatingActionButton.small(
+        FloatingActionButton.extended(
           heroTag: 'restartButton',
-          child: const Icon(
+          label: const Text('Reiniciar'),
+          icon: const Icon(
             LineIcons.backward,
             size: 30,
           ),
-          onPressed: () {},
+          onPressed: () => _onPressedPlay(
+              widget.taleId, widget.coverUrl, widget.taleTitle, ref),
         ),
-        FloatingActionButton.small(
+        FloatingActionButton.extended(
           heroTag: 'followButton',
-          child: !widget.isFollowing
+          label: const Text('Seguir'),
+          icon: !widget.isFollowing
               ? const Icon(
                   Icons.favorite_outline_rounded,
                   size: 30,
@@ -80,10 +83,8 @@ class _FloatingButtonDetailsActionsState
                   Icons.favorite,
                   size: 30,
                 ),
-          onPressed: () {
-            _onPressedFollow(
-                ref, widget.coverUrl, widget.taleTitle, widget.taleId);
-          },
+          onPressed: () => _onPressedFollow(
+              ref, widget.coverUrl, widget.taleTitle, widget.taleId),
         )
       ],
     );
@@ -98,6 +99,7 @@ class _FloatingButtonDetailsActionsState
     final userTalesController = ref.read(libraryManagementProvider.notifier);
     final exists = await userTalesController.userTaleExists(userId, taleId);
 
+    // List<UserTalesStatus> progress = [UserTalesStatus.reading];
     UserTalesStatus progress = UserTalesStatus.reading;
 
     String actualSection = "";
@@ -133,6 +135,42 @@ class _FloatingButtonDetailsActionsState
         });
   }
 
+  void _onPressedRestart(
+      String taleId, String imageUrl, String title, WidgetRef ref) async {
+    final userId = ref.read(authRepositoryProvider).getActualUserId();
+
+    if (!isUserSigned(userId)) return;
+    debugPrint(taleId);
+    final userTalesController = ref.read(libraryManagementProvider.notifier);
+
+    // List<UserTalesStatus> progress = [UserTalesStatus.reading];
+    UserTalesStatus progress = UserTalesStatus.reading;
+
+    String actualSection = "";
+    int actualChapter = 0;
+
+    userTalesController.updateTale(
+      userId: userId,
+      taleId: taleId,
+      taleTitle: title,
+      coverUrl: imageUrl,
+      progress: progress,
+      lastChapterReaded: actualChapter,
+      lastSectionReaded: actualSection,
+    );
+
+    final sectionDataNotifier = ref.read(sectionDataProvider.notifier);
+    await sectionDataNotifier.initData(taleId, actualChapter);
+    ref.read(selectedOptionProvider.notifier).update((state) => actualSection);
+
+    ref.read(favoriteUsertalesProvider.notifier).loadUserTales(userId);
+
+    ref.read(routerProvider).router.goNamed(AppRoutes.readerView,
+        pathParameters: {
+          'taleId': ref.read(actualTaleProvider.notifier).state
+        });
+  }
+
   void _onPressedFollow(
       WidgetRef ref, String imageUrl, String title, String taleId) async {
     final uid = ref.read(authRepositoryProvider).getActualUserId();
@@ -154,7 +192,7 @@ class _FloatingButtonDetailsActionsState
         taleId: taleId,
         taleTitle: title,
         coverUrl: imageUrl,
-        progress: UserTalesStatus.unFollow,
+        progress: UserTalesStatus.unfollowing,
       );
 
       ref.read(favoriteUsertalesProvider.notifier).loadUserTales(uid);
@@ -176,5 +214,17 @@ class _FloatingButtonDetailsActionsState
       return false;
     }
     return true;
+  }
+
+  Widget floatingButton({required String label, required IconData icon}) {
+    return Column(
+      children: [
+        Icon(
+          icon,
+          size: 30,
+        ),
+        Text(label)
+      ],
+    );
   }
 }

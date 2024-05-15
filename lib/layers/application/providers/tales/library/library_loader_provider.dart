@@ -26,10 +26,7 @@ class LibraryNotifier extends StateNotifier<UserTalesRepository> {
 
   LibraryNotifier(super.state, {required this.userId});
 
-  List<UserTales> actualStatus(UserTalesStatus status) {
-    return tales.where((element) => element.progress == status).toList();
-  }
-
+  
   Future<void> loadTales() async {
     tales.clear();
     final repository = UserAuthRepository();

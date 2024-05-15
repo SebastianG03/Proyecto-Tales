@@ -2,6 +2,8 @@ import 'package:cuentos_pasantia/layers/domain/entities/tales/tales.dart';
 import 'package:cuentos_pasantia/layers/presentation/widgets/custom/images/network_image.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../config/helpers/string_format.dart';
+
 class SearchTalesItemData extends StatelessWidget {
   final Tales tale;
   const SearchTalesItemData({super.key, required this.tale});
@@ -46,7 +48,7 @@ class SearchTalesItemData extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.65,
                 child: Text(
-                  formatText(tale.abstract),
+                  StringFormat.formatText(tale.abstract),
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                   softWrap: true,
                   maxLines: 3,
@@ -58,15 +60,5 @@ class SearchTalesItemData extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String formatText(String text) {
-    // Reemplaza todos los saltos de línea por un espacio
-    text = text.replaceAll(RegExp(r'\r?\n'), ' ');
-    // Reemplaza múltiples espacios en blanco por un solo espacio
-    text = text.replaceAll(RegExp(r'\s+'), ' ');
-    text = text.trim();
-
-    return text;
   }
 }

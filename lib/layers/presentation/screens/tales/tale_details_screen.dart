@@ -41,7 +41,7 @@ class _TaleDetailsScreenState extends ConsumerState<TaleDetailsScreen> {
               taleId: tale.id,
             ),
             floatingActionButtonLocation: ExpandableFab.location,
-            floatingActionButton: FBDetailsActions(
+            floatingActionButton: DetailsActions(
               taleId: tale.id,
               taleTitle: tale.title,
               coverUrl: tale.getCoverUrl,

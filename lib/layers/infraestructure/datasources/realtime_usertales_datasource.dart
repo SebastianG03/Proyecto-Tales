@@ -41,22 +41,22 @@ class RealtimeUserTalesDatasource {
   void getUserTaleStatus() {}
 
   Future<UserTales> getUserTale(String userId, String taleId) async {
-    try {
-      final exists = await userTaleExists(userId, taleId);
-      if (exists) {
-        final snapshot = await _userTales.child(userId).get();
-        final usertales = snapshot.children
-            .map((val) => UserTales.fromJson(val as Map<String, dynamic>))
-            .toList();
+      try {
+        final exists = await userTaleExists(userId, taleId);
+        if (exists) {
+          final snapshot = await _userTales.child(userId).get();
+          final usertales = snapshot.children
+              .map((val) => UserTales.fromJson(val as Map<String, dynamic>))
+              .toList();
 
-        return usertales.where((data) => data.taleId == taleId).first;
-      } else {
-        return throw Exception(
-            'Usertale with id $taleId from user $userId not found');
+          return usertales.where((data) => data.taleId == taleId).first;
+        } else {
+          return throw Exception(
+              'Usertale with id $taleId from user $userId not found');
+        }
+      } catch (e) {
+        rethrow;
       }
-    } catch (e) {
-      rethrow;
-    }
   }
 
   Future<List<UserTales>> getUserTales(String userId) async {

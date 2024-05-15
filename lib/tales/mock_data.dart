@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:cuentos_pasantia/layers/infraestructure/datasources/datasources.dart';
 
-import 'layers/domain/entities/tales/tales_exports.dart';
+import '../layers/domain/entities/tales/tales_exports.dart';
 
 class MockData {
   void mockData() async {
@@ -20,7 +20,7 @@ class MockData {
     Tales tale = Tales(
         title: "Las aventuras de Alan y Elena",
         abstract:
-            "Este es un cuento de prueba creado con el fin de comprobar el comportamiento de la App.",
+            "Acompaña a Alan y Elena en su aventura. En la cual encontrarán encuentros fortuitos, enemigos y problemas que resolver",
         coverImage: File(
             "/Users/guama/Desktop/cuentos_pasantia/assets/tales_sample/portada_elena_alan.jpg"),
         ageLimit: 8,
@@ -35,7 +35,7 @@ class MockData {
   Chapter generateFirstChapter() {
     return Chapter(
       id: 0,
-      chapterTitle: "Capítulo 1: La gran aventura.",
+      chapterTitle: "La gran aventura.",
       sections: firstChapterGenerateSectionsRoutes(),
     );
   }
@@ -43,7 +43,7 @@ class MockData {
   Chapter generateSecondChapter() {
     return Chapter(
         id: 1,
-        chapterTitle: "Capítulo 2: El desafío final.",
+        chapterTitle: "Capítulo El desafío final.",
         sections: generateSecondChapterRoutes());
   }
 
@@ -73,19 +73,32 @@ class MockData {
     firstSelection.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_discovers_passage.jpg?alt=media&token=65f07ecc-baf0-4de9-b4ab-a425e5333c9f";
     introduction.options = [
-      getOption("Continuar", "Continuar", "", firstSelection.id)
+      getOption(
+          id: "Continuar",
+          text: "Continuar",
+          previousSectionId: "",
+          nextSectionId: firstSelection.id)
     ];
     List<Section> sectionsRouteA =
         getFirstChapterRouteA(firstSelection, endOfChapter);
     List<Section> sectionsRouteB =
         getFirstChapterRouteB(firstSelection, endOfChapter);
 
-    firstSelection.options.add(getOption("Opcion A", "Camino de la izquierda",
-        introduction.id, sectionsRouteA.first.id));
-    firstSelection.options.add(getOption("Opcion B", "Camino de la derecha",
-        introduction.id, sectionsRouteB.first.id));
-    endOfChapter.options
-        .add(getOption("Continuará...", "Continuará...", "", ""));
+    firstSelection.options.add(getOption(
+        id: "Opcion A",
+        text: "Camino de la izquierda",
+        previousSectionId: introduction.id,
+        nextSectionId: sectionsRouteA.first.id));
+    firstSelection.options.add(getOption(
+        id: "Opcion B",
+        text: "Camino de la derecha",
+        previousSectionId: introduction.id,
+        nextSectionId: sectionsRouteB.first.id));
+    endOfChapter.options.add(getOption(
+        id: "Continuará...",
+        text: "Continuará...",
+        previousSectionId: "",
+        nextSectionId: ""));
 
     return [
       introduction,
@@ -120,7 +133,10 @@ class MockData {
 
     initARoute.options = [
       getOption(
-          "Siguiente", "Continuar", firstSection.id, secondSelectionSection.id)
+          id: "Siguiente",
+          text: "Continuar",
+          previousSectionId: firstSection.id,
+          nextSectionId: secondSelectionSection.id)
     ];
     //Ruta AA
     final initAARoute = Section(
@@ -132,7 +148,10 @@ class MockData {
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_meeting_alan.jpg?alt=media&token=8326ba06-91bf-4c09-bdcc-725c9f514ce3";
 
     secondSelectionSection.options.add(getOption(
-        "Ruta AA", "Deambular por el bosque", initARoute.id, initAARoute.id));
+        id: "Ruta AA",
+        text: "Deambular por el bosque",
+        previousSectionId: initARoute.id,
+        nextSectionId: initAARoute.id));
 
     final lastSectionAARoute = Section(
         publicId: "",
@@ -142,10 +161,16 @@ class MockData {
     lastSectionAARoute.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
 
-    initAARoute.options.add(getOption("Continuar", "Continuar",
-        secondSelectionSection.id, lastSectionAARoute.id));
-    lastSectionAARoute.options.add(
-        getOption("Continuar", "Continuar", initAARoute.id, endOfChapter.id));
+    initAARoute.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: secondSelectionSection.id,
+        nextSectionId: lastSectionAARoute.id));
+    lastSectionAARoute.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: initAARoute.id,
+        nextSectionId: endOfChapter.id));
     //Ruta AB
     final initABRoute = Section(
         publicId: "Encuetro inesperado",
@@ -157,8 +182,11 @@ class MockData {
     initABRoute.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Falan_hitted_by_a_rock.jpg?alt=media&token=b3cd0ee1-11fb-4300-9974-86988d15ac22";
 
-    secondSelectionSection.options.add(getOption("Opcion B",
-        "Esperar a la ayuda del sabio", initARoute.id, initABRoute.id));
+    secondSelectionSection.options.add(getOption(
+        id: "Opcion B",
+        text: "Esperar a la ayuda del sabio",
+        previousSectionId: initARoute.id,
+        nextSectionId: initABRoute.id));
 
     //Ruta ABA
     final initABARoute = Section(
@@ -168,8 +196,11 @@ class MockData {
             "Después de charlar un poco respecto a su situación, ambos descubren que están perdidos por lo que sin otra opción se recuestan "
             "en un árbol cercano a esperar por ayuda del sabio.",
         options: []);
-    initABRoute.options.add(getOption("Opcion A", "Finge que nada sucedió",
-        secondSelectionSection.id, initABARoute.id));
+    initABRoute.options.add(getOption(
+        id: "Opcion A",
+        text: "Finge que nada sucedió",
+        previousSectionId: secondSelectionSection.id,
+        nextSectionId: initABARoute.id));
 
     final endOfRouteABA = Section(
         publicId: "",
@@ -180,10 +211,16 @@ class MockData {
     endOfRouteABA.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
 
-    initABARoute.options.add(
-        getOption("Continuar", "Continuar", initABRoute.id, endOfRouteABA.id));
-    endOfRouteABA.options.add(
-        getOption("Continuar", "Continuar", initABARoute.id, endOfChapter.id));
+    initABARoute.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: initABRoute.id,
+        nextSectionId: endOfRouteABA.id));
+    endOfRouteABA.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: initABARoute.id,
+        nextSectionId: endOfChapter.id));
 
     //Ruta ABB
     final initABBRoute = Section(
@@ -195,7 +232,10 @@ class MockData {
         options: []);
 
     initABRoute.options.add(getOption(
-        "Opcion B", "Se disculpa", secondSelectionSection.id, initABBRoute.id));
+        id: "Opcion B",
+        text: "Se disculpa",
+        previousSectionId: secondSelectionSection.id,
+        nextSectionId: initABBRoute.id));
 
     final endABBRoute = Section(
         publicId: "",
@@ -206,11 +246,17 @@ class MockData {
     endABBRoute.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_wiseman_in_the_forest.jpg?alt=media&token=1991e9ad-6944-4da9-9be7-fe372f7bbee2";
 
-    initABBRoute.options.add(
-        getOption("Continuar", "Continuar", initABRoute.id, endABBRoute.id));
+    initABBRoute.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: initABRoute.id,
+        nextSectionId: endABBRoute.id));
 
-    endABBRoute.options.add(
-        getOption("Continuar", "Continuar", initABBRoute.id, endOfChapter.id));
+    endABBRoute.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: initABBRoute.id,
+        nextSectionId: endOfChapter.id));
 
     return [
       initARoute,
@@ -242,7 +288,10 @@ class MockData {
             "De pronto, se encontraron perdidos y sin rumbo. ¿Cómo deberían encontrar el camino correcto?",
         options: []);
     initSectionB.options.add(getOption(
-        "Continuar", "Continuar", firstSelection.id, firstSelectionRoute.id));
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: firstSelection.id,
+        nextSectionId: firstSelectionRoute.id));
 
     //Ruta BA
     final selectionRouteBA = Section(
@@ -270,20 +319,32 @@ class MockData {
             "El sabio les reveló que una fuerza oscura amenazaba el reino y que sólo ellos, con su valentía y pureza de corazón, podrían detenerla. "
             "Los padres de Elena, preocupados por su desaparición buscaron cualquier rastro de su hija.",
         options: []);
-    endOfSection.options.add(
-        getOption("Continuar", "Continuar", startRouteBB.id, endOfChapter.id));
+    endOfSection.options.add(getOption(
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: startRouteBB.id,
+      nextSectionId: endOfChapter.id,
+    ));
 
     startRouteBB.options.add(getOption(
-        "Continuar", "Continuar", firstSelectionRoute.id, endOfSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: firstSelectionRoute.id,
+      nextSectionId: endOfSection.id,
+    ));
 
     firstSelectionRoute.options = [
       getOption(
-          "Opcion A",
-          "Alan guía a Elena en la dirección donde recuerda en la que se encuentra el pueblo.",
-          initSectionB.id,
-          selectionRouteBA.id),
-      getOption("Opcion B", "Escalan el árbol más alto en busca de ayuda.",
-          initSectionB.id, startRouteBB.id),
+          id: "Opcion A",
+          text:
+              "Alan guía a Elena en la dirección donde recuerda en la que se encuentra el pueblo.",
+          previousSectionId: initSectionB.id,
+          nextSectionId: selectionRouteBA.id),
+      getOption(
+          id: "Opcion B",
+          text: "Escalan el árbol más alto en busca de ayuda.",
+          previousSectionId: initSectionB.id,
+          nextSectionId: startRouteBB.id),
     ];
 
     //Final Corto
@@ -297,10 +358,18 @@ class MockData {
         text:
             "Aunque Elena se encontró un poco renuente a separarse, se sintió satisfecha con esta entretenida y corta aventura, por lo cual se despidió de Alan y volvió a casa con sus padres.",
         options: []);
-    initShortFinal.options.add(getOption("Continuar", "Continuar",
-        selectionRouteBA.id, alternativeEndOfChapter.id));
-    alternativeEndOfChapter.options
-        .add(getOption("Fin", "Fin", initShortFinal.id, ""));
+    initShortFinal.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: selectionRouteBA.id,
+        nextSectionId: alternativeEndOfChapter.id));
+    final endOfChapterOptions = getOption(
+        id: "Fin",
+        text: "Fin",
+        previousSectionId: initShortFinal.id,
+        nextSectionId: "");
+    endOfChapterOptions.isAEnd = true;
+    alternativeEndOfChapter.options.add(endOfChapterOptions);
 
     //Ruta alternativa
     final initRouteAlternative = Section(
@@ -313,15 +382,24 @@ class MockData {
     initRouteAlternative.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_1%2Felena_alan_house.jpg?alt=media&token=d0c95f6e-61bd-47e9-9099-0750d050a15a";
     initRouteAlternative.options.add(getOption(
-        "Continuar", "Continuar", selectionRouteBA.id, endOfSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: selectionRouteBA.id,
+      nextSectionId: endOfSection.id,
+    ));
     selectionRouteBA.options = [
       getOption(
-          "Final corto",
-          "Siguen el sendero, en dirección contraria a la cabaña",
-          firstSelectionRoute.id,
-          initShortFinal.id),
-      getOption("Ruta alternativa", "Caminan hacia la cabaña.",
-          firstSelectionRoute.id, initRouteAlternative.id)
+        id: "Final corto",
+        text: "Siguen el sendero, en dirección contraria a la cabaña",
+        previousSectionId: firstSelectionRoute.id,
+        nextSectionId: initShortFinal.id,
+      ),
+      getOption(
+        id: "Ruta alternativa",
+        text: "Caminan hacia la cabaña.",
+        previousSectionId: firstSelectionRoute.id,
+        nextSectionId: initRouteAlternative.id,
+      )
     ];
 
     return [
@@ -365,15 +443,17 @@ class MockData {
 
     introduction.options = [
       getOption(
-          "Opcion A",
-          "Pedir ayuda al pueblo para derrotar a la criatura.",
-          "",
-          sectionARoute.id),
+        id: "Opcion A",
+        text: "Pedir ayuda al pueblo para derrotar a la criatura.",
+        previousSectionId: "",
+        nextSectionId: sectionARoute.id,
+      ),
       getOption(
-          "Opcion B",
-          "Calmar a la criatura y convencerla de volver a dormir.",
-          "",
-          sectionBRoute.id)
+        id: "Opcion B",
+        text: "Calmar a la criatura y convencerla de volver a dormir.",
+        previousSectionId: "",
+        nextSectionId: sectionBRoute.id,
+      )
     ];
 
     Section secondSelectionSection = Section(
@@ -384,9 +464,17 @@ class MockData {
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fblack-dragon-being-attacked.jpg?alt=media&token=364cce0f-d91e-4122-a4be-496c279ceb22";
 
     sectionARoute.options.add(getOption(
-        "Continuar", "Continuar", introduction.id, secondSelectionSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: introduction.id,
+      nextSectionId: secondSelectionSection.id,
+    ));
     sectionBRoute.options.add(getOption(
-        "Continuar", "Continuar", introduction.id, secondSelectionSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: introduction.id,
+      nextSectionId: secondSelectionSection.id,
+    ));
 
     //Ruta CA
     Section sectionCARoute = Section(
@@ -399,13 +487,18 @@ class MockData {
             "Elena y Alan, armados con su valentía y el talismán, lograron acercarse a la criatura maligna cuando ambos bandos estaba al borde del cansancio. Ningún bando se dió cuenta de sus acciones.",
         options: []);
     secondSelectionSection.options = [
-      getOption("Opcion A", "Corren directamente hacia la criatura",
-          sectionARoute.id, sectionCARoute.id),
       getOption(
-          "Opcion B",
-          "Rodean a la criatura y se acercan por su punto ciego.",
-          sectionBRoute.id,
-          sectionCBRoute.id)
+        id: "Opcion A",
+        text: "Corren directamente hacia la criatura",
+        previousSectionId: sectionARoute.id,
+        nextSectionId: sectionCARoute.id,
+      ),
+      getOption(
+        id: "Opcion B",
+        text: "Rodean a la criatura y se acercan por su punto ciego.",
+        previousSectionId: sectionBRoute.id,
+        nextSectionId: sectionCBRoute.id,
+      )
     ];
 
     Section finalSection = Section(
@@ -415,16 +508,32 @@ class MockData {
     finalSection.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fbroken-talisman.jpg?alt=media&token=1c0b286d-a567-453d-9041-6e0c1c2c498a";
     sectionCARoute.options.add(getOption(
-        "Continuar", "Continuar", secondSelectionSection.id, finalSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: secondSelectionSection.id,
+      nextSectionId: finalSection.id,
+    ));
     sectionCBRoute.options.add(getOption(
-        "Continuar", "Continuar", secondSelectionSection.id, finalSection.id));
+      id: "Continuar",
+      text: "Continuar",
+      previousSectionId: secondSelectionSection.id,
+      nextSectionId: finalSection.id,
+    ));
     Section endOfChapter = Section(
         text:
             "El reino fue salvado gracias al coraje de los niños, y los pueblos vecinos se unieron en celebración. Elena y Alan regresaron a casa como héroes, con una nueva apreciación por la magia y las aventuras que los esperaban.",
         options: []);
-    finalSection.options
-        .add(getOption("Continuar", "Continuar", "", endOfChapter.id));
-    endOfChapter.options.add(getOption("Fin", "Fin", finalSection.id, ""));
+    finalSection.options.add(getOption(
+        id: "Continuar",
+        text: "Continuar",
+        previousSectionId: "",
+        nextSectionId: endOfChapter.id));
+    endOfChapter.options.add(getOption(
+        id: "Fin",
+        text: "Fin",
+        previousSectionId: finalSection.id = "",
+        nextSectionId: "",
+        isAEnd: true));
     endOfChapter.setImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/proyectopasantiatales.appspot.com/o/tales%2Flas_aventuras_de_elena_y_alan%2Fchapter_2%2Fend-tale.jpg?alt=media&token=a0338aa0-f7bf-48fd-9743-f6177dd24606";
     return [
@@ -439,8 +548,13 @@ class MockData {
     ];
   }
 
-  Options getOption(
-      String id, String text, String previousSectionId, String nextSectionId) {
+  static Options getOption({
+    required String id,
+    required String text,
+    required String previousSectionId,
+    required String nextSectionId,
+    bool? isAEnd = false,
+  }) {
     Options option = Options(id: id, text: text);
     option.setNext = nextSectionId;
     option.setPrevious = previousSectionId;
